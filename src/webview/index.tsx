@@ -16,7 +16,7 @@ const queryClient = new QueryClient();
 const root = createRoot(document.getElementById("root"))
 if (root) {
   root.render(<QueryClientProvider client={queryClient}>
-    <SuiClientProvider networks={networkConfig} defaultNetwork="devnet">
+    <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
       <App />
     </SuiClientProvider>
   </QueryClientProvider>);
