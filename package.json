@@ -16,32 +16,54 @@
       {
         "command": "sui-simulator-vscode.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "sui-simulator-vscode.webView",
+        "category": "sui-simulator-vscode",
+        "title": "Webview"
       }
     ]
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "webpack",
-    "watch": "webpack --watch",
-    "package": "webpack --mode production --devtool hidden-source-map",
+    "watch": "npm-run-all --parallel watch:*",
+    "watch:ext": "webpack --mode development --watch --config ./webpack/extension.config.js",
+    "watch:wv": "webpack serve --mode development --config ./webpack/webview.config.js",
+    "package": "npm run clean && npm-run-all --parallel package:*",
+    "package:ext": "webpack --mode production --config ./webpack/extension.config.js",
+    "package:wv": "webpack --mode production --config ./webpack/webview.config.js",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
+    "clean": "rimraf dist",
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.87.0",
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
+    "@types/react": "^18.2.67",
+    "@types/react-dom": "^18.2.22",
+    "@types/vscode": "^1.87.0",
+    "@types/webpack": "^5.28.5",
+    "@types/webpack-dev-server": "^4.7.2",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
+    "@vscode/test-cli": "^0.0.6",
+    "@vscode/test-electron": "^2.3.9",
+    "css-loader": "^6.10.0",
     "eslint": "^8.56.0",
-    "typescript": "^5.3.3",
+    "npm-run-all": "^4.1.5",
+    "postcss-loader": "^8.1.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "rimraf": "^5.0.5",
+    "style-loader": "^3.3.4",
     "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3",
     "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4",
-    "@vscode/test-cli": "^0.0.6",
-    "@vscode/test-electron": "^2.3.9"
+    "webpack-dev-server": "^5.0.4"
   }
 }
