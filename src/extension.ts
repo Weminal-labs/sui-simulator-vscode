@@ -24,8 +24,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand("sui-simulator-vscode.webView", () => {
 		const panel = vscode.window.createWebviewPanel(
-			'react-webview',
-			'React Webview',
+			'sui-simulator',
+			'Sui Simulator',
 			vscode.ViewColumn.One,
 			{
 				enableScripts: true,
@@ -66,4 +66,4 @@ const getWebviewContent = (context: vscode.ExtensionContext, webview: vscode.Web
 		<script src="${scriptUrl}"></script>
 	</body>
 	</html>`;
-}
+};

@@ -1,6 +1,9 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { App } from "./App";
 import React from "react";
 import { createRoot } from 'react-dom/client';
+import { SuiClientProvider } from "@mysten/dapp-kit";
+import { networkConfig } from "./configs/networkConfig";
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -8,9 +11,15 @@ declare const acquireVsCodeApi: <T = unknown>() => {
   postMessage: (msg: unknown) => void;
 };
 
+const queryClient = new QueryClient();
+
 const root = createRoot(document.getElementById("root"))
 if (root) {
-  root.render(<App />);
+  root.render(<QueryClientProvider client={queryClient}>
+    <SuiClientProvider networks={networkConfig} defaultNetwork="devnet">
+      <App />
+    </SuiClientProvider>
+  </QueryClientProvider>);
 }
 
 // Webpack HMR
