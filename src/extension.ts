@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import { join } from 'path';
 import { MessageHandlerData } from '@estruyf/vscode';
+import { build, publish, test } from './suiCommand';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -54,6 +55,7 @@ export function activate(context: vscode.ExtensionContext) {
 				} as MessageHandlerData<string>);
 			} else if (command === "POST_DATA") {
 				vscode.window.showInformationMessage(`Received data from the webview: ${payload.data}`);
+				test(payload.data);
 			}
 		}, undefined, context.subscriptions);
 

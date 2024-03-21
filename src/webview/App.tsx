@@ -14,8 +14,8 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
     const [data, setData] = useState<string>("");
 
     // webview send data to extension
-    const sendMessage = () => {
-        messageHandler.send('POST_DATA', { data: 'Hello from the webview' }); // action, payload like redux
+    const sendMessage = (data: any) => {
+        messageHandler.send('POST_DATA', { data }); // action, payload like redux
     };
 
     // webview request data from extension then extension send data to webview
@@ -173,6 +173,9 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
                 handleCall().then(resp => console.log(resp)).catch(err => console.log(err));
             }}>
                 Call
+            </Button>
+            <Button onClick={() => { sendMessage("sui client objects"); }}>
+                Build
             </Button>
             {!isError ? <p>Result: {response}</p> : <p>Error: {error}</p>}
         </>
