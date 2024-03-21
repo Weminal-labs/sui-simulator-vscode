@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { join } from 'path';
+import { MessageHandlerData } from '@estruyf/vscode';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -32,7 +33,37 @@ export function activate(context: vscode.ExtensionContext) {
 				retainContextWhenHidden: true
 			}
 		);
+
+		panel.webview.onDidReceiveMessage(message => {
+			const { command, requestId, payload } = message;
+
+			if (command === "GET_DATA") {
+				// Do something with the payload
+
+				// Send a response back to the webview
+				panel.webview.postMessage({
+					command,
+					requestId, // The requestId is used to identify the response
+					payload: `Hello from the extension!`
+				} as MessageHandlerData<string>);
+			} else if (command === "GET_DATA_ERROR") {
+				panel.webview.postMessage({
+					command,
+					requestId, // The requestId is used to identify the response
+					error: `Oops, something went wrong!`
+				} as MessageHandlerData<string>);
+			} else if (command === "POST_DATA") {
+				vscode.window.showInformationMessage(`Received data from the webview: ${payload.data}`);
+			}
+		}, undefined, context.subscriptions);
+
 		panel.webview.html = getWebviewContent(context, panel.webview);
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand("sui-simulator-vscode.terminal", () => {
+		const terminal = vscode.window.createTerminal("Sui Simulator");
+		terminal.sendText("sui client objects");
+		terminal.show();
 	}));
 }
 

@@ -21,6 +21,11 @@
         "command": "sui-simulator-vscode.webView",
         "category": "sui-simulator-vscode",
         "title": "Webview"
+      },
+      {
+        "command": "sui-simulator-vscode.terminal",
+        "category": "sui-simulator-vscode",
+        "title": "Terminal"
       }
     ]
   },
@@ -41,6 +46,7 @@
     "test": "vscode-test"
   },
   "devDependencies": {
+    "@estruyf/vscode": "^1.1.0",
     "@mysten/dapp-kit": "^0.12.5",
     "@mysten/sui.js": "^0.51.0",
     "@tanstack/react-query": "^5.28.6",
