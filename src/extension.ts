@@ -38,24 +38,47 @@ export function activate(context: vscode.ExtensionContext) {
 		panel.webview.onDidReceiveMessage(message => {
 			const { command, requestId, payload } = message;
 
-			if (command === "GET_DATA") {
-				// Do something with the payload
+			switch (command) {
+				case "GET_DATA":
+					// Do something with the payload
 
-				// Send a response back to the webview
-				panel.webview.postMessage({
-					command,
-					requestId, // The requestId is used to identify the response
-					payload: `Hello from the extension!`
-				} as MessageHandlerData<string>);
-			} else if (command === "GET_DATA_ERROR") {
-				panel.webview.postMessage({
-					command,
-					requestId, // The requestId is used to identify the response
-					error: `Oops, something went wrong!`
-				} as MessageHandlerData<string>);
-			} else if (command === "POST_DATA") {
-				vscode.window.showInformationMessage(`Received data from the webview: ${payload.data}`);
-				test(payload.data);
+					// Send a response back to the webview
+					panel.webview.postMessage({
+						command,
+						requestId, // The requestId is used to identify the response
+						payload: `Hello from the extension!`
+					} as MessageHandlerData<string>);
+					break;
+				
+				case "GET_DATA_ERROR":
+					panel.webview.postMessage({
+						command,
+						requestId, // The requestId is used to identify the response
+						error: `Oops, something went wrong!`
+					} as MessageHandlerData<string>);
+					break;
+				
+				case "POST_DATA":
+					vscode.window.showInformationMessage(`Received data from the webview: ${payload.data}`);
+					test(payload.data);
+					break;
+
+				case "SUI_TERMINAL":
+					test(payload.command);	
+					break;
+
+				case "SAVE_ALIASES":
+					context.workspaceState.update(payload.address, {
+						aliases: payload.aliases
+					}).then(() => {
+						vscode.window.showInformationMessage("Aliases saved successfully!");
+					});
+
+					// use value as undefined to remove the key
+					// context.workspaceState.update("", undefined);
+
+				default: 
+					vscode.window.showInformationMessage(`Unknown command: ${command}`);
 			}
 		}, undefined, context.subscriptions);
 

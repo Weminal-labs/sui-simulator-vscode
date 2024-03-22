@@ -1,41 +1,16 @@
-import { messageHandler } from '@estruyf/vscode/dist/client';
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import "./style.css";
 import { useSuiClient, useSuiClientContext } from "@mysten/dapp-kit";
 import { DEFAULT_ED25519_DERIVATION_PATH, Ed25519Keypair } from "@mysten/sui.js/keypairs/ed25519";
 import { TransactionArgument, TransactionBlock } from "@mysten/sui.js/transactions";
 import { Input } from "./components/Input";
 import { Button } from "./components/Button";
+import { Aliases } from './components/Aliases';
+import { sendMessage } from "./utils/wv_communicate_ext";
 
 export interface IAppProps { }
 
 export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChildren<IAppProps>) => {
-    const [data, setData] = useState<string>("");
-
-    // webview send data to extension
-    const sendMessage = (data: any) => {
-        messageHandler.send('POST_DATA', { data }); // action, payload like redux
-    };
-
-    // webview request data from extension then extension send data to webview
-    const requestData = () => {
-        messageHandler.request<string>('GET_DATA').then((data) => {
-            setData(data);
-        });
-    };
-
-
-    const requestWithErrorData = () => {
-        messageHandler.request<string>('GET_DATA_ERROR')
-            .then((data) => {
-                setData(data);
-            })
-            .catch((err) => {
-                setError(err);
-            });
-    };
-
     const suiClient = useSuiClient();
     const { network, selectNetwork } = useSuiClientContext();
 
@@ -174,10 +149,11 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
             }}>
                 Call
             </Button>
-            <Button onClick={() => { sendMessage("sui client objects"); }}>
-                Build
+            <Button onClick={() => { sendMessage("SUI_TERMINAL", {command: "sui client objects"}); }}>
+                Test Terminal
             </Button>
             {!isError ? <p>Result: {response}</p> : <p>Error: {error}</p>}
+            <Aliases/>
         </>
     );
 };
