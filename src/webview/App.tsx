@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./style.css";
 import { useSuiClient, useSuiClientContext } from "@mysten/dapp-kit";
 import { DEFAULT_ED25519_DERIVATION_PATH, Ed25519Keypair } from "@mysten/sui.js/keypairs/ed25519";
@@ -7,6 +7,7 @@ import { Input } from "./components/Input";
 import { Button } from "./components/Button";
 import { Aliases } from './components/Aliases';
 import { sendMessage } from "./utils/wv_communicate_ext";
+import { getDetailPackage } from "./utils/suiPackage";
 
 export interface IAppProps { }
 
@@ -110,6 +111,19 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
             return err;
         }
     };
+
+    useEffect(() => {
+        getDetailPackage(suiClient, "0xcab68c8cd7e80f3dd06466da6b2c083d1fd50ab3e9be8e32395c19b53021c064").then((data) => {
+            const modules = Object.keys(data as {});
+            
+            if (data) {
+                for (const module of modules) {
+                    const { exposedFunctions } = data[module];
+                    console.log(exposedFunctions);
+                }
+            }
+        }).catch(err => console.log(err));
+    }, []);
 
     return (
         <>
