@@ -1,6 +1,8 @@
-# sui-simulator-vscode README
+# Welcome to Sui Simulator Extension
 
-This is the README for your extension "sui-simulator-vscode". After writing up a brief description, we recommend including the following sections.
+## Introduction
+
+We were inspired by [move studio](https://www.movestudio.dev/) to help builder can interact with SUI smart contract. Our open-source project provides three custom VS Code buttons that `sui Build` , `sui Publish` and `sui Call` in webview-based extensions
 
 ## Features
 
@@ -14,7 +16,9 @@ For example if there is an image subfolder under your extension project workspac
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+Sui Simulator requires the following:
+
+- [Sui CLI](https://docs.sui.io/guides/developer/getting-started/sui-install) (latest version)
 
 ## Extension Settings
 
@@ -35,9 +39,9 @@ Calling out known issues can help limit users opening duplicate issues against y
 
 Users appreciate release notes as you update your extension.
 
-### 1.0.0
+### 0.1.0
 
-Initial release of ...
+Initial release of Sui Simulator
 
 ### 1.0.1
 
@@ -54,18 +58,3 @@ Added features X, Y, and Z.
 Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
 
 * [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
