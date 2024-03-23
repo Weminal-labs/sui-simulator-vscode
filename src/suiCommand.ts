@@ -1,18 +1,18 @@
 import * as vscode from 'vscode';
 
-export const build = () => {
+export const build = (path: string) => {
     const terminal = vscode.window.createTerminal("Sui Simulator");
-    terminal.sendText("sui move build");
+    terminal.sendText(`sui move build -p ${path}`);
     terminal.show();
 };
 
-export const publish = () => {
+export const publish = (path: string) => {
     const terminal = vscode.window.createTerminal("Sui Simulator");
-    terminal.sendText("sui client publish --gas-budget 10000000");
+    terminal.sendText(`sui client publish --gas-budget 100000000 ${path}`);
     terminal.show();
 };
 
-export const test = (command: string) => {
+export const executeCommand = (command: string) => {
     const terminal = vscode.window.createTerminal("Sui Simulator");
     terminal.sendText(command);
     terminal.show();

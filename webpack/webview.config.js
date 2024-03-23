@@ -38,7 +38,7 @@ const config = [
         plugins: [],
         devServer: {
             compress: true,
-            port: 9000,
+            port: 9999,
             hot: true,
             allowedHosts: "all",
             headers: {

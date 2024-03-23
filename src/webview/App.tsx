@@ -26,6 +26,9 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
     const [isError, setIsError] = useState<boolean>(false);
     const [response, setResponse] = useState<string>("");
 
+    const [buildPath, setBuildPath] = useState<string>("");
+    const [publishPath, setPublishPath] = useState<string>("");
+
     let keypair: Ed25519Keypair | null = null;
 
     const handleNetworkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -115,11 +118,11 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
     useEffect(() => {
         getDetailPackage(suiClient, "0xcab68c8cd7e80f3dd06466da6b2c083d1fd50ab3e9be8e32395c19b53021c064").then((data) => {
             const modules = Object.keys(data as {});
-            
+
             if (data) {
                 for (const module of modules) {
                     const { exposedFunctions } = data[module];
-                    console.log(exposedFunctions);
+
                 }
             }
         }).catch(err => console.log(err));
@@ -129,15 +132,40 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
         <>
             <h1>Sui Simulator</h1>
             <hr />
+            <h2>Network</h2>
             <select value={network} onChange={handleNetworkChange}>
                 <option>devnet</option>
                 <option>testnet</option>
             </select>
             <hr />
-            <Input placeholder="Mnemonics" value={mnemonics} onChange={handleMnemonicsChange} />
-            <Input placeholder="Package ID" value={packageId} onChange={(e) => setPackageId(e.target.value)} />
-            <Input placeholder="Module" value={module} onChange={(e) => setModule(e.target.value)} />
-            <Input placeholder="Function Name" value={functionName} onChange={(e) => setFunctionName(e.target.value)} />
+            <h2>Buikd</h2>
+            <Input placeholder="Path" value={buildPath} onChange={(e) => setBuildPath(e.target.value)} />
+            <Button onClick={() => { sendMessage("BUILD", { path: buildPath }); }}>
+                Build
+            </Button>
+            <h2>Publish</h2>
+            <Input placeholder="Path" value={publishPath} onChange={(e) => setPublishPath(e.target.value)} />
+            <Button onClick={() => { sendMessage("PUBLISH", { path: publishPath }); }}>
+                Publish
+            </Button>
+            <hr />
+            <h2>Call</h2>
+            <div>
+                <span>Mnemonics: </span>
+                <Input placeholder="Mnemonics" value={mnemonics} onChange={handleMnemonicsChange} />
+            </div>
+            <div>
+                <span>Package: </span>
+                <Input placeholder="Package ID" value={packageId} onChange={(e) => setPackageId(e.target.value)} />
+            </div>
+            <div>
+                <span>Module: </span>
+                <Input placeholder="Module" value={module} onChange={(e) => setModule(e.target.value)} />
+            </div>
+            <div>
+                <span>Function: </span>
+                <Input placeholder="Function Name" value={functionName} onChange={(e) => setFunctionName(e.target.value)} />
+            </div>
             <p>Args</p>
             {args.map((arg, index) => {
                 return <> <input type="text" value={arg.value} onChange={(e) => {
@@ -163,11 +191,9 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
             }}>
                 Call
             </Button>
-            <Button onClick={() => { sendMessage("SUI_TERMINAL", {command: "sui client objects"}); }}>
-                Test Terminal
-            </Button>
             {!isError ? <p>Result: {response}</p> : <p>Error: {error}</p>}
-            <Aliases/>
+            <hr />
+            <Aliases />
         </>
     );
 };
