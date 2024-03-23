@@ -108,7 +108,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
                 setResponse(JSON.stringify(response.digest));
             }
             return response;
-        } catch (err) {
+        } catch (err: any) {
             setIsError(true);
             setError(err.message);
             return err;

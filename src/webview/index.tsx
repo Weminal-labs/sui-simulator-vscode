@@ -13,7 +13,7 @@ declare const acquireVsCodeApi: <T = unknown>() => {
 
 const queryClient = new QueryClient();
 
-const root = createRoot(document.getElementById("root"))
+const root = createRoot(document.getElementById("root")!);
 if (root) {
   root.render(<QueryClientProvider client={queryClient}>
     <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
@@ -26,5 +26,5 @@ if (root) {
 // @ts-expect-error
 if (import.meta.webpackHot) {
   // @ts-expect-error
-  import.meta.webpackHot.accept()
+  import.meta.webpackHot.accept();
 }
