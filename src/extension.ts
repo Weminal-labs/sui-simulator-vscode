@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import { join } from 'path';
 import { MessageHandlerData } from '@estruyf/vscode';
 import { build, publish, executeCommand } from './suiCommand';
+import { SidebarProvider } from './SidebarProvider';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -21,6 +22,14 @@ export function activate(context: vscode.ExtensionContext) {
 		// Display a message box to the user
 		vscode.window.showInformationMessage('Hello World from sui-simulator-vscode!');
 	});
+
+	const sidebarProvider = new SidebarProvider(context);
+	context.subscriptions.push(
+		vscode.window.registerWebviewViewProvider(
+			"sui-simulator-sidebar",
+			sidebarProvider
+		)
+	);
 
 	context.subscriptions.push(disposable);
 
@@ -64,15 +73,15 @@ export function activate(context: vscode.ExtensionContext) {
 					break;
 
 				case "SUI_TERMINAL":
-					executeCommand(payload.command);
+					executeCommand(payload.command, payload.suiPath);
 					break;
 
 				case "BUILD":
-					build(payload.path);
+					build(payload.packagePath, payload.suiPath);
 					break;
 
 				case "PUBLISH":
-					publish(payload.path);
+					publish(payload.packagePath, payload.suiPath);
 					break;
 
 				case "SAVE_ALIASES":
