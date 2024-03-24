@@ -12,6 +12,26 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "sui-simulator-sidebar-view",
+          "title": "Sui Simulator",
+          "icon": "media/tools.svg"
+        }
+      ]
+    },
+    "views": {
+      "sui-simulator-sidebar-view": [
+        {
+          "type": "webview",
+          "id": "sui-simulator-sidebar",
+          "name": "Sui Simulator",
+          "icon": "media/tools.svg",
+          "contextualTitle": "Sui Simulator"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "sui-simulator-vscode.helloWorld",
