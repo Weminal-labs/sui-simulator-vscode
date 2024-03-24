@@ -64,15 +64,15 @@ export function activate(context: vscode.ExtensionContext) {
 					break;
 
 				case "SUI_TERMINAL":
-					executeCommand(payload.command);
+					executeCommand(payload.command, payload.suiPath);
 					break;
 
 				case "BUILD":
-					build(payload.path);
+					build(payload.packagePath, payload.suiPath);
 					break;
 
 				case "PUBLISH":
-					publish(payload.path);
+					publish(payload.packagePath, payload.suiPath);
 					break;
 
 				case "SAVE_ALIASES":
