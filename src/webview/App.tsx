@@ -11,8 +11,8 @@ import { MoveCall } from "./features/moveCall/v2";
 
 const initialState: MoveCallState = {
     mnemonics: "mouse hood crucial soup report axis awful point stairs guess scrap winter",
-    status: MoveCallStatus.ENTER_PACKAGE_ID,
-    packageId: "0xcab68c8cd7e80f3dd06466da6b2c083d1fd50ab3e9be8e32395c19b53021c064",
+    status: MoveCallStatus.BEGIN,
+    packageId: "",
     modules: [],
     currentModule: "",
     functions: {},
@@ -34,27 +34,23 @@ const reducer = (state: MoveCallState, action: ActionType): MoveCallState => {
         case MoveCallActionType.SET_PACKAGE_ID:
             return {
                 ...state,
-                status: MoveCallStatus.ENTER_PACKAGE_ID,
                 packageId: payload,
             };
         case MoveCallActionType.SET_MODULES:
             return {
                 ...state,
-                status: MoveCallStatus.CHOOSE_MODULE,
                 modules: payload,
             };
 
         case MoveCallActionType.SET_CURRENT_MODULE:
             return {
                 ...state,
-                status: MoveCallStatus.CHOOSE_FUNCTION,
                 currentModule: payload,
             };
 
         case MoveCallActionType.SET_FUNCTIONS:
             return {
                 ...state,
-                status: MoveCallStatus.ENTER_ARGS,
                 functions: payload,
             };
 
@@ -68,8 +64,40 @@ const reducer = (state: MoveCallState, action: ActionType): MoveCallState => {
         case MoveCallActionType.SET_CURRENT_FUNCTION:
             return {
                 ...state,
-                status: MoveCallStatus.CALL,
                 currentFunction: payload,
+            };
+
+        case MoveCallActionType.RESET_ARGS:
+            return {
+                ...state,
+                args: [],
+            };
+
+        case MoveCallActionType.RESET_ARGS_USER_INPUT:
+            return {
+                ...state,
+                argsUserInput: [],
+            };
+
+        case MoveCallActionType.ADD_ARG:
+            return {
+                ...state,
+                args: [...state.args, payload],
+            };
+
+        case MoveCallActionType.SET_VALUE_TO_ARG:
+            const argsUserInput = [...state.argsUserInput];
+            argsUserInput[payload.index] = payload.value;
+            return {
+                ...state,
+                argsUserInput,
+            };
+
+        case MoveCallActionType.SET_RESPONSE:
+            return {
+                ...state,
+                status: MoveCallStatus.FINISH,
+                response: payload,
             };
 
         default:
