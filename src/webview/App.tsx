@@ -10,6 +10,7 @@ import { MoveCall } from "./features/moveCall/v2";
 import { SuiConfig } from "./features/suiConfig/v2";
 import { messageHandler } from "@estruyf/vscode/dist/client";
 import { SuiConfigProvider } from "./context/SuiConfigProvider";
+import { GasAddress } from "./features/gasAddress";
 
 const initialState: MoveCallState = {
     mnemonics: "mouse hood crucial soup report axis awful point stairs guess scrap winter",
@@ -133,6 +134,8 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
                 <h1>Sui Simulator</h1>
                 <hr />
                 <SuiConfig/>
+                <hr />
+                <GasAddress />
                 <hr />
                 <h2>Build</h2>
                 <Input placeholder="Package Path" value={buildPath} onChange={(e) => setBuildPath(e.target.value)} />

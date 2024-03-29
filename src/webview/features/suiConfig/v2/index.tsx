@@ -5,37 +5,46 @@ import { convertWindowsToUnixPath } from "../../../utils";
 import { FileWithPath } from "../../../../types";
 import { useSuiClientContext } from "@mysten/dapp-kit";
 import Collapsible from "react-collapsible";
-import { messageHandler } from "@estruyf/vscode/dist/client";
 import { useSuiConfig } from "../../../context/SuiConfigProvider";
-
-export interface TerminalResponse {
-  stdout: string;
-  stderr: string;
-}
-
-const requestData = async (action: string) => {
-  return messageHandler.request<TerminalResponse>(action);
-};
+import { requestDataFromTerminal } from "../../../utils/wv_communicate_ext";
+import { SuiCommand } from "../../../../enums";
 
 export const SuiConfig = () => {
   const { network, selectNetwork } = useSuiClientContext();
   const { isSuiCargo, setIsSuiCargo, suiPath, setSuiPath } = useSuiConfig();
+  const [userNetworks, setUserNetworks] = useState<any[]>([]); // type later
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleNetworkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleNetworkChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setIsLoading(true);
+    const resp = await requestDataFromTerminal({
+      cmd: SuiCommand.SWITCH_NETWORK,
+      network: e.target.value,
+    });
+    const { stdout, stderr } = resp;
+    console.log(stdout);
     selectNetwork(e.target.value);
+    setIsLoading(false);
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    async function test() {
-      const resp = await requestData("GET_DATA");
+    async function getUserNetworks() {
+      setIsLoading(true);
+      const resp = await requestDataFromTerminal({
+        cmd: SuiCommand.GET_NETWORKS,
+      });
       const { stdout, stderr } = resp;
-      const objects = JSON.parse(stdout);
-      console.log(objects);
-      // console.log(stdout, stderr);
+      const result = JSON.parse(stdout);
+      const networks = result[0];
+      const currentNetwork = result[1];
+      console.log(JSON.parse(stdout));
+      setUserNetworks(networks);
+      selectNetwork(currentNetwork);
+      setIsLoading(false);
     }
-    test();
+    getUserNetworks();
   }, []);
 
   useEffect(() => {
@@ -74,10 +83,15 @@ export const SuiConfig = () => {
             {suiPath && <p>{suiPath}</p>}
           </>
         )}
-        <select value={network} onChange={handleNetworkChange}>
-          <option>devnet</option>
-          <option>testnet</option>
-        </select>
+        {isLoading ? (
+          "Loading"
+        ) : (
+          <select value={network} onChange={handleNetworkChange}>
+            {userNetworks.map((network: any, index) => {
+              return <option key={index}>{network.alias}</option>;
+            })}
+          </select>
+        )}
         <button>RPC Custom</button>
       </Collapsible>
     </>
