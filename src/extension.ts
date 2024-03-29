@@ -7,7 +7,8 @@ import { build, publish, executeCommand } from './suiCommand';
 import { SidebarProvider } from './SidebarProvider';
 import { exec } from "child_process";
 import { promisify } from "util";
-import { TerminalResponse } from './webview/features/suiConfig/v2';
+import { TerminalResponse } from './types';
+import { TerminalCommand } from './enums';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -52,9 +53,22 @@ export function activate(context: vscode.ExtensionContext) {
 		panel.webview.onDidReceiveMessage(async message => {
 			const { command, requestId, payload } = message;
 			switch (command) {
-				case "GET_DATA":
+				case "SUI_TERMINAL":
+					let result = {
+						stderr: "",
+						stdout: ""
+					};
+					switch (payload) {
+						case TerminalCommand.GET_ADDRESSES:
+							result = await execNew("sui client addresses --json");
+							break;
+						case TerminalCommand.GET_GAS_OBJECTS:
+							result = await execNew("sui client gas --json");
+							break;
+					}
+
 					// Do something with the payload
-					const {stderr, stdout} = await execNew("sui client objects --json");
+					const {stderr, stdout} = result;
 
 					// Send a response back to the webview
 					panel.webview.postMessage({
@@ -80,9 +94,9 @@ export function activate(context: vscode.ExtensionContext) {
 					test(payload.data);
 					break;
 
-				case "SUI_TERMINAL":
-					executeCommand(payload.command, payload.suiPath);
-					break;
+				// case "SUI_TERMINAL":
+				// 	executeCommand(payload.command, payload.suiPath);
+				// 	break;
 
 				case "BUILD":
 					build(payload.packagePath, payload.suiPath);
