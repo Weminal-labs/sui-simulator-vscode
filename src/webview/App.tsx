@@ -9,6 +9,7 @@ import { MoveCallActionType, MoveCallStatus } from "../enums";
 import { MoveCall } from "./features/moveCall/v2";
 import { SuiConfig } from "./features/suiConfig/v2";
 import { messageHandler } from "@estruyf/vscode/dist/client";
+import { SuiConfigProvider } from "./context/SuiConfigProvider";
 
 const initialState: MoveCallState = {
     mnemonics: "mouse hood crucial soup report axis awful point stairs guess scrap winter",
@@ -128,26 +129,28 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
 
     return (
         <>
-            <h1>Sui Simulator</h1>
-            <hr />
-            <SuiConfig/>
-            <hr />
-            <h2>Build</h2>
-            <Input placeholder="Package Path" value={buildPath} onChange={(e) => setBuildPath(e.target.value)} />
-            <Button onClick={() => { sendMessage("BUILD", { packagePath: buildPath, suiPath }); }}>
-                Build
-            </Button>
-            <h2>Publish</h2>
-            <Input placeholder="Package Path" value={publishPath} onChange={(e) => setPublishPath(e.target.value)} />
-            <Button onClick={() => { sendMessage("PUBLISH", { packagePath: publishPath, suiPath }); }}>
-                Publish
-            </Button>
-            <hr />
+            <SuiConfigProvider>
+                <h1>Sui Simulator</h1>
+                <hr />
+                <SuiConfig/>
+                <hr />
+                <h2>Build</h2>
+                <Input placeholder="Package Path" value={buildPath} onChange={(e) => setBuildPath(e.target.value)} />
+                <Button onClick={() => { sendMessage("BUILD", { packagePath: buildPath, suiPath }); }}>
+                    Build
+                </Button>
+                <h2>Publish</h2>
+                <Input placeholder="Package Path" value={publishPath} onChange={(e) => setPublishPath(e.target.value)} />
+                <Button onClick={() => { sendMessage("PUBLISH", { packagePath: publishPath, suiPath }); }}>
+                    Publish
+                </Button>
+                <hr />
 
-            <MoveCall state={state} dispatch={dispatch} />
+                <MoveCall state={state} dispatch={dispatch} />
 
-            <hr />
-            <Aliases />
+                <hr />
+                <Aliases />
+            </SuiConfigProvider>
         </>
     );
 };
