@@ -5,10 +5,15 @@ import { join } from 'path';
 import { MessageHandlerData } from '@estruyf/vscode';
 import { build, publish, executeCommand } from './suiCommand';
 import { SidebarProvider } from './SidebarProvider';
+import { exec } from "child_process";
+import { promisify } from "util";
+import { TerminalResponse } from './webview/features/suiConfig/v2';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+
+	const execNew = promisify(exec);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
@@ -44,19 +49,22 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		);
 
-		panel.webview.onDidReceiveMessage(message => {
+		panel.webview.onDidReceiveMessage(async message => {
 			const { command, requestId, payload } = message;
-
 			switch (command) {
 				case "GET_DATA":
 					// Do something with the payload
+					const {stderr, stdout} = await execNew("sui client objects --json");
 
 					// Send a response back to the webview
 					panel.webview.postMessage({
 						command,
 						requestId, // The requestId is used to identify the response
-						payload: `Hello from the extension!`
-					} as MessageHandlerData<string>);
+						payload: {
+							stderr,
+							stdout
+						}
+					} as MessageHandlerData<TerminalResponse>);
 					break;
 
 				case "GET_DATA_ERROR":
@@ -106,6 +114,14 @@ export function activate(context: vscode.ExtensionContext) {
 		const terminal = vscode.window.createTerminal("Sui Simulator");
 		terminal.sendText("sui client objects");
 		terminal.show();
+
+		// get active editor
+		// console.log(vscode.window.activeTextEditor?.document.uri);
+
+		// get folders path in workspace
+		// vscode.workspace.workspaceFolders[0].uri.path
+		// vscode.workspace.workspaceFolders[0].uri.fsPath
+		
 	}));
 }
 

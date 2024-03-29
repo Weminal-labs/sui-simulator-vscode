@@ -3,6 +3,9 @@ import { createNetworkConfig } from "@mysten/dapp-kit";
 
 const { networkConfig, useNetworkVariable, useNetworkVariables } =
   createNetworkConfig({
+    localnet: {
+      url: getFullnodeUrl("localnet")
+    },
     devnet: {
       url: getFullnodeUrl("devnet")
     },
