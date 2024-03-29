@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
-import { TerminalCommand } from "../../../enums";
+import { SuiCommand } from "../../../enums";
+import { useSuiClientContext } from "@mysten/dapp-kit";
 
 export interface GasObject { gasCoinId: string, suiBalance: number };
 
 export const Gas = () => {
   // remember that then change UI in here need to call to terminal
+  const { network } = useSuiClientContext();
   const [gasObjects, setGasObjects] = useState([]);
   const [currentGasObject, setCurrentGasObject] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -27,15 +29,17 @@ export const Gas = () => {
   useEffect(() => {
     async function getGasObjects() {
       setIsLoading(true);
-      const resp = await requestDataFromTerminal(TerminalCommand.GET_GAS_OBJECTS);
+      const resp = await requestDataFromTerminal({
+        cmd: SuiCommand.GET_GAS_OBJECTS,
+      });
       const { stdout, stderr } = resp;
       const objects = JSON.parse(stdout);
       setGasObjects(objects);
       setIsLoading(false);
-      console.log(objects);
+      // console.log(objects);
     }
     getGasObjects();
-  }, []);
+  }, [network]);
 
   return (
     <>

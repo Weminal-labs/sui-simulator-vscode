@@ -19,7 +19,10 @@ export enum MoveCallActionType {
     SET_RESPONSE = "SET_RESPONSE",
 };
 
-export enum TerminalCommand {
+export enum SuiCommand {
     GET_ADDRESSES = "GET_ADDRESSES",
     GET_GAS_OBJECTS = "GET_GAS_OBJECTS",
+    SWITCH_ADDRESS = "SWITCH_ADDRESS",
+    SWITCH_NETWORK = "SWITCH_NETWORK",
+    GET_NETWORKS = "GET_NETWORKS",
 }

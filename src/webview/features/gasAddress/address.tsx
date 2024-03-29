@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
-import { TerminalCommand } from "../../../enums";
+import { SuiCommand } from "../../../enums";
 import styles from "./address.module.css";
+import { useSuiClientContext } from "@mysten/dapp-kit";
 
 export const Address = () => {
   // remember that then change UI in here need to call to terminal
-  const [addresses, setAddresses] = useState([]);
-  const [currentAddress, setCurrentAddress] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { network } = useSuiClientContext();
+  const [addresses, setAddresses] = useState<string[]>([]);
+  const [currentAddress, setCurrentAddress] = useState<string>("");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   function openModal() {
     setIsOpen(true);
@@ -19,20 +21,34 @@ export const Address = () => {
     setIsOpen(false);
   }
 
+  const switchAddress = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setIsLoading(true);
+    const resp = await requestDataFromTerminal({
+      cmd: SuiCommand.SWITCH_ADDRESS,
+      address: e.target.value,
+    });
+    const { stdout, stderr } = resp;
+    setCurrentAddress(e.target.value);
+    console.log(stdout);
+    setIsLoading(false);
+  };
+
   useEffect(() => {
     async function getAddresses() {
       setIsLoading(true);
-      const resp = await requestDataFromTerminal(TerminalCommand.GET_ADDRESSES);
+      const resp = await requestDataFromTerminal({
+        cmd: SuiCommand.GET_ADDRESSES,
+      });
       const { stdout, stderr } = resp;
       const objects = JSON.parse(stdout);
       const { activeAddress, addresses } = objects;
       setCurrentAddress(activeAddress);
       setAddresses(addresses);
       setIsLoading(false);
-      console.log(objects);
+      // console.log(objects);
     }
     getAddresses();
-  }, []);
+  }, [network]);
 
   return (
     <>
@@ -48,21 +64,21 @@ export const Address = () => {
         {isLoading ? (
           <p>Loading...</p>
         ) : (
-          <div style={{ borderStyle: "solid" }}>
+          <select name="" id="" value={currentAddress} onChange={switchAddress}>
             {addresses.map((address, index) => {
               return (
-                <div
+                <option
                   className={`${
-                    (currentAddress && currentAddress === address[1]) ? styles["activeAddress"] : ""
+                    currentAddress && currentAddress === address[1]
+                      ? styles["activeAddress"]
+                      : ""
                   }`}
-                  key={index}
                 >
-                  <div>Alias: {address[0]}</div>
-                  <div>Address: {address[1]}</div>
-                </div>
+                  {address[1]}
+                </option>
               );
             })}
-          </div>
+          </select>
         )}
 
         <div>
