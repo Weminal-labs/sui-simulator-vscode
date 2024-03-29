@@ -4,10 +4,11 @@ import { useSuiClient, useSuiClientContext } from "@mysten/dapp-kit";
 import { Input } from "./components/Input";
 import { Button } from "./components/Button";
 import { Aliases } from './components/Aliases';
-import { sendMessage } from "./utils/wv_communicate_ext";
 import { ActionType, MoveCallState } from "../types";
 import { MoveCallActionType, MoveCallStatus } from "../enums";
 import { MoveCall } from "./features/moveCall/v2";
+import { SuiConfig } from "./features/suiConfig/v2";
+import { messageHandler } from "@estruyf/vscode/dist/client";
 
 const initialState: MoveCallState = {
     mnemonics: "mouse hood crucial soup report axis awful point stairs guess scrap winter",
@@ -105,6 +106,10 @@ const reducer = (state: MoveCallState, action: ActionType): MoveCallState => {
     }
 };
 
+const sendMessage = (action: string, payload: any) => {
+    messageHandler.send(action, payload); // action, payload like redux
+  };
+
 export interface IAppProps { }
 
 export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChildren<IAppProps>) => {
@@ -125,15 +130,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
         <>
             <h1>Sui Simulator</h1>
             <hr />
-            <h2>
-                Setup Sui
-            </h2>
-            <Input placeholder="Sui binary path" value={suiPath} onChange={(e) => setSuiPath(e.target.value)} />
-            <h2>Network</h2>
-            <select value={network} onChange={handleNetworkChange}>
-                <option>devnet</option>
-                <option>testnet</option>
-            </select>
+            <SuiConfig/>
             <hr />
             <h2>Build</h2>
             <Input placeholder="Package Path" value={buildPath} onChange={(e) => setBuildPath(e.target.value)} />
