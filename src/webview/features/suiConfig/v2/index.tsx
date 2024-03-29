@@ -1,21 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Toggle from "react-toggle";
 import "react-toggle/style.css";
 import { convertWindowsToUnixPath } from "../../../utils";
 import { FileWithPath } from "../../../../types";
 import { useSuiClientContext } from "@mysten/dapp-kit";
 import Collapsible from "react-collapsible";
-import { messageHandler } from "@estruyf/vscode/dist/client";
 import { useSuiConfig } from "../../../context/SuiConfigProvider";
-
-export interface TerminalResponse {
-  stdout: string;
-  stderr: string;
-}
-
-const requestData = async (action: string) => {
-  return messageHandler.request<TerminalResponse>(action);
-};
+import { requestDataFromTerminal } from "../../../utils/wv_communicate_ext";
 
 export const SuiConfig = () => {
   const { network, selectNetwork } = useSuiClientContext();
@@ -29,7 +20,7 @@ export const SuiConfig = () => {
 
   useEffect(() => {
     async function test() {
-      const resp = await requestData("GET_DATA");
+      const resp = await requestDataFromTerminal(null);
       const { stdout, stderr } = resp;
       const objects = JSON.parse(stdout);
       console.log(objects);

@@ -25,3 +25,8 @@ export interface MoveCallState {
 export interface FileWithPath extends File {
   path: string;
 }
+
+export interface TerminalResponse {
+  stdout: string;
+  stderr: string;
+}

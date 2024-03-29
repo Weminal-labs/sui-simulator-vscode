@@ -18,3 +18,8 @@ export enum MoveCallActionType {
     SET_VALUE_TO_ARG = "SET_VALUE_TO_ARG",
     SET_RESPONSE = "SET_RESPONSE",
 };
+
+export enum TerminalCommand {
+    GET_ADDRESSES = "GET_ADDRESSES",
+    GET_GAS_OBJECTS = "GET_GAS_OBJECTS",
+}
