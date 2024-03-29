@@ -8,7 +8,7 @@ import { SidebarProvider } from './SidebarProvider';
 import { exec } from "child_process";
 import { promisify } from "util";
 import { TerminalResponse } from './types';
-import { TerminalCommand } from './enums';
+import { SuiCommand } from './enums';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -58,12 +58,22 @@ export function activate(context: vscode.ExtensionContext) {
 						stderr: "",
 						stdout: ""
 					};
-					switch (payload) {
-						case TerminalCommand.GET_ADDRESSES:
+					// console.log(payload);
+					switch (payload.cmd) {
+						case SuiCommand.GET_ADDRESSES:
 							result = await execNew("sui client addresses --json");
 							break;
-						case TerminalCommand.GET_GAS_OBJECTS:
+						case SuiCommand.GET_GAS_OBJECTS:
 							result = await execNew("sui client gas --json");
+							break;
+						case SuiCommand.SWITCH_ADDRESS:
+							result = await execNew(`sui client switch --address ${payload.address}`);
+							break;
+						case SuiCommand.GET_NETWORKS:
+							result = await execNew("sui client envs --json");
+							break;
+						case SuiCommand.SWITCH_NETWORK:
+							result = await execNew(`sui client switch --env ${payload.network}`);
 							break;
 					}
 
