@@ -1,55 +1,21 @@
-# Welcome to Sui Simulator Extension
 
-## Introduction
+# Welcom to Sui Simulator Extension
+## Introduction 
+In the spirit to develop a strong developer community, Weminal lab build an open-source IDE to simplify the development of SUI smart contracts.
 
-We were inspired by [move studio](https://www.movestudio.dev/) to help builder can interact with SUI smart contract. Our open-source project provides three custom VS Code buttons that `sui Build` , `sui Publish` and `sui Call` in webview-based extensions
+Our vision is as a hub for builders to write code, build, simulate and publish objects  smart contracts on SUI.
 
-## Features
+Sui-simulator is the core vision and technical development of Weminal team, as a hub for builders to write code, build, simulate, and publish objects smart contracts on SUI.
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+This project provide sui developer with a set of quick tools to reduce the time consumption with readily available testing and developing environments.
 
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
+## Features 
+* Set up Environments
+* Build,test and publish in  sui contract
+* Object Explorer 
+## Requirements 
 Sui Simulator requires the following:
-
-- [Sui CLI](https://docs.sui.io/guides/developer/getting-started/sui-install) (latest version)
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 0.1.0
-
-Initial release of Sui Simulator
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+- [Sui CLI](https://docs.sui.io/guides/developer/getting-started/sui-install) (latest version)
 
 ---
 
