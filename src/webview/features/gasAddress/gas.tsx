@@ -3,14 +3,19 @@ import Modal from "react-modal";
 import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
 import { SuiCommand } from "../../../enums";
 import { useSuiClientContext } from "@mysten/dapp-kit";
+import { useMySuiAccount } from "../../context/MySuiAccountProvider";
 
-export interface GasObject { gasCoinId: string, suiBalance: number };
+export interface GasObject {
+  gasCoinId: string;
+  suiBalance: number;
+}
 
 export const Gas = () => {
   // remember that then change UI in here need to call to terminal
   const { network } = useSuiClientContext();
-  const [gasObjects, setGasObjects] = useState([]);
-  const [currentGasObject, setCurrentGasObject] = useState(null);
+  const { currentAddress, currentGasObject, gasObjects, setCurrentGasObject, setGasObjects } =
+    useMySuiAccount();
+
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -22,9 +27,7 @@ export const Gas = () => {
     setIsOpen(false);
   }
 
-  const requestFaucet = () => {
-    
-  };
+  const requestFaucet = () => {};
 
   useEffect(() => {
     async function getGasObjects() {
@@ -39,7 +42,11 @@ export const Gas = () => {
       // console.log(objects);
     }
     getGasObjects();
-  }, [network]);
+  }, [network, currentAddress]);
+
+  const balanceOfCurrentGasObject = gasObjects.find((gasObject) => gasObject.gasCoinId === currentGasObject)?.suiBalance;
+
+  console.log(currentGasObject);
 
   return (
     <>
@@ -55,19 +62,17 @@ export const Gas = () => {
         {isLoading ? (
           <p>Loading...</p>
         ) : (
-          <div style={{ borderStyle: "solid" }}>
+          <select
+            value={currentGasObject}
+            onChange={(e) => setCurrentGasObject(e.target.value)}
+          >
+            <option selected>Choose gas object</option>
             {gasObjects.map((gasObject: GasObject, index) => {
-              return (
-                <div
-                  key={index}
-                >
-                  <div>{gasObject.gasCoinId}</div>
-                  <div>{gasObject.suiBalance}</div>
-                </div>
-              );
+              return <option>{gasObject.gasCoinId}</option>;
             })}
-          </div>
+          </select>
         )}
+        <span>{balanceOfCurrentGasObject}</span>
 
         <div>
           <button>Faucet</button>

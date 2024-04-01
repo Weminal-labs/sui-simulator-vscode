@@ -26,7 +26,10 @@ export interface FileWithPath extends File {
   path: string;
 }
 
-export interface TerminalResponse {
+export interface MyCustomTerminalResponse {
   stdout: string;
-  stderr: string;
+  stderr: {
+    message: string;
+    isError: boolean;
+  };
 }

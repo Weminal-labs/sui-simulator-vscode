@@ -4,12 +4,14 @@ import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
 import { SuiCommand } from "../../../enums";
 import styles from "./address.module.css";
 import { useSuiClientContext } from "@mysten/dapp-kit";
+import { useMySuiAccount } from "../../context/MySuiAccountProvider";
 
 export const Address = () => {
   // remember that then change UI in here need to call to terminal
   const { network } = useSuiClientContext();
-  const [addresses, setAddresses] = useState<string[]>([]);
-  const [currentAddress, setCurrentAddress] = useState<string>("");
+  const { addresses, currentAddress, setCurrentAddress, setAddresses } =
+    useMySuiAccount();
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 

@@ -7,7 +7,7 @@ import { build, publish, executeCommand } from './suiCommand';
 import { SidebarProvider } from './SidebarProvider';
 import { exec } from "child_process";
 import { promisify } from "util";
-import { TerminalResponse } from './types';
+import { MyCustomTerminalResponse } from './types';
 import { SuiCommand } from './enums';
 
 // This method is called when your extension is activated
@@ -54,41 +54,117 @@ export function activate(context: vscode.ExtensionContext) {
 			const { command, requestId, payload } = message;
 			switch (command) {
 				case "SUI_TERMINAL":
-					let result = {
+					let resp = {
 						stderr: "",
+						stdout: ""
+					};
+					
+					let finalResp = {
+						stderr: {
+							message: "",
+							isError: false,
+						},
 						stdout: ""
 					};
 					// console.log(payload);
 					switch (payload.cmd) {
 						case SuiCommand.GET_ADDRESSES:
-							result = await execNew("sui client addresses --json");
+							
+							resp = await execNew("sui client addresses --json");
+
+							finalResp = {
+								stderr: {
+									message: resp.stderr,
+									isError: false
+								},
+								stdout: resp.stdout
+							};
 							break;
 						case SuiCommand.GET_GAS_OBJECTS:
-							result = await execNew("sui client gas --json");
+							try {
+								resp = await execNew("sui client gas --json");
+
+								finalResp = {
+									stderr: {
+										message: resp.stderr,
+										isError: false
+									},
+									stdout: resp.stdout
+								};
+							} catch(err: any) {
+								console.log(err.message);
+							}
+							
 							break;
 						case SuiCommand.SWITCH_ADDRESS:
-							result = await execNew(`sui client switch --address ${payload.address}`);
+							resp = await execNew(`sui client switch --address ${payload.address}`);
+
+							finalResp = {
+								stderr: {
+									message: resp.stderr,
+									isError: false
+								},
+								stdout: resp.stdout
+							};
 							break;
 						case SuiCommand.GET_NETWORKS:
-							result = await execNew("sui client envs --json");
+							resp = await execNew("sui client envs --json");
+
+							finalResp = {
+								stderr: {
+									message: resp.stderr,
+									isError: false
+								},
+								stdout: resp.stdout
+							};
 							break;
 						case SuiCommand.SWITCH_NETWORK:
-							result = await execNew(`sui client switch --env ${payload.network}`);
+							resp = await execNew(`sui client switch --env ${payload.network}`);
+
+							finalResp = {
+								stderr: {
+									message: resp.stderr,
+									isError: false
+								},
+								stdout: resp.stdout
+							};
+							break;
+						case SuiCommand.PUBLISH_PACKAGE:
+							try {
+								resp = await execNew(`sui client publish --gas ${payload.gasObjectId} --gas-budget ${payload.gasBudget} ${vscode.workspace.workspaceFolders?.[0].uri.path} --json`);
+
+								finalResp = {
+									stderr: {
+										message: resp.stderr,
+										isError: false
+									},
+									stdout: resp.stdout
+								};
+
+								console.log(finalResp);
+							} catch (err: any) {
+								console.log(err.message);
+								finalResp = {
+									stderr: {
+										message: err.message,
+										isError: true
+									},
+									stdout: ""
+								};
+								
+							}
+							
 							break;
 					}
 
 					// Do something with the payload
-					const {stderr, stdout} = result;
 
 					// Send a response back to the webview
 					panel.webview.postMessage({
 						command,
 						requestId, // The requestId is used to identify the response
-						payload: {
-							stderr,
-							stdout
-						}
-					} as MessageHandlerData<TerminalResponse>);
+						payload: finalResp
+					} as MessageHandlerData<MyCustomTerminalResponse>);
 					break;
 
 				case "GET_DATA_ERROR":
