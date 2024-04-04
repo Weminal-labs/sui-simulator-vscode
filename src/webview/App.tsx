@@ -134,7 +134,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
         <>
             <SuiConfigProvider>
                 <MySuiAccountProvider>
-                    <h1>Sui Simulator</h1>
+                    <h1 className="text-red-500">Sui Simulator</h1>
                     <hr />
                     <SuiConfig/>
                     <hr />
