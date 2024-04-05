@@ -5,10 +5,16 @@ import { join } from 'path';
 import { MessageHandlerData } from '@estruyf/vscode';
 import { build, publish, executeCommand } from './suiCommand';
 import { SidebarProvider } from './SidebarProvider';
+import { exec } from "child_process";
+import { promisify } from "util";
+import { MyCustomTerminalResponse } from './types';
+import { SuiCommand } from './enums';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+
+	const execNew = promisify(exec);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
@@ -44,19 +50,121 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		);
 
-		panel.webview.onDidReceiveMessage(message => {
+		panel.webview.onDidReceiveMessage(async message => {
 			const { command, requestId, payload } = message;
-
 			switch (command) {
-				case "GET_DATA":
+				case "SUI_TERMINAL":
+					let resp = {
+						stderr: "",
+						stdout: ""
+					};
+					
+					let finalResp = {
+						stderr: {
+							message: "",
+							isError: false,
+						},
+						stdout: ""
+					};
+					// console.log(payload);
+					switch (payload.cmd) {
+						case SuiCommand.GET_ADDRESSES:
+							
+							resp = await execNew("sui client addresses --json");
+
+							finalResp = {
+								stderr: {
+									message: resp.stderr,
+									isError: false
+								},
+								stdout: resp.stdout
+							};
+							break;
+						case SuiCommand.GET_GAS_OBJECTS:
+							try {
+								resp = await execNew("sui client gas --json");
+
+								finalResp = {
+									stderr: {
+										message: resp.stderr,
+										isError: false
+									},
+									stdout: resp.stdout
+								};
+							} catch(err: any) {
+								console.log(err.message);
+							}
+							
+							break;
+						case SuiCommand.SWITCH_ADDRESS:
+							resp = await execNew(`sui client switch --address ${payload.address}`);
+
+							finalResp = {
+								stderr: {
+									message: resp.stderr,
+									isError: false
+								},
+								stdout: resp.stdout
+							};
+							break;
+						case SuiCommand.GET_NETWORKS:
+							resp = await execNew("sui client envs --json");
+
+							finalResp = {
+								stderr: {
+									message: resp.stderr,
+									isError: false
+								},
+								stdout: resp.stdout
+							};
+							break;
+						case SuiCommand.SWITCH_NETWORK:
+							resp = await execNew(`sui client switch --env ${payload.network}`);
+
+							finalResp = {
+								stderr: {
+									message: resp.stderr,
+									isError: false
+								},
+								stdout: resp.stdout
+							};
+							break;
+						case SuiCommand.PUBLISH_PACKAGE:
+							try {
+								resp = await execNew(`sui client publish --gas ${payload.gasObjectId} --gas-budget ${payload.gasBudget} ${vscode.workspace.workspaceFolders?.[0].uri.path} --json`);
+
+								finalResp = {
+									stderr: {
+										message: resp.stderr,
+										isError: false
+									},
+									stdout: resp.stdout
+								};
+
+								console.log(finalResp);
+							} catch (err: any) {
+								console.log(err.message);
+								finalResp = {
+									stderr: {
+										message: err.message,
+										isError: true
+									},
+									stdout: ""
+								};
+								
+							}
+							
+							break;
+					}
+
 					// Do something with the payload
 
 					// Send a response back to the webview
 					panel.webview.postMessage({
 						command,
 						requestId, // The requestId is used to identify the response
-						payload: `Hello from the extension!`
-					} as MessageHandlerData<string>);
+						payload: finalResp
+					} as MessageHandlerData<MyCustomTerminalResponse>);
 					break;
 
 				case "GET_DATA_ERROR":
@@ -72,9 +180,9 @@ export function activate(context: vscode.ExtensionContext) {
 					test(payload.data);
 					break;
 
-				case "SUI_TERMINAL":
-					executeCommand(payload.command, payload.suiPath);
-					break;
+				// case "SUI_TERMINAL":
+				// 	executeCommand(payload.command, payload.suiPath);
+				// 	break;
 
 				case "BUILD":
 					build(payload.packagePath, payload.suiPath);
@@ -106,6 +214,14 @@ export function activate(context: vscode.ExtensionContext) {
 		const terminal = vscode.window.createTerminal("Sui Simulator");
 		terminal.sendText("sui client objects");
 		terminal.show();
+
+		// get active editor
+		// console.log(vscode.window.activeTextEditor?.document.uri);
+
+		// get folders path in workspace
+		// vscode.workspace.workspaceFolders[0].uri.path
+		// vscode.workspace.workspaceFolders[0].uri.fsPath
+		
 	}));
 }
 
@@ -131,6 +247,8 @@ const getWebviewContent = (context: vscode.ExtensionContext, webview: vscode.Web
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="https://cdn.tailwindcss.com"></script>
+		
 		${isProduction ? `<link href="${cssUrl}" rel="stylesheet">` : ''}
 	</head>
 	<body>

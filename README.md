@@ -1,5 +1,5 @@
 
-# Welcom to Sui Simulator Extension
+# Welcome to Sui Simulator Extension
 ## Introduction 
 In the spirit to develop a strong developer community, Weminal lab build an open-source IDE to simplify the development of SUI smart contracts.
 
