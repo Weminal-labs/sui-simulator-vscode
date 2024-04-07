@@ -6,8 +6,15 @@ import { build, publish } from './suiCommand';
 import { WebviewProvider } from './WebviewProvider';
 import { exec } from "child_process";
 import { promisify } from "util";
-import { MyCustomTerminalResponse } from './types';
 import { SuiCommand } from './enums';
+
+interface MyCustomTerminalResponse {
+	stdout: string;
+	stderr: {
+	  message: string;
+	  isError: boolean;
+	};
+  }
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed

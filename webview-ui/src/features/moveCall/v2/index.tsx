@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { MoveCallState } from '../../../../types';
+import { MoveCallState } from '../../../types';
 import { Input } from '../../../components/Input';
-import { MoveCallActionType, MoveCallStatus } from '../../../../enums';
+import { MoveCallActionType, MoveCallStatus } from '../../../../../src/enums';
 import { useSuiClient } from '@mysten/dapp-kit';
 import { Button } from '../../../components/Button';
 import { DEFAULT_ED25519_DERIVATION_PATH, Ed25519Keypair } from '@mysten/sui.js/keypairs/ed25519';

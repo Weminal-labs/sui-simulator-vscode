@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
-import { SuiCommand } from "../../../enums";
+import { SuiCommand } from "../../../../src/enums";
 import styles from "./address.module.css";
 import { useSuiClientContext } from "@mysten/dapp-kit";
 import { useMySuiAccount } from "../../context/MySuiAccountProvider";

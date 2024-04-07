@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Collapsible from "react-collapsible";
 import { useMySuiAccount } from "../../context/MySuiAccountProvider";
 import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
-import { SuiCommand } from "../../../enums";
+import { SuiCommand } from "../../../../src/enums";
 import Modal from "react-modal";
 
 export const BuildTestPublish = () => {

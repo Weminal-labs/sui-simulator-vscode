@@ -41,10 +41,3 @@ if (root) {
     </SuiClientProvider>
   </QueryClientProvider>);
 }
-
-// Webpack HMR
-// @ts-expect-error
-if (import.meta.webpackHot) {
-  // @ts-expect-error
-  import.meta.webpackHot.accept();
-}

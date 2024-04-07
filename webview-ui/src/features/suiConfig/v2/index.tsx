@@ -2,12 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import Toggle from "react-toggle";
 import "react-toggle/style.css";
 import { convertWindowsToUnixPath } from "../../../utils";
-import { FileWithPath } from "../../../../types";
+import { FileWithPath } from "../../../types";
 import { useSuiClientContext } from "@mysten/dapp-kit";
 import Collapsible from "react-collapsible";
 import { useSuiConfig } from "../../../context/SuiConfigProvider";
 import { requestDataFromTerminal } from "../../../utils/wv_communicate_ext";
-import { SuiCommand } from "../../../../enums";
+import { SuiCommand } from "../../../../../src/enums";
 
 export const SuiConfig = () => {
   const { network, selectNetwork } = useSuiClientContext();

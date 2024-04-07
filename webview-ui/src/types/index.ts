@@ -1,5 +1,5 @@
 import { SuiMoveNormalizedFunction } from "@mysten/sui.js/client";
-import { MoveCallStatus } from "../enums";
+import { MoveCallStatus } from "../../../src/enums";
 
 export interface ActionType {
   type: string;
