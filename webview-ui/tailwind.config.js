@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     extend: {},
     screens: {
-      'sidebar': {'max': '480px'}, // responsive design for sidebar (not working)
+      'sidebar': { 'max': '480px' },
     },
   },
   plugins: [],

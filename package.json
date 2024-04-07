@@ -55,8 +55,10 @@
     "start:webview": "cd webview-ui && npm run start",
     "build:webview": "cd webview-ui && npm run build",
     "vscode:prepublish": "npm run compile",
+    "watch": "npm-run-all --parallel watch:*",
+    "watch:ext": "tsc -watch -p ./ --outDir out",
+    "watch:wv": "cd webview-ui && npm run watch",
     "compile": "tsc -p ./ --outDir out",
-    "watch": "tsc -watch -p ./ --outDir out",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts"
   },

@@ -35,6 +35,16 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdn.tailwindcss.com"></script>
+		<script>
+    tailwind.config = {
+		theme: {
+			extend: {},
+			screens: {
+			  'sidebar': { 'max': '480px' }, // responsive design for sidebar (not working)
+			},
+		}
+    }
+  </script>
         <link rel="stylesheet" type="text/css" href="${stylesUri}">
 	</head>
 	<body>

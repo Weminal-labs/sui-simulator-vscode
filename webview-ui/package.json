@@ -5,7 +5,8 @@
     "scripts": {
         "start": "vite",
         "build": "tsc && vite build",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "watch": "vite build --watch"
     },
     "dependencies": {
         "@estruyf/vscode": "^1.1.0",
