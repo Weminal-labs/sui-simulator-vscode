@@ -16,7 +16,7 @@ export const GasAddress = () => {
       <div className="bg-[#0e0f0e] overflow-hidden w-full h-[1024px]">
         <div className="relative w-[1023px] h-[1805px] top-[-178px] left-[-158px]">
           <div className="flex flex-col w-[640px] sidebar:w-[360px] items-start gap-[64px] absolute top-[228px] left-[198px]">
-            <div className="flex flex-col items-start gap-[40px] p-[24px] relative self-stretch w-full flex-[0_0_auto] rounded-[16px]">
+            <div className="flex flex-col items-start gap-[40px] relative self-stretch w-full flex-[0_0_auto] rounded-[16px]">
               <div
                 className="flex items-start gap-[8px] relative self-stretch w-full flex-[0_0_auto]"
                 onClick={handleNavigate}>

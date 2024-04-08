@@ -9,7 +9,7 @@ import { SuiConfig } from "./features/suiConfig/v2";
 import { messageHandler } from "@estruyf/vscode/dist/client";
 import { SuiConfigProvider } from "./context/SuiConfigProvider";
 import { GasAddress } from "./features/gasAddress";
-import { BuildTestPublish } from "./features/buildTestPublish";
+import { BuildTestPublish } from "./features/buildTestPublish/v2";
 import { MySuiAccountProvider } from "./context/MySuiAccountProvider";
 import { EnvironmentIcon } from "./icons/EnvironmentIcon";
 import { Tab } from "./components/Tab";

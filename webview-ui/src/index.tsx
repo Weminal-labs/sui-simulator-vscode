@@ -8,7 +8,7 @@ import { networkConfig } from "./configs/networkConfig";
 import { RootLayout } from "./RootLayout";
 import { SuiConfig } from "./features/suiConfig/v2";
 import { GasAddress } from "./features/gasAddress/";
-import { BuildTestPublish } from "./components/BuildTestPublish";
+import { BuildTestPublish } from "./features/buildTestPublish/v2";
 import { SuiConfigProvider } from "./context/SuiConfigProvider";
 import { MySuiAccountProvider } from "./context/MySuiAccountProvider";
 

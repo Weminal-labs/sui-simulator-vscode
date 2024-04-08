@@ -154,7 +154,7 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
 					break;
 				case SuiCommand.PUBLISH_PACKAGE:
 					try {
-						resp = await execNew(`sui client publish --gas ${payload.gasObjectId} --gas-budget ${payload.gasBudget} ${vscode.workspace.workspaceFolders?.[0].uri.path} --json`);
+						resp = await execNew(`/home/asus/Workspace/sui-testnet-v1.22.0/target/release/sui-ubuntu-x86_64 client publish --gas ${payload.gasObjectId} --gas-budget ${payload.gasBudget} ${vscode.workspace.workspaceFolders?.[0].uri.path} --json --skip-fetch-latest-git-deps --skip-dependency-verification`);
 
 						finalResp = {
 							stderr: {
@@ -164,7 +164,8 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
 							stdout: resp.stdout
 						};
 
-						console.log(finalResp);
+						console.log("stderr:", finalResp.stderr);
+						console.log("stdout:", finalResp.stdout);
 					} catch (err: any) {
 						console.log(err.message);
 						finalResp = {
