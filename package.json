@@ -2,7 +2,7 @@
   "name": "sui-simulator-vscode",
   "displayName": "sui-simulator-vscode",
   "description": "",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "repository": "https://github.com/Weminal-labs/sui-simulator-vscode",
   "engines": {
     "vscode": "^1.87.0"
