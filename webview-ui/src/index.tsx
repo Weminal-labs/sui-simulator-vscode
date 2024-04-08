@@ -10,9 +10,10 @@ import {
 import { SuiClientProvider } from "@mysten/dapp-kit";
 import { networkConfig } from "./configs/networkConfig";
 import { RootLayout } from "./RootLayout";
-import { Environment } from "./components/Environment";
+import {SuiConfig} from "./features/suiConfig/v2";
 import { GasAddress } from "./components/GasAddress";
 import { BuildTestPublish } from "./components/BuildTestPublish";
+import { SuiConfigProvider } from "./context/SuiConfigProvider";
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -26,18 +27,20 @@ const root = createRoot(document.getElementById("root")!);
 if (root) {
   root.render(<QueryClientProvider client={queryClient}>
     <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
+      <SuiConfigProvider>
       <MemoryRouter initialEntries={['/']}>
         <Routes>
 
           <Route element={<RootLayout />}>
             <Route index element={<App />} />
-            <Route path='environment' element={<Environment />} />
+            <Route path='environment' element={<SuiConfig />} />
             <Route path='gas-address' element={<GasAddress />} />
             <Route path='build-test-publish' element={<BuildTestPublish />} />
           </Route>
 
         </Routes>
       </MemoryRouter>
+      </SuiConfigProvider>
     </SuiClientProvider>
   </QueryClientProvider>);
 }
