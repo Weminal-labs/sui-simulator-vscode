@@ -11,6 +11,7 @@ import { GasAddress } from "./features/gasAddress/";
 import { BuildTestPublish } from "./features/buildTestPublish/v2";
 import { SuiConfigProvider } from "./context/SuiConfigProvider";
 import { MySuiAccountProvider } from "./context/MySuiAccountProvider";
+import Explorer from "./features/moveCall/v2/index";
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -34,6 +35,7 @@ if (root) {
                   <Route path="environment" element={<SuiConfig />} />
                   <Route path="gas-address" element={<GasAddress />} />
                   <Route path="build-test-publish" element={<BuildTestPublish />} />
+                  <Route path="explorer" element={<Explorer />} />
                 </Route>
               </Routes>
             </MemoryRouter>
