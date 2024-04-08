@@ -6,6 +6,7 @@ import { useSuiClient } from "@mysten/dapp-kit";
 import { Button } from "../../../components/Button";
 import { DEFAULT_ED25519_DERIVATION_PATH, Ed25519Keypair } from "@mysten/sui.js/keypairs/ed25519";
 import { TransactionBlock } from "@mysten/sui.js/transactions";
+import { useNavigate } from "react-router-dom";
 
 export interface IMoveCallProps {
   state: MoveCallState;
@@ -174,8 +175,16 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
     }
   };
 
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate("/");
+  };
+
   return (
     <>
+      <h1>Still Developing</h1>
+      <h1 onClick={handleNavigate}>Back</h1>
       <h2>Call</h2>
       <div>
         <span>Mnemonics: </span>
