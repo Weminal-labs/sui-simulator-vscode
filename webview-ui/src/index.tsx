@@ -1,19 +1,16 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { App } from "./App";
 import React from "react";
-import { createRoot } from 'react-dom/client';
-import {
-  Route,
-  MemoryRouter,
-  Routes
-} from "react-router-dom";
+import { createRoot } from "react-dom/client";
+import { Route, MemoryRouter, Routes } from "react-router-dom";
 import { SuiClientProvider } from "@mysten/dapp-kit";
 import { networkConfig } from "./configs/networkConfig";
 import { RootLayout } from "./RootLayout";
-import {SuiConfig} from "./features/suiConfig/v2";
-import { GasAddress } from "./components/GasAddress";
+import { SuiConfig } from "./features/suiConfig/v2";
+import { GasAddress } from "./features/gasAddress/";
 import { BuildTestPublish } from "./components/BuildTestPublish";
 import { SuiConfigProvider } from "./context/SuiConfigProvider";
+import { MySuiAccountProvider } from "./context/MySuiAccountProvider";
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -25,22 +22,24 @@ const queryClient = new QueryClient();
 
 const root = createRoot(document.getElementById("root")!);
 if (root) {
-  root.render(<QueryClientProvider client={queryClient}>
-    <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
-      <SuiConfigProvider>
-      <MemoryRouter initialEntries={['/']}>
-        <Routes>
-
-          <Route element={<RootLayout />}>
-            <Route index element={<App />} />
-            <Route path='environment' element={<SuiConfig />} />
-            <Route path='gas-address' element={<GasAddress />} />
-            <Route path='build-test-publish' element={<BuildTestPublish />} />
-          </Route>
-
-        </Routes>
-      </MemoryRouter>
-      </SuiConfigProvider>
-    </SuiClientProvider>
-  </QueryClientProvider>);
+  root.render(
+    <QueryClientProvider client={queryClient}>
+      <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
+        <SuiConfigProvider>
+          <MySuiAccountProvider>
+            <MemoryRouter initialEntries={["/"]}>
+              <Routes>
+                <Route element={<RootLayout />}>
+                  <Route index element={<App />} />
+                  <Route path="environment" element={<SuiConfig />} />
+                  <Route path="gas-address" element={<GasAddress />} />
+                  <Route path="build-test-publish" element={<BuildTestPublish />} />
+                </Route>
+              </Routes>
+            </MemoryRouter>
+          </MySuiAccountProvider>
+        </SuiConfigProvider>
+      </SuiClientProvider>
+    </QueryClientProvider>
+  );
 }
