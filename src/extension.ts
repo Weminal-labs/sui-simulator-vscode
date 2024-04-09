@@ -11,10 +11,10 @@ import { SuiCommand } from './enums';
 interface MyCustomTerminalResponse {
 	stdout: string;
 	stderr: {
-	  message: string;
-	  isError: boolean;
+		message: string;
+		isError: boolean;
 	};
-  }
+}
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -73,9 +73,17 @@ export function activate(context: vscode.ExtensionContext) {
 	}));
 }
 
+let suiPath = "sui";
+
 export const handleReceivedMessage = async (message: any, webView: any, context: any) => {
 	const { command, requestId, payload } = message;
+	console.log(suiPath);
+
 	switch (command) {
+		case "CHANGE_SUI_PATH":
+			suiPath = payload.suiPath;
+			console.log(suiPath);
+			break;
 		case "SUI_TERMINAL":
 			let resp = {
 				stderr: "",
@@ -93,7 +101,7 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
 			switch (payload.cmd) {
 				case SuiCommand.GET_ADDRESSES:
 
-					resp = await execNew("sui client addresses --json");
+					resp = await execNew(`${suiPath} client addresses --json`);
 
 					finalResp = {
 						stderr: {
@@ -105,7 +113,7 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
 					break;
 				case SuiCommand.GET_GAS_OBJECTS:
 					try {
-						resp = await execNew("sui client gas --json");
+						resp = await execNew(`${suiPath} client gas --json`);
 
 						finalResp = {
 							stderr: {
@@ -120,7 +128,7 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
 
 					break;
 				case SuiCommand.SWITCH_ADDRESS:
-					resp = await execNew(`sui client switch --address ${payload.address}`);
+					resp = await execNew(`${suiPath} client switch --address ${payload.address}`);
 
 					finalResp = {
 						stderr: {
@@ -131,7 +139,7 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
 					};
 					break;
 				case SuiCommand.GET_NETWORKS:
-					resp = await execNew("sui client envs --json");
+					resp = await execNew(`${suiPath} client envs --json`);
 
 					finalResp = {
 						stderr: {
@@ -142,7 +150,7 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
 					};
 					break;
 				case SuiCommand.SWITCH_NETWORK:
-					resp = await execNew(`sui client switch --env ${payload.network}`);
+					resp = await execNew(`${suiPath} client switch --env ${payload.network}`);
 
 					finalResp = {
 						stderr: {
@@ -154,7 +162,36 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
 					break;
 				case SuiCommand.PUBLISH_PACKAGE:
 					try {
-						resp = await execNew(`/home/asus/Workspace/sui-testnet-v1.22.0/target/release/sui-ubuntu-x86_64 client publish --gas ${payload.gasObjectId} --gas-budget ${payload.gasBudget} ${vscode.workspace.workspaceFolders?.[0].uri.path} --json --skip-fetch-latest-git-deps --skip-dependency-verification`);
+						resp = await execNew(`${suiPath} client publish --gas ${payload.gasObjectId} --gas-budget ${payload.gasBudget} ${vscode.workspace.workspaceFolders?.[0].uri.path} --json --skip-fetch-latest-git-deps --skip-dependency-verification`);
+
+						finalResp = {
+							stderr: {
+								message: resp.stderr,
+								isError: false
+							},
+							stdout: resp.stdout
+						};
+
+						console.log("stderr:", finalResp.stderr);
+						console.log("stdout:", finalResp.stdout);
+					} catch (err: any) {
+						console.log(err.message);
+						finalResp = {
+							stderr: {
+								message: err.message,
+								isError: true
+							},
+							stdout: ""
+						};
+
+					}
+
+					break;
+
+				case SuiCommand.CALL_FUNCTION:
+					try {
+						resp = await execNew(`${suiPath} client call --package ${payload.packageId} --module ${payload.moduleName} --function ${payload.functionName}   --json --gas-budget 10000000 ${payload.args.length > 0 ? "--args" : ""} ${payload.args?.join(" ")}
+						`);
 
 						finalResp = {
 							stderr: {

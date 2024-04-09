@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { ActionType, MoveCallState } from "../../../types";
 import { Input } from "../../../components/Input";
-import { MoveCallActionType, MoveCallStatus } from "../../../../../src/enums";
+import { MoveCallActionType, MoveCallStatus, SuiCommand } from "../../../../../src/enums";
 import { useSuiClient, useSuiClientContext } from "@mysten/dapp-kit";
 import { Button } from "../../../components/Button";
 import { DEFAULT_ED25519_DERIVATION_PATH, Ed25519Keypair } from "@mysten/sui.js/keypairs/ed25519";
@@ -11,6 +11,7 @@ import { ArrowDown } from "../../../icons/ArrowDown";
 import { Label } from "../../../components/Label";
 import { ArrowLeft } from "../../../icons/ArrowLeft";
 import { shortenAddress, shortenObjectType } from "../../../utils/address_shortener";
+import { requestDataFromTerminal } from "../../../utils/wv_communicate_ext";
 
 export interface IMoveCallProps {
   state: MoveCallState;
@@ -175,6 +176,25 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
   //   }
   // };
 
+  const handleCall = async () => {
+    try {
+      const resp = await requestDataFromTerminal({
+        cmd: SuiCommand.CALL_FUNCTION,
+        packageId,
+        moduleName: currentModule,
+        functionName: currentFunction,
+        args: argsUserInput,
+      });
+      const { stdout, stderr } = resp;
+      // const objects = JSON.parse(stdout);
+      console.log(stdout);
+      console.log(stderr);
+      dispatch({ type: MoveCallActionType.SET_RESPONSE, payload: stdout });
+    } catch (err: any) {
+      dispatch({ type: MoveCallActionType.SET_ERROR, payload: err.message });
+    }
+  }
+
   const navigate = useNavigate();
 
   const handleNavigate = () => {
@@ -308,11 +328,11 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
                       </div>
                     </div> */}
                   </div>
-                  <div className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]">
+                  <button className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]" onClick={handleCall}>
                     <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
                       Call
                     </div>
-                  </div>
+                  </button>
                   {status === MoveCallStatus.FINISH && <p>Result: ${response}</p>}
                   {status === MoveCallStatus.ERROR && <p>Error: ${error}</p>}
                 </div>

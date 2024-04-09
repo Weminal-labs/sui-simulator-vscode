@@ -9,6 +9,7 @@ import { requestDataFromTerminal } from "../../../utils/wv_communicate_ext";
 import { SuiCommand } from "../../../../../src/enums";
 import { ArrowLeft } from "../../../icons/ArrowLeft";
 import { useNavigate } from "react-router-dom";
+import { messageHandler } from "@estruyf/vscode/dist/client";
 
 export const SuiConfig = () => {
   const { network, selectNetwork } = useSuiClientContext();
@@ -31,6 +32,14 @@ export const SuiConfig = () => {
     selectNetwork(e.target.value);
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    if (isSuiCargo) {
+      messageHandler.send("CHANGE_SUI_PATH", { suiPath: "sui" });
+    } else {
+      messageHandler.send("CHANGE_SUI_PATH", { suiPath });
+    }
+  }, [suiPath, isSuiCargo])
 
   useEffect(() => {
     async function getUserNetworks() {
