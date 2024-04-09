@@ -1,0 +1,1 @@
+export { RowVerticalIcon } from "./RowVerticalIcon";
