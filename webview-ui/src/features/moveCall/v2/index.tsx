@@ -4,7 +4,6 @@ import { MoveCallActionType, MoveCallStatus } from "../../../../../src/enums";
 import { ActionType, MoveCallState } from "../../../types";
 
 const initialState: MoveCallState = {
-  mnemonics: "mouse hood crucial soup report axis awful point stairs guess scrap winter",
   status: MoveCallStatus.BEGIN,
   packageId: "",
   modules: [],
@@ -20,11 +19,6 @@ const initialState: MoveCallState = {
 const reducer = (state: MoveCallState, action: ActionType): MoveCallState => {
   const { type, payload } = action;
   switch (type) {
-    case MoveCallActionType.SET_MNEMONICS:
-      return {
-        ...state,
-        mnemonics: payload,
-      };
     case MoveCallActionType.SET_PACKAGE_ID:
       return {
         ...state,

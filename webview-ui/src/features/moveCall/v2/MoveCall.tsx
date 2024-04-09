@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { ActionType, MoveCallState } from "../../../types";
 import { Input } from "../../../components/Input";
 import { MoveCallActionType, MoveCallStatus } from "../../../../../src/enums";
-import { useSuiClient } from "@mysten/dapp-kit";
+import { useSuiClient, useSuiClientContext } from "@mysten/dapp-kit";
 import { Button } from "../../../components/Button";
 import { DEFAULT_ED25519_DERIVATION_PATH, Ed25519Keypair } from "@mysten/sui.js/keypairs/ed25519";
 import { TransactionBlock } from "@mysten/sui.js/transactions";
@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowDown } from "../../../icons/ArrowDown";
 import { Label } from "../../../components/Label";
 import { ArrowLeft } from "../../../icons/ArrowLeft";
-import { shortenAddress } from "../../../utils/address_shortener";
+import { shortenAddress, shortenObjectType } from "../../../utils/address_shortener";
 
 export interface IMoveCallProps {
   state: MoveCallState;
@@ -19,9 +19,9 @@ export interface IMoveCallProps {
 
 export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
   const suiClient = useSuiClient();
+  const { network, selectNetwork } = useSuiClientContext();
 
   const {
-    mnemonics,
     packageId,
     args,
     argsUserInput,
@@ -33,10 +33,6 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
     response,
     status,
   } = state;
-
-  const handleMnemonicsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch({ type: MoveCallActionType.SET_MNEMONICS, payload: e.target.value });
-  };
 
   const handlePackageIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: MoveCallActionType.SET_PACKAGE_ID, payload: e.target.value });
@@ -121,132 +117,69 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
 
   let keypair: Ed25519Keypair | null = null;
 
-  const handleCall = async () => {
-    try {
-      keypair = Ed25519Keypair.deriveKeypair(mnemonics, DEFAULT_ED25519_DERIVATION_PATH);
-      const privateKey = keypair.getSecretKey();
-      const publicKey = keypair.getPublicKey();
-      const address = publicKey.toSuiAddress();
+  // const handleCall = async () => {
+  //   try {
+  //     keypair = Ed25519Keypair.deriveKeypair(mnemonics, DEFAULT_ED25519_DERIVATION_PATH);
+  //     const privateKey = keypair.getSecretKey();
+  //     const publicKey = keypair.getPublicKey();
+  //     const address = publicKey.toSuiAddress();
 
-      const txb = new TransactionBlock();
-      txb.setSender(address);
-      txb.setGasOwner(address);
-      txb.setGasPrice(10000);
+  //     const txb = new TransactionBlock();
+  //     txb.setSender(address);
+  //     txb.setGasOwner(address);
+  //     txb.setGasPrice(10000);
 
-      const argsFinal = argsUserInput.map((ele) => {
-        if (ele.startsWith("0x")) {
-          return txb.object(ele);
-        } else {
-          return txb.pure(ele);
-        }
-      });
+  //     const argsFinal = argsUserInput.map((ele) => {
+  //       if (ele.startsWith("0x")) {
+  //         return txb.object(ele);
+  //       } else {
+  //         return txb.pure(ele);
+  //       }
+  //     });
 
-      txb.moveCall({
-        arguments: argsFinal,
-        target: `${packageId}::${currentModule}::${currentFunction}`,
-      });
+  //     txb.moveCall({
+  //       arguments: argsFinal,
+  //       target: `${packageId}::${currentModule}::${currentFunction}`,
+  //     });
 
-      const txBytes = await txb.build({ client: suiClient });
+  //     const txBytes = await txb.build({ client: suiClient });
 
-      const serializedSignature = (await keypair.signTransactionBlock(txBytes)).signature;
+  //     const serializedSignature = (await keypair.signTransactionBlock(txBytes)).signature;
 
-      const response = await suiClient.executeTransactionBlock({
-        transactionBlock: txBytes,
-        signature: [serializedSignature],
-        options: {
-          showEffects: true,
-          showObjectChanges: true,
-          showBalanceChanges: true,
-          showEvents: true,
-          showInput: true,
-          showRawInput: true,
-        },
-      });
+  //     const response = await suiClient.executeTransactionBlock({
+  //       transactionBlock: txBytes,
+  //       signature: [serializedSignature],
+  //       options: {
+  //         showEffects: true,
+  //         showObjectChanges: true,
+  //         showBalanceChanges: true,
+  //         showEvents: true,
+  //         showInput: true,
+  //         showRawInput: true,
+  //       },
+  //     });
 
-      const executionStatus = response.effects?.status;
-      if (executionStatus?.status === "failure") {
-        dispatch({ type: MoveCallActionType.SET_ERROR, payload: executionStatus?.error });
-      } else {
-        dispatch({
-          type: MoveCallActionType.SET_RESPONSE,
-          payload: JSON.stringify(response.digest),
-        });
-      }
-      return response;
-    } catch (err: any) {
-      dispatch({ type: MoveCallActionType.SET_ERROR, payload: err.message });
-      return err;
-    }
-  };
+  //     const executionStatus = response.effects?.status;
+  //     if (executionStatus?.status === "failure") {
+  //       dispatch({ type: MoveCallActionType.SET_ERROR, payload: executionStatus?.error });
+  //     } else {
+  //       dispatch({
+  //         type: MoveCallActionType.SET_RESPONSE,
+  //         payload: JSON.stringify(response.digest),
+  //       });
+  //     }
+  //     return response;
+  //   } catch (err: any) {
+  //     dispatch({ type: MoveCallActionType.SET_ERROR, payload: err.message });
+  //     return err;
+  //   }
+  // };
 
   const navigate = useNavigate();
 
   const handleNavigate = () => {
     navigate("/");
   };
-
-  // {/* <h1>Still Developing</h1>
-  //       <h1 onClick={handleNavigate}>Back</h1>
-  //       <h2>Call</h2>
-  //       <div>
-  //         <span>Mnemonics: </span>
-  //         <Input placeholder="Mnemonics" value={mnemonics} onChange={handleMnemonicsChange} />
-  //       </div>
-  //       <div>
-  //         <span>Package: </span>
-  //         <Input placeholder="Package ID" value={packageId} onChange={handlePackageIdChange} />
-  //       </div>
-  //       <div>
-  //         {modulesName.length > 0 && (
-  //           <>
-  //             <span>Module: </span>
-  //             <select name="" id="" value={currentModule} onChange={handleChooseModule}>
-  //               <option selected value="">
-  //                 Choose module
-  //               </option>
-  //               {modulesName.map((moduleName) => {
-  //                 return <option value={moduleName}>{moduleName}</option>;
-  //               })}
-  //             </select>
-  //           </>
-  //         )}
-  //       </div>
-  //       <div>
-  //         {currentModule.length > 0 && (
-  //           <>
-  //             <span>Function: </span>
-  //             <select name="" id="" value={currentFunction} onChange={handleChooseFunction}>
-  //               <option selected value="">
-  //                 Choose function
-  //               </option>
-  //               {functionsName.map((functionName) => {
-  //                 return <option value={functionName}>{functionName}</option>;
-  //               })}
-  //             </select>
-  //           </>
-  //         )}
-  //       </div>
-  //       {currentFunction.length > 0 && (
-  //         <>
-  //           <p>Args</p>
-  //           {args.map((arg, index) => {
-  //             return (
-  //               <div key={arg}>
-  //                 <Input
-  //                   placeholder={arg}
-  //                   value={argsUserInput[index] ? argsUserInput[index] : ""}
-  //                   onChange={(e) => handleSetValueToArg(index, e.target.value)}
-  //                 />
-  //                 {/* value need to set like above if not will have bug when choose between functions */}
-  //               </div>
-  //             );
-  //           })}
-  //         </>
-  //       )}
-
-  //       <Button onClick={handleCall}>Call</Button>
-  //       {status === MoveCallStatus.FINISH && <p>Result: ${response}</p>}
-  //       {status === MoveCallStatus.ERROR && <p>Error: ${error}</p>} */}
 
   return (
     <>
@@ -262,22 +195,18 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
               </div>
               <div className="flex flex-col items-end gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
                 <div className="flex flex-col h-[92px] items-start gap-[8px] relative self-stretch w-full">
-                  <div className="flex w-[592px] items-center px-0 py-[4px] relative flex-1 grow rounded-[8px]">
+                  <div className="flex w-full items-center justify-between px-0 py-[4px] relative flex-1 grow rounded-[8px]">
                     <div className="relative w-fit mt-[-6.00px] mb-[-4.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
                       Input Package
                     </div>
-                  </div>
-                  <div className="flex items-center justify-between px-[24px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px] border border-solid border-[#676767]">
-                    <div className="relative w-fit [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-                      input your package here
-                    </div>
                     <Label
-                      className="!border-[#fefefe] !rounded-[4px] !flex-[0_0_auto] !border !border-solid !bg-[unset]"
+                      className="!border-[#fefefe] !rounded-[4px] !flex-[0_0_auto] !border !border-solid !bg-[unset] uppercase"
                       labelClassName="!text-white"
                       status="active"
-                      text="TESTNET"
+                      text={network}
                     />
                   </div>
+                  <input className="block w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]" placeholder="Package ID" value={packageId} onChange={handlePackageIdChange} />
                 </div>
               </div>
             </div>
@@ -306,23 +235,64 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
                       text="Copy"
                     />
                   </div>
-                  <div className="flex items-start justify-between px-[24px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px] border border-solid border-[#5a5a5a]">
+                  {/* <div className="flex items-start justify-between px-[24px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px] border border-solid border-[#5a5a5a]">
                     <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] text-center tracking-[0] leading-[21.6px] whitespace-nowrap">
                       Module
                     </div>
                     <ArrowDown className="!relative !w-[24px] !h-[24px]" />
-                  </div>
-                  <div className="flex items-start justify-between px-[24px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px] border border-solid border-[#5a5a5a]">
+                  </div> */}
+
+                  {modulesName.length > 0 && (
+                    <>
+                      <select className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]" value={currentModule} onChange={handleChooseModule}>
+                        <option selected value="">
+                          Choose module
+                        </option>
+                        {modulesName.map((moduleName) => {
+                          return <option value={moduleName}>{moduleName}</option>;
+                        })}
+                      </select>
+                    </>
+                  )}
+
+                  {/* <div className="flex items-start justify-between px-[24px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px] border border-solid border-[#5a5a5a]">
                     <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] text-center tracking-[0] leading-[21.6px] whitespace-nowrap">
                       Function
                     </div>
                     <ArrowDown className="!relative !w-[24px] !h-[24px]" />
-                  </div>
+                  </div> */}
+
+                  {currentModule.length > 0 && (
+                    <>
+                      <select className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]" value={currentFunction} onChange={handleChooseFunction}>
+                        <option selected value="">
+                          Choose function
+                        </option>
+                        {functionsName.map((functionName) => {
+                          return <option value={functionName}>{functionName}</option>;
+                        })}
+                      </select>
+                    </>
+                  )}
+
                   <div className="flex flex-col items-start justify-center gap-[10px] px-[24px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px] border border-solid border-[#5a5a5a]">
                     <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] text-center tracking-[0] leading-[21.6px] whitespace-nowrap">
                       Args
                     </div>
-                    <div className="flex h-[56px] items-start gap-[10px] px-[24px] py-[16px] relative self-stretch w-full rounded-[8px] border border-solid border-[#5a5a5a]">
+                    {currentFunction.length > 0 && (
+                      <>
+                        {args.map((arg, index) => {
+                          return (
+                            <div>
+                              <input className="block w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]" placeholder={arg.startsWith("0x") ? shortenObjectType(arg, 5) : arg} value={argsUserInput[index] ? argsUserInput[index] : ""}
+                                onChange={(e) => handleSetValueToArg(index, e.target.value)} />
+                              {/* value need to set like above if not will have bug when choose between functions */}
+                            </div>
+                          );
+                        })}
+                      </>
+                    )}
+                    {/* <div className="flex h-[56px] items-start gap-[10px] px-[24px] py-[16px] relative self-stretch w-full rounded-[8px] border border-solid border-[#5a5a5a]">
                       <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-[#8f8f8f] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
                         U64
                       </div>
@@ -336,13 +306,15 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
                       <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-[#8f8f8f] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
                         Hero
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                   <div className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]">
                     <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
                       Call
                     </div>
                   </div>
+                  {status === MoveCallStatus.FINISH && <p>Result: ${response}</p>}
+                  {status === MoveCallStatus.ERROR && <p>Error: ${error}</p>}
                 </div>
               </div>
             </div>

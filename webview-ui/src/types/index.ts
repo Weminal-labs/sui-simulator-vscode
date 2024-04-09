@@ -7,7 +7,6 @@ export interface ActionType {
 }
 
 export interface MoveCallState {
-  mnemonics: string;
   status: MoveCallStatus;
   packageId: string;
   modules: string[];
