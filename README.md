@@ -1,6 +1,7 @@
 
 # Welcome to Sui Simulator Extension
-![image](https://github.com/Weminal-labs/sui-simulator-vscode/assets/70145901/6aae1dfa-cb48-4d64-886c-e89a70ff264b)
+![image](https://github.com/Weminal-labs/sui-simulator-vscode/assets/70145901/1a90b21d-6a05-4651-94de-b1ccdd37896a)
+
 
 ## Introduction 
 In the spirit to develop a strong developer community, Weminal team build an open-source IDE to simplify the development of SUI smart contracts.
