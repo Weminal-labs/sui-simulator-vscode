@@ -205,10 +205,12 @@ export const BuildTestPublish = () => {
                     {isError && <Error errorMsg={error} />}
                     {!isError && (
                       <>
-                        <div className="relative w-fit [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[28px] tracking-[0] leading-[33.6px] whitespace-nowrap">
-                          Result
-                        </div>
-                        {currentDigest && <div>Transaction: {currentDigest}</div>}
+                        {currentDigest && <>
+                          <div className="relative w-fit [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[28px] tracking-[0] leading-[33.6px] whitespace-nowrap">
+                            Result
+                          </div>
+                          <div>Transaction: {currentDigest}</div>
+                        </>}
 
                         <div className="flex flex-col items-start gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
                           {uniquePackages.map((pkg) => {
