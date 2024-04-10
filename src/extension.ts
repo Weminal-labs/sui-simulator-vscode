@@ -216,6 +216,34 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
 					}
 
 					break;
+
+				case SuiCommand.REQUEST_FAUCET:
+					try {
+						resp = await execNew(`${suiPath} client faucet
+						`);
+
+						finalResp = {
+							stderr: {
+								message: resp.stderr,
+								isError: false
+							},
+							stdout: resp.stdout
+						};
+
+						console.log("stderr:", finalResp.stderr);
+						console.log("stdout:", finalResp.stdout);
+					} catch (err: any) {
+						console.log(err.message);
+						finalResp = {
+							stderr: {
+								message: err.message,
+								isError: true
+							},
+							stdout: ""
+						};
+
+					}
+					break;
 			}
 
 			// Do something with the payload
