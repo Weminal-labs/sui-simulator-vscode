@@ -4,7 +4,7 @@ import { MoveCallActionType, MoveCallStatus } from "../../../../src/enums";
 import { ActionType, MoveCallState } from "../../types";
 
 const initialState: MoveCallState = {
-  status: MoveCallStatus.BEGIN,
+  status: MoveCallStatus.NORMAL,
   packageId: "",
   modules: [],
   currentModule: "",
@@ -19,6 +19,11 @@ const initialState: MoveCallState = {
 const reducer = (state: MoveCallState, action: ActionType): MoveCallState => {
   const { type, payload } = action;
   switch (type) {
+    case MoveCallActionType.SET_STATUS_NORMAL:
+      return {
+        ...state,
+        status: MoveCallStatus.NORMAL,
+      };
     case MoveCallActionType.SET_PACKAGE_ID:
       return {
         ...state,

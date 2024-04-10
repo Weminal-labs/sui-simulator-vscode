@@ -1,5 +1,5 @@
 export enum MoveCallStatus {
-    BEGIN,
+    NORMAL,
     FINISH,
     ERROR,
 };
@@ -17,6 +17,7 @@ export enum MoveCallActionType {
     ADD_ARG = "ADD_ARG",
     SET_VALUE_TO_ARG = "SET_VALUE_TO_ARG",
     SET_RESPONSE = "SET_RESPONSE",
+    SET_STATUS_NORMAL = "SET_STATUS_NORMAL",
 };
 
 export enum SuiCommand {
