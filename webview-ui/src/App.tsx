@@ -12,8 +12,8 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
   return (
     <>
       {/* <Aliases /> */}
-      <div className="overflow-hidden w-full h-[600px] relative">
-        <div className="w-full h-[725px]">
+      <div className="overflow-hidden w-full relative">
+        <div className="w-full">
           <div className="ml-10 mt-12 inline-flex flex-col h-[500px] items-start gap-[64px]">
             <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[64px] text-center tracking-[-2.56px] leading-[76.8px] whitespace-nowrap">
               Sui simulator

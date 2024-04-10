@@ -4,7 +4,7 @@ import { Rainbow } from "./components/Rainbow";
 
 export const RootLayout = () => {
   return (
-    <div className="bg-[#0e0f0e] flex flex-col justify-center w-full h-full">
+    <div className="bg-[#0e0f0e] flex flex-col justify-between w-full min-h-screen">
       <Outlet />
       <Rainbow />
     </div>
