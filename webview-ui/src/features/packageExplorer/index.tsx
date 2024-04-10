@@ -1,11 +1,10 @@
 import React, { useReducer } from "react";
 import { MoveCall } from "./MoveCall";
-import { MoveCallActionType, MoveCallStatus } from "../../../../../src/enums";
-import { ActionType, MoveCallState } from "../../../types";
+import { MoveCallActionType, MoveCallStatus } from "../../../../src/enums";
+import { ActionType, MoveCallState } from "../../types";
 
 const initialState: MoveCallState = {
-  mnemonics: "mouse hood crucial soup report axis awful point stairs guess scrap winter",
-  status: MoveCallStatus.BEGIN,
+  status: MoveCallStatus.NORMAL,
   packageId: "",
   modules: [],
   currentModule: "",
@@ -20,10 +19,10 @@ const initialState: MoveCallState = {
 const reducer = (state: MoveCallState, action: ActionType): MoveCallState => {
   const { type, payload } = action;
   switch (type) {
-    case MoveCallActionType.SET_MNEMONICS:
+    case MoveCallActionType.SET_STATUS_NORMAL:
       return {
         ...state,
-        mnemonics: payload,
+        status: MoveCallStatus.NORMAL,
       };
     case MoveCallActionType.SET_PACKAGE_ID:
       return {
@@ -99,7 +98,8 @@ const reducer = (state: MoveCallState, action: ActionType): MoveCallState => {
   }
 };
 
-export default function index() {
+export const PackageExplorer = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   return <MoveCall state={state} dispatch={dispatch} />;
 }
+

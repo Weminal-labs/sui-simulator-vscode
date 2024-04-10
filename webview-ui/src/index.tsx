@@ -6,12 +6,12 @@ import { Route, MemoryRouter, Routes } from "react-router-dom";
 import { SuiClientProvider } from "@mysten/dapp-kit";
 import { networkConfig } from "./configs/networkConfig";
 import { RootLayout } from "./RootLayout";
-import { SuiConfig } from "./features/suiConfig/v2";
+import { SuiEnv } from "./features/suiEnv";
 import { GasAddress } from "./features/gasAddress/";
-import { BuildTestPublish } from "./features/buildTestPublish/v2";
-import { SuiConfigProvider } from "./context/SuiConfigProvider";
+import { BuildTestPublish } from "./features/buildTestPublish";
+import { MySuiEnvProvider } from "./context/MySuiEnvProvider";
 import { MySuiAccountProvider } from "./context/MySuiAccountProvider";
-import Explorer from "./features/moveCall/v2/index";
+import { PackageExplorer } from "./features/packageExplorer/index";
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -26,21 +26,21 @@ if (root) {
   root.render(
     <QueryClientProvider client={queryClient}>
       <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
-        <SuiConfigProvider>
+        <MySuiEnvProvider>
           <MySuiAccountProvider>
             <MemoryRouter initialEntries={["/"]}>
               <Routes>
                 <Route element={<RootLayout />}>
                   <Route index element={<App />} />
-                  <Route path="environment" element={<SuiConfig />} />
+                  <Route path="environment" element={<SuiEnv />} />
                   <Route path="gas-address" element={<GasAddress />} />
                   <Route path="build-test-publish" element={<BuildTestPublish />} />
-                  <Route path="explorer" element={<Explorer />} />
+                  <Route path="explorer" element={<PackageExplorer />} />
                 </Route>
               </Routes>
             </MemoryRouter>
           </MySuiAccountProvider>
-        </SuiConfigProvider>
+        </MySuiEnvProvider>
       </SuiClientProvider>
     </QueryClientProvider>
   );

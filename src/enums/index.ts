@@ -1,5 +1,5 @@
 export enum MoveCallStatus {
-    BEGIN,
+    NORMAL,
     FINISH,
     ERROR,
 };
@@ -17,6 +17,7 @@ export enum MoveCallActionType {
     ADD_ARG = "ADD_ARG",
     SET_VALUE_TO_ARG = "SET_VALUE_TO_ARG",
     SET_RESPONSE = "SET_RESPONSE",
+    SET_STATUS_NORMAL = "SET_STATUS_NORMAL",
 };
 
 export enum SuiCommand {
@@ -26,4 +27,8 @@ export enum SuiCommand {
     SWITCH_NETWORK = "SWITCH_NETWORK",
     GET_NETWORKS = "GET_NETWORKS",
     PUBLISH_PACKAGE = "PUBLISH_PACKAGE",
+    CALL_FUNCTION = "CALL_FUNCTION",
+    REQUEST_FAUCET = "REQUEST_FAUCET",
+    BUILD_PACKAGE = "BUILD_PACKAGE",
+    TEST_PACKAGE = "TEST_PACKAGE",
 }

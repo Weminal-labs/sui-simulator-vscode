@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
 import { SuiCommand } from "../../../../src/enums";
-import { useSuiClientContext } from "@mysten/dapp-kit";
+import { useSuiClient, useSuiClientContext } from "@mysten/dapp-kit";
 import { useMySuiAccount } from "../../context/MySuiAccountProvider";
 import { shortenAddress } from "../../utils/address_shortener";
 
@@ -13,12 +13,34 @@ export interface GasObject {
 export const Gas = () => {
   // remember that then change UI in here need to call to terminal
   const { network } = useSuiClientContext();
+  const suiClient = useSuiClient();
   const { currentAddress, currentGasObject, gasObjects, setCurrentGasObject, setGasObjects } =
     useMySuiAccount();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [reload, setReload] = useState(1);
 
-  const requestFaucet = () => {};
+  const requestFaucet = async () => {
+    const resp = await requestDataFromTerminal({
+      cmd: SuiCommand.REQUEST_FAUCET,
+    });
+    const { stdout, stderr } = resp;
+    setIsLoading(true);
+    setTimeout(() => {
+      setReload(Math.random())
+      setIsLoading(false);
+    }, 10000)
+  };
+
+  // useEffect(() => {
+  //   async function getGasObjects() {
+  //     const resp = await suiClient.getAllCoins({ owner: currentAddress })
+  //     console.log(resp);
+  //   }
+  //   if (currentAddress) {
+  //     getGasObjects();
+  //   }
+  // }, [currentAddress])
 
   useEffect(() => {
     async function getGasObjects() {
@@ -33,7 +55,7 @@ export const Gas = () => {
       // console.log(objects);
     }
     getGasObjects();
-  }, [network, currentAddress]);
+  }, [network, currentAddress, reload]);
 
   const balanceOfCurrentGasObject = gasObjects.find(
     (gasObject) => gasObject.gasCoinId === currentGasObject
@@ -95,7 +117,7 @@ export const Gas = () => {
               </div>
             </div>
           )}
-          <button className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]">
+          <button className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]" onClick={requestFaucet}>
             <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
               Faucet
             </div>
