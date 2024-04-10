@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { createContext, useContext } from "react";
 
 export type MySuiEnvContextType = {
-  isSuiCargo: boolean;
-  setIsSuiCargo: React.Dispatch<React.SetStateAction<boolean>>;
+  isSuiFile: boolean;
+  setIsSuiFile: React.Dispatch<React.SetStateAction<boolean>>;
   suiPath: string;
   setSuiPath: React.Dispatch<React.SetStateAction<string>>;
 };
@@ -13,12 +13,12 @@ const MySuiEnvContext = createContext<MySuiEnvContextType | null>(null);
 export const MySuiEnvProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [isSuiCargo, setIsSuiCargo] = useState<boolean>(false);
+  const [isSuiFile, setIsSuiFile] = useState<boolean>(false);
   const [suiPath, setSuiPath] = useState<string>("");
 
   return (
     <MySuiEnvContext.Provider
-      value={{ isSuiCargo, setIsSuiCargo, suiPath, setSuiPath }}
+      value={{ isSuiFile, setIsSuiFile, suiPath, setSuiPath }}
     >
       {children}
     </MySuiEnvContext.Provider>
