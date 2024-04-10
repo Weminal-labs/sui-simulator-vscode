@@ -1,17 +1,13 @@
 import React, { useEffect } from "react";
-import { ActionType, MoveCallState } from "../../types";
-import { Input } from "../../components/Input";
+import { MoveCallState } from "../../types";
 import { MoveCallActionType, MoveCallStatus, SuiCommand } from "../../../../src/enums";
 import { useSuiClient, useSuiClientContext } from "@mysten/dapp-kit";
-import { Button } from "../../components/Button";
-import { DEFAULT_ED25519_DERIVATION_PATH, Ed25519Keypair } from "@mysten/sui.js/keypairs/ed25519";
-import { TransactionBlock } from "@mysten/sui.js/transactions";
 import { useNavigate } from "react-router-dom";
-import { ArrowDown } from "../../icons/ArrowDown";
 import { Label } from "../../components/Label";
 import { ArrowLeft } from "../../icons/ArrowLeft";
 import { shortenAddress, shortenObjectType } from "../../utils/address_shortener";
 import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
+import { Error } from "../../components/Error";
 
 export interface IMoveCallProps {
   state: MoveCallState;
@@ -34,6 +30,8 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
     response,
     status,
   } = state;
+
+  const [isPackageIdValid, setIsPackageIdValid] = React.useState<boolean>(false);
 
   const handlePackageIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: MoveCallActionType.SET_PACKAGE_ID, payload: e.target.value });
@@ -102,9 +100,12 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
     async function getModules() {
       try {
         const modules = await suiClient.getNormalizedMoveModulesByPackage({ package: packageId });
+        setIsPackageIdValid(true);
+        dispatch({ type: MoveCallActionType.SET_STATUS_NORMAL });
         dispatch({ type: MoveCallActionType.SET_MODULES, payload: modules });
       } catch (err: any) {
         dispatch({ type: MoveCallActionType.SET_ERROR, payload: err.message });
+        setIsPackageIdValid(false);
       }
     }
 
@@ -115,66 +116,6 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
 
   const modulesName = Object.keys(modules as {});
   const functionsName = Object.keys(functions as {});
-
-  let keypair: Ed25519Keypair | null = null;
-
-  // const handleCall = async () => {
-  //   try {
-  //     keypair = Ed25519Keypair.deriveKeypair(mnemonics, DEFAULT_ED25519_DERIVATION_PATH);
-  //     const privateKey = keypair.getSecretKey();
-  //     const publicKey = keypair.getPublicKey();
-  //     const address = publicKey.toSuiAddress();
-
-  //     const txb = new TransactionBlock();
-  //     txb.setSender(address);
-  //     txb.setGasOwner(address);
-  //     txb.setGasPrice(10000);
-
-  //     const argsFinal = argsUserInput.map((ele) => {
-  //       if (ele.startsWith("0x")) {
-  //         return txb.object(ele);
-  //       } else {
-  //         return txb.pure(ele);
-  //       }
-  //     });
-
-  //     txb.moveCall({
-  //       arguments: argsFinal,
-  //       target: `${packageId}::${currentModule}::${currentFunction}`,
-  //     });
-
-  //     const txBytes = await txb.build({ client: suiClient });
-
-  //     const serializedSignature = (await keypair.signTransactionBlock(txBytes)).signature;
-
-  //     const response = await suiClient.executeTransactionBlock({
-  //       transactionBlock: txBytes,
-  //       signature: [serializedSignature],
-  //       options: {
-  //         showEffects: true,
-  //         showObjectChanges: true,
-  //         showBalanceChanges: true,
-  //         showEvents: true,
-  //         showInput: true,
-  //         showRawInput: true,
-  //       },
-  //     });
-
-  //     const executionStatus = response.effects?.status;
-  //     if (executionStatus?.status === "failure") {
-  //       dispatch({ type: MoveCallActionType.SET_ERROR, payload: executionStatus?.error });
-  //     } else {
-  //       dispatch({
-  //         type: MoveCallActionType.SET_RESPONSE,
-  //         payload: JSON.stringify(response.digest),
-  //       });
-  //     }
-  //     return response;
-  //   } catch (err: any) {
-  //     dispatch({ type: MoveCallActionType.SET_ERROR, payload: err.message });
-  //     return err;
-  //   }
-  // };
 
   const handleCall = async () => {
     try {
@@ -241,12 +182,12 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
                                     </div>
                                 </div>
                             </div> */}
-              <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto]">
+              {isPackageIdValid && <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto]">
                 <div className="flex flex-col items-start gap-[24px] p-[24px] relative self-stretch w-full flex-[0_0_auto] bg-[#0e1011] rounded-[8px] border border-solid border-[#676767]">
                   <div className="flex items-start justify-between relative self-stretch w-full flex-[0_0_auto]">
                     <p className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-transparent text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
                       <span className="text-[#8f8f8f]">Package ID: </span>
-                      <span className="text-white">{shortenAddress("0x02a212de6a9dfa3a69e22387acfbafbb1a9e591bd9d636e7895dcfc8de05f331", 5)}</span>
+                      <span className="text-white">{shortenAddress(packageId, 5)}</span>
                     </p>
                     <Label
                       className="!flex-[0_0_auto] !pt-[3px] !pb-[7px] !px-[8px]"
@@ -295,7 +236,7 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
                     </>
                   )}
 
-                  <div className="flex flex-col items-start justify-center gap-[10px] px-[24px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px] border border-solid border-[#5a5a5a]">
+                  {args.length > 0 && <div className="flex flex-col items-start justify-center gap-[10px] px-[24px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px] border border-solid border-[#5a5a5a]">
                     <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] text-center tracking-[0] leading-[21.6px] whitespace-nowrap">
                       Args
                     </div>
@@ -327,16 +268,18 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
                         Hero
                       </div>
                     </div> */}
-                  </div>
+                  </div>}
+
                   <button className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]" onClick={handleCall}>
                     <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
                       Call
                     </div>
                   </button>
-                  {status === MoveCallStatus.FINISH && <p>Result: ${response}</p>}
-                  {status === MoveCallStatus.ERROR && <p>Error: ${error}</p>}
                 </div>
-              </div>
+              </div>}
+
+              {status === MoveCallStatus.FINISH && <p>Result: ${response}</p>}
+              {status === MoveCallStatus.ERROR && <Error errorMsg={error} />}
             </div>
           </div>
         </div>
