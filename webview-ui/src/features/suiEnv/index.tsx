@@ -1,19 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import Toggle from "react-toggle";
 import "react-toggle/style.css";
-import { convertWindowsToUnixPath } from "../../../utils";
-import { FileWithPath } from "../../../types";
+import { convertWindowsToUnixPath } from "../../utils";
+import { FileWithPath } from "../../types";
 import { useSuiClientContext } from "@mysten/dapp-kit";
-import { useSuiConfig } from "../../../context/SuiConfigProvider";
-import { requestDataFromTerminal } from "../../../utils/wv_communicate_ext";
-import { SuiCommand } from "../../../../../src/enums";
-import { ArrowLeft } from "../../../icons/ArrowLeft";
+import { useMySuiEnv } from "../../context/MySuiEnvProvider";
+import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
+import { SuiCommand } from "../../../../src/enums";
+import { ArrowLeft } from "../../icons/ArrowLeft";
 import { useNavigate } from "react-router-dom";
 import { messageHandler } from "@estruyf/vscode/dist/client";
 
-export const SuiConfig = () => {
+export const SuiEnv = () => {
   const { network, selectNetwork } = useSuiClientContext();
-  const { isSuiCargo, setIsSuiCargo, suiPath, setSuiPath } = useSuiConfig();
+  const { isSuiCargo, setIsSuiCargo, suiPath, setSuiPath } = useMySuiEnv();
   const [userNetworks, setUserNetworks] = useState<any[]>([]); // type later
   const [isLoading, setIsLoading] = useState<boolean>(false);
 

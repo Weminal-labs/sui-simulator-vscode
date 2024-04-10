@@ -1,7 +1,7 @@
 import React, { useReducer } from "react";
 import { MoveCall } from "./MoveCall";
-import { MoveCallActionType, MoveCallStatus } from "../../../../../src/enums";
-import { ActionType, MoveCallState } from "../../../types";
+import { MoveCallActionType, MoveCallStatus } from "../../../../src/enums";
+import { ActionType, MoveCallState } from "../../types";
 
 const initialState: MoveCallState = {
   status: MoveCallStatus.BEGIN,
@@ -93,7 +93,8 @@ const reducer = (state: MoveCallState, action: ActionType): MoveCallState => {
   }
 };
 
-export default function index() {
+export const PackageExplorer = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   return <MoveCall state={state} dispatch={dispatch} />;
 }
+

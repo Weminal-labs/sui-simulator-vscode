@@ -1,6 +1,7 @@
 {
   "name": "sui-simulator-vscode",
-  "displayName": "sui-simulator-vscode",
+  "displayName": "sui-simulator",
+  "publisher": "weminal-labs",
   "description": "",
   "version": "0.3.0",
   "repository": "https://github.com/Weminal-labs/sui-simulator-vscode",

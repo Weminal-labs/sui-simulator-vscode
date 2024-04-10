@@ -28,10 +28,3 @@ Open Sui-simulator extension: You can open by Command Palette if you're using on
 * Add address and gas: You can create new address by import an existing seed phrase or generate new one
 * Build, test and Publish: publish your package ID on the Sui network.
 * Package Explorer: Developers can examine  modules, functions, and make calls to them
-
---
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)

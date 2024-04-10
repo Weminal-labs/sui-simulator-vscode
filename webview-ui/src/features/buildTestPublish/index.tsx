@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { useMySuiAccount } from "../../../context/MySuiAccountProvider";
-import { requestDataFromTerminal } from "../../../utils/wv_communicate_ext";
-import { SuiCommand } from "../../../../../src/enums";
+import { useMySuiAccount } from "../../context/MySuiAccountProvider";
+import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
+import { SuiCommand } from "../../../../src/enums";
 import { useNavigate } from "react-router-dom";
-import { Label } from "../../../components/Label";
-import { ArrowLeft } from "../../../icons/ArrowLeft";
-import { shortenAddress, shortenObjectType } from "../../../utils/address_shortener";
-import { Error } from "../../../components/Error";
+import { Label } from "../../components/Label";
+import { ArrowLeft } from "../../icons/ArrowLeft";
+import { shortenAddress, shortenObjectType } from "../../utils/address_shortener";
+import { Error } from "../../components/Error";
 
 export const BuildTestPublish = () => {
   const { currentAddress, currentGasObject } = useMySuiAccount();
@@ -210,10 +210,7 @@ export const BuildTestPublish = () => {
                     {isError && <Error errorMsg={error} />}
                     {!isError && (
                       <>
-                        <div>Transaction: {currentDigest}</div>
-
-                        <h2>Effects:</h2>
-                        {/* <span>Package id: {packageId}</span> */}
+                        {currentDigest && <div>Transaction: {currentDigest}</div>}
 
                         <div className="flex flex-col items-start gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
                           {uniquePackages.map((pkg) => {

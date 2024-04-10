@@ -1,17 +1,17 @@
 import React, { useEffect } from "react";
-import { ActionType, MoveCallState } from "../../../types";
-import { Input } from "../../../components/Input";
-import { MoveCallActionType, MoveCallStatus, SuiCommand } from "../../../../../src/enums";
+import { ActionType, MoveCallState } from "../../types";
+import { Input } from "../../components/Input";
+import { MoveCallActionType, MoveCallStatus, SuiCommand } from "../../../../src/enums";
 import { useSuiClient, useSuiClientContext } from "@mysten/dapp-kit";
-import { Button } from "../../../components/Button";
+import { Button } from "../../components/Button";
 import { DEFAULT_ED25519_DERIVATION_PATH, Ed25519Keypair } from "@mysten/sui.js/keypairs/ed25519";
 import { TransactionBlock } from "@mysten/sui.js/transactions";
 import { useNavigate } from "react-router-dom";
-import { ArrowDown } from "../../../icons/ArrowDown";
-import { Label } from "../../../components/Label";
-import { ArrowLeft } from "../../../icons/ArrowLeft";
-import { shortenAddress, shortenObjectType } from "../../../utils/address_shortener";
-import { requestDataFromTerminal } from "../../../utils/wv_communicate_ext";
+import { ArrowDown } from "../../icons/ArrowDown";
+import { Label } from "../../components/Label";
+import { ArrowLeft } from "../../icons/ArrowLeft";
+import { shortenAddress, shortenObjectType } from "../../utils/address_shortener";
+import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
 
 export interface IMoveCallProps {
   state: MoveCallState;
