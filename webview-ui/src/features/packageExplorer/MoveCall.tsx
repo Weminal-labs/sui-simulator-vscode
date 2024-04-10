@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { MoveCallState } from "../../types";
 import { MoveCallActionType, MoveCallStatus, SuiCommand } from "../../../../src/enums";
 import { useSuiClient, useSuiClientContext } from "@mysten/dapp-kit";
@@ -32,6 +32,7 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
   } = state;
 
   const [isPackageIdValid, setIsPackageIdValid] = React.useState<boolean>(false);
+  const [objects, setObjects] = useState<any[]>([]); // set type later
 
   const handlePackageIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: MoveCallActionType.SET_PACKAGE_ID, payload: e.target.value });
@@ -128,6 +129,15 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
       });
       const { stdout, stderr } = resp;
       // const objects = JSON.parse(stdout);
+
+      if (stderr.isError) {
+        dispatch({ type: MoveCallActionType.SET_ERROR, payload: stderr.message });
+      } else {
+        const { digest, objectChanges } = JSON.parse(stdout);
+        setObjects(objectChanges);
+        console.log(digest);
+        console.log(objectChanges);
+      }
       console.log(stdout);
       console.log(stderr);
       dispatch({ type: MoveCallActionType.SET_RESPONSE, payload: stdout });
@@ -140,6 +150,59 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
 
   const handleNavigate = () => {
     navigate("/");
+  };
+
+  const packages = objects
+    .map((obj) => {
+      if (obj.type !== "published") {
+        const packageName = obj.objectType.split("::")[0];
+        return packageName;
+      }
+    })
+    .filter((item) => item !== undefined);
+
+  let uniquePackages = [...new Set(packages)];
+
+  uniquePackages = uniquePackages.map((pkg) => {
+    return {
+      packageName: pkg,
+      modules: [],
+    };
+  });
+
+  const getModulesOfPackage = (packageName: string) => {
+    console.log(packageName);
+    const modules = objects
+      .map((obj) => {
+        const { objectType, type } = obj;
+        if (type !== "published") {
+          console.log(objectType);
+          if (objectType.startsWith(packageName)) {
+            console.log(objectType.split("::"));
+            return objectType.split("::")[1];
+          }
+        }
+      })
+      .filter((item) => item !== undefined);
+    const uniqueModules = [...new Set(modules)];
+    console.log(uniqueModules);
+    return uniqueModules;
+  };
+
+  const getObjectsOfModule = (packageName: string, moduleName: string) => {
+    const objectOfModule = objects
+      .map((obj) => {
+        if (obj.type !== "published") {
+          if (
+            obj.objectType.startsWith(packageName) &&
+            obj.objectType.split("::")[1] === moduleName
+          ) {
+            return obj;
+          }
+        }
+      })
+      .filter((item) => item !== undefined);
+    return objectOfModule;
   };
 
   return (
@@ -278,7 +341,66 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
                 </div>
               </div>}
 
-              {status === MoveCallStatus.FINISH && <p>Result: ${response}</p>}
+              {status === MoveCallStatus.FINISH && <>
+                <div className="relative w-fit [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[28px] tracking-[0] leading-[33.6px] whitespace-nowrap">
+                  Result
+                </div>
+
+                <div className="flex flex-col items-start gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
+                  {uniquePackages.map((pkg) => {
+                    return (
+                      <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto]">
+                        <div className="flex flex-col items-start gap-[24px] p-[24px] relative self-stretch w-full flex-[0_0_auto] bg-[#0e1011] rounded-[8px] border border-solid border-[#676767]">
+                          <div className="flex items-start justify-between relative self-stretch w-full flex-[0_0_auto]">
+                            <p className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-transparent text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+                              <span className="text-[#8f8f8f]">Package ID: </span>
+                              <span className="text-white">
+                                {shortenAddress(pkg.packageName, 5)}
+                              </span>
+                            </p>
+                            <Label
+                              className="!flex-[0_0_auto] !pt-[3px] !pb-[7px] !px-[8px]"
+                              labelClassName="!tracking-[-0.28px] !text-[14px] ![font-style:unset] !font-normal ![font-family:'Aeonik-Regular',Helvetica] !leading-[15.7px]"
+                              status="hover"
+                              text="Copy"
+                            />
+                          </div>
+                          {getModulesOfPackage(pkg.packageName).map((module) => {
+                            return (
+                              <div>
+                                <div>Module: {module}</div>
+                                {getObjectsOfModule(pkg.packageName, module).map((obj) => {
+                                  return (
+                                    <div>
+                                      <div>Object id:{shortenAddress(obj.objectId, 5)}</div>
+                                      <div>
+                                        Object type: {shortenObjectType(obj.objectType, 5)}
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* {objects.map((obj) => {
+                      if (obj.type !== "published") {
+                        return (
+                          <>
+                            <div>
+                              <div>Object id: {obj.objectId}</div>
+                              <div>Object type: {obj.objectType}</div>
+                            </div>
+                          </>
+                        );
+                      }
+                    })} */}
+              </>}
               {status === MoveCallStatus.ERROR && <Error errorMsg={error} />}
             </div>
           </div>
