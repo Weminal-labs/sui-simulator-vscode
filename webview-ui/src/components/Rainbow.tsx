@@ -3,7 +3,7 @@ import React from "react";
 export const Rainbow = () => {
   return (
     <>
-      <div className="">
+      <div className="sidebar:w-[400px] sidebar:ml-4">
         <svg
           width="720"
           height="197"

@@ -1,8 +1,10 @@
 {
   "name": "sui-simulator-vscode",
-  "displayName": "sui-simulator-vscode",
+  "displayName": "sui-simulator",
+  "icon": "media/icon.png",
+  "publisher": "weminal-labs",
   "description": "",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "repository": "https://github.com/Weminal-labs/sui-simulator-vscode",
   "engines": {
     "vscode": "^1.87.0"
@@ -18,7 +20,7 @@
         {
           "id": "sui-simulator-sidebar-view",
           "title": "Sui Simulator",
-          "icon": "media/tools.svg"
+          "icon": "media/logo.svg"
         }
       ]
     },
@@ -28,7 +30,7 @@
           "type": "webview",
           "id": "sui-simulator-sidebar",
           "name": "Sui Simulator",
-          "icon": "media/tools.svg",
+          "icon": "media/logo.svg",
           "contextualTitle": "Sui Simulator"
         }
       ]

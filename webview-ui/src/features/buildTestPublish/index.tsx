@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { useMySuiAccount } from "../../../context/MySuiAccountProvider";
-import { requestDataFromTerminal } from "../../../utils/wv_communicate_ext";
-import { SuiCommand } from "../../../../../src/enums";
+import { useMySuiAccount } from "../../context/MySuiAccountProvider";
+import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
+import { SuiCommand } from "../../../../src/enums";
 import { useNavigate } from "react-router-dom";
-import { Label } from "../../../components/Label";
-import { ArrowLeft } from "../../../icons/ArrowLeft";
-import { shortenAddress, shortenObjectType } from "../../../utils/address_shortener";
-import { Error } from "../../../components/Error";
+import { Label } from "../../components/Label";
+import { ArrowLeft } from "../../icons/ArrowLeft";
+import { shortenAddress, shortenObjectType } from "../../utils/address_shortener";
+import { Error } from "../../components/Error";
 
 export const BuildTestPublish = () => {
   const { currentAddress, currentGasObject } = useMySuiAccount();
@@ -23,6 +23,18 @@ export const BuildTestPublish = () => {
   const handleNavigate = () => {
     navigate("/");
   };
+
+  const handleTest = async () => {
+    await requestDataFromTerminal({
+      cmd: SuiCommand.TEST_PACKAGE,
+    });
+  }
+
+  const handleBuild = async () => {
+    await requestDataFromTerminal({
+      cmd: SuiCommand.BUILD_PACKAGE,
+    });
+  }
 
   const handlePublish = async () => {
     setIsLoading(true);
@@ -114,8 +126,8 @@ export const BuildTestPublish = () => {
 
   return (
     <>
-      <div className="bg-[#0e0f0e] overflow-hidden w-full h-[1707px]">
-        <div className="relative w-[1023px] h-[2350px] top-[-178px] left-[-158px]">
+      <div className="bg-[#0e0f0e] overflow-hidden w-full">
+        <div className="relative w-[1023px] h-[2500px] top-[-178px] left-[-158px]">
           <div className="flex flex-col w-[640px] items-start gap-[64px] absolute top-[228px] left-[198px]">
             <div className="flex flex-col items-start gap-[40px] relative self-stretch w-full flex-[0_0_auto] rounded-[16px] sidebar:w-[360px]">
               <div
@@ -129,30 +141,16 @@ export const BuildTestPublish = () => {
               <div className="flex flex-col items-start gap-[32px] relative self-stretch w-full flex-[0_0_auto]">
                 <div className="flex flex-col items-start gap-[24px] p-[24px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px] border border-solid border-[#676767]">
                   <div className="flex flex-col items-start gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
-                    <button className="items-center justify-center flex-[0_0_auto] border-white flex gap-[10px] px-[23px] py-[16px] relative self-stretch w-full rounded-[8px] border border-solid">
+                    <button className="items-center justify-center flex-[0_0_auto] border-white flex gap-[10px] px-[23px] py-[16px] relative self-stretch w-full rounded-[8px] border border-solid" onClick={handleTest}>
                       <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-white text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
                         Test
                       </div>
                     </button>
-                    <button className="bg-white flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px]">
+                    <button className="bg-white flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px]" onClick={handleBuild}>
                       <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
                         Build
                       </div>
                     </button>
-                  </div>
-                  <div className="flex flex-col items-start gap-[8px] relative self-stretch w-full flex-[0_0_auto]">
-                    <div className="flex items-center px-0 py-[4px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px]">
-                      <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-                        Output
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-start justify-center relative self-stretch w-full flex-[0_0_auto]">
-                      <div className="h-[128px] items-start border-[#676767] flex gap-[10px] px-[23px] py-[16px] relative self-stretch w-full rounded-[8px] border border-solid">
-                        <div className="text-[14px] leading-[16.8px] relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] tracking-[0] whitespace-nowrap">
-                          Output...
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
                 <div className="flex flex-col items-start gap-[24px] p-[24px] relative self-stretch w-full flex-[0_0_auto] bg-[#0e1011] rounded-[8px] border border-solid border-[#676767]">
@@ -200,9 +198,6 @@ export const BuildTestPublish = () => {
                     </div>
                   </div>
                 </div>
-                <div className="relative w-fit [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[28px] tracking-[0] leading-[33.6px] whitespace-nowrap">
-                  Result
-                </div>
                 {isLoading ? (
                   "Publishing...."
                 ) : (
@@ -210,10 +205,12 @@ export const BuildTestPublish = () => {
                     {isError && <Error errorMsg={error} />}
                     {!isError && (
                       <>
-                        <div>Transaction: {currentDigest}</div>
-
-                        <h2>Effects:</h2>
-                        {/* <span>Package id: {packageId}</span> */}
+                        {currentDigest && <>
+                          <div className="relative w-fit [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[28px] tracking-[0] leading-[33.6px] whitespace-nowrap">
+                            Result
+                          </div>
+                          <div>Transaction: {currentDigest}</div>
+                        </>}
 
                         <div className="flex flex-col items-start gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
                           {uniquePackages.map((pkg) => {

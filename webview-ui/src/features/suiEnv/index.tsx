@@ -1,18 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import Toggle from "react-toggle";
 import "react-toggle/style.css";
-import { convertWindowsToUnixPath } from "../../../utils";
-import { FileWithPath } from "../../../types";
+import { convertWindowsToUnixPath } from "../../utils";
+import { FileWithPath } from "../../types";
 import { useSuiClientContext } from "@mysten/dapp-kit";
-import { useSuiConfig } from "../../../context/SuiConfigProvider";
-import { requestDataFromTerminal } from "../../../utils/wv_communicate_ext";
-import { SuiCommand } from "../../../../../src/enums";
-import { ArrowLeft } from "../../../icons/ArrowLeft";
+import { useMySuiEnv } from "../../context/MySuiEnvProvider";
+import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
+import { SuiCommand } from "../../../../src/enums";
+import { ArrowLeft } from "../../icons/ArrowLeft";
 import { useNavigate } from "react-router-dom";
+import { messageHandler } from "@estruyf/vscode/dist/client";
 
-export const SuiConfig = () => {
+export const SuiEnv = () => {
   const { network, selectNetwork } = useSuiClientContext();
-  const { isSuiCargo, setIsSuiCargo, suiPath, setSuiPath } = useSuiConfig();
+  const { isSuiFile, setIsSuiFile, suiPath, setSuiPath } = useMySuiEnv();
   const [userNetworks, setUserNetworks] = useState<any[]>([]); // type later
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -32,6 +33,20 @@ export const SuiConfig = () => {
     setIsLoading(false);
   };
 
+  const handleNavigate = () => {
+    navigate("/");
+  };
+
+  const handleToogle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsSuiFile(e.target.checked)
+  }
+
+  useEffect(() => {
+    if (!isSuiFile) {
+      messageHandler.send("CHANGE_SUI_PATH", { suiPath: "sui" });
+    }
+  }, [isSuiFile])
+
   useEffect(() => {
     async function getUserNetworks() {
       setIsLoading(true);
@@ -50,10 +65,6 @@ export const SuiConfig = () => {
     getUserNetworks();
   }, []);
 
-  const handleNavigate = () => {
-    navigate("/");
-  };
-
   useEffect(() => {
     // fileInputRef?.current?.setAttribute("directory", "");
     // fileInputRef?.current?.setAttribute("webkitdirectory", "");
@@ -66,12 +77,13 @@ export const SuiConfig = () => {
       console.log(
         convertWindowsToUnixPath((fileInputRef.current?.files?.item(0) as FileWithPath)?.path)
       );
+      messageHandler.send("CHANGE_SUI_PATH", { suiPath: convertWindowsToUnixPath((fileInputRef.current?.files?.item(0) as FileWithPath)?.path) });
     });
   }, [fileInputRef]);
 
   return (
     <>
-      <div className="h-[1024px]">
+      <div className="">
         <div className="absolute w-[640px] sidebar:w-[400px] h-[766px] top-[-178px] left-[40px]">
           <div className="flex flex-col w-full items-start gap-[64px] absolute top-[228px] left-0">
             <div className="flex-col gap-[40px] p-[24px] self-stretch w-full flex-[0_0_auto] rounded-[16px] flex items-start relative">
@@ -88,26 +100,19 @@ export const SuiConfig = () => {
                   <div className="flex flex-col items-start gap-[8px] relative self-stretch w-full">
                     <div className="flex w-full items-center justify-between px-0 py-[4px] relative flex-1 grow rounded-[8px]">
                       <div className="[font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] relative w-fit mt-[-1.00px] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-                        Sui Cargo
+                        Binaries
                       </div>
                       <div className="inline-flex items-center gap-[8px] relative flex-[0_0_auto]">
                         <Toggle
-                          defaultChecked={isSuiCargo}
+                          defaultChecked={isSuiFile}
                           icons={false}
-                          onChange={(e) => setIsSuiCargo(e.target.checked)}
+                          onChange={handleToogle}
                         />
                       </div>
                     </div>
-                    {!isSuiCargo && (
-                      <>
-                        <div className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px] border border-solid border-white">
-                          <div className="[font-family:'Aeonik-Medium',Helvetica] font-medium text-white relative w-fit mt-[-1.00px] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-                            <input type="file" ref={fileInputRef} />
-                          </div>
-                        </div>
-                        <div>{suiPath && <p>{suiPath}</p>}</div>
-                      </>
-                    )}
+                    {/* not sure why bug if use conditional rendering? when this input element is not rendered for first time, the ref to this element will always be null */}
+                    <input className={`w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] ${isSuiFile ? "block" : "hidden"}`} type="file" ref={fileInputRef} />
+                    <div>{isSuiFile && suiPath && <p>{suiPath}</p>}</div>
                     {isLoading ? (
                       "Loading"
                     ) : (
