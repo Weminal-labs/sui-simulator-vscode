@@ -24,6 +24,18 @@ export const BuildTestPublish = () => {
     navigate("/");
   };
 
+  const handleTest = async () => {
+    await requestDataFromTerminal({
+      cmd: SuiCommand.TEST_PACKAGE,
+    });
+  }
+
+  const handleBuild = async () => {
+    await requestDataFromTerminal({
+      cmd: SuiCommand.BUILD_PACKAGE,
+    });
+  }
+
   const handlePublish = async () => {
     setIsLoading(true);
     const resp = await requestDataFromTerminal({
@@ -129,30 +141,16 @@ export const BuildTestPublish = () => {
               <div className="flex flex-col items-start gap-[32px] relative self-stretch w-full flex-[0_0_auto]">
                 <div className="flex flex-col items-start gap-[24px] p-[24px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px] border border-solid border-[#676767]">
                   <div className="flex flex-col items-start gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
-                    <button className="items-center justify-center flex-[0_0_auto] border-white flex gap-[10px] px-[23px] py-[16px] relative self-stretch w-full rounded-[8px] border border-solid">
+                    <button className="items-center justify-center flex-[0_0_auto] border-white flex gap-[10px] px-[23px] py-[16px] relative self-stretch w-full rounded-[8px] border border-solid" onClick={handleTest}>
                       <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-white text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
                         Test
                       </div>
                     </button>
-                    <button className="bg-white flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px]">
+                    <button className="bg-white flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px]" onClick={handleBuild}>
                       <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
                         Build
                       </div>
                     </button>
-                  </div>
-                  <div className="flex flex-col items-start gap-[8px] relative self-stretch w-full flex-[0_0_auto]">
-                    <div className="flex items-center px-0 py-[4px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px]">
-                      <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-                        Output
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-start justify-center relative self-stretch w-full flex-[0_0_auto]">
-                      <div className="h-[128px] items-start border-[#676767] flex gap-[10px] px-[23px] py-[16px] relative self-stretch w-full rounded-[8px] border border-solid">
-                        <div className="text-[14px] leading-[16.8px] relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] tracking-[0] whitespace-nowrap">
-                          Output...
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
                 <div className="flex flex-col items-start gap-[24px] p-[24px] relative self-stretch w-full flex-[0_0_auto] bg-[#0e1011] rounded-[8px] border border-solid border-[#676767]">

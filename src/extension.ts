@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { MessageHandlerData } from '@estruyf/vscode';
-import { build, publish } from './suiCommand';
+import { SuiSimulatorTerminal } from './suiSimulatorTerminal';
 import { WebviewProvider } from './WebviewProvider';
 import { exec } from "child_process";
 import { promisify } from "util";
@@ -73,6 +73,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}));
 }
 
+let suiSimulatorTerminal = new SuiSimulatorTerminal();
 let suiPath = "sui";
 
 export const handleReceivedMessage = async (message: any, webView: any, context: any) => {
@@ -244,6 +245,14 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
 
 					}
 					break;
+
+				case SuiCommand.BUILD_PACKAGE:
+					suiSimulatorTerminal.build(vscode.workspace.workspaceFolders?.[0].uri.path, suiPath);
+					break;
+
+				case SuiCommand.TEST_PACKAGE:
+					suiSimulatorTerminal.test(vscode.workspace.workspaceFolders?.[0].uri.path, suiPath);
+					break;
 			}
 
 			// Do something with the payload
@@ -272,14 +281,6 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
 		// case "SUI_TERMINAL":
 		// 	executeCommand(payload.command, payload.suiPath);
 		// 	break;
-
-		case "BUILD":
-			build(payload.packagePath, payload.suiPath);
-			break;
-
-		case "PUBLISH":
-			publish(payload.packagePath, payload.suiPath);
-			break;
 
 		case "SAVE_ALIASES":
 			context.workspaceState.update(payload.address, {
