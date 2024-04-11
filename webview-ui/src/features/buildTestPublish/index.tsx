@@ -7,6 +7,8 @@ import { Label } from "../../components/Label";
 import { ArrowLeft } from "../../icons/ArrowLeft";
 import { shortenAddress, shortenObjectType } from "../../utils/address_shortener";
 import { Error } from "../../components/Error";
+import { CopyIcon } from "../../icons/CopyIcon";
+import { copyToClipBoard } from "../../utils";
 
 export const BuildTestPublish = () => {
   const { currentAddress, currentGasObject } = useMySuiAccount();
@@ -241,11 +243,8 @@ export const BuildTestPublish = () => {
                                       {shortenAddress(packagePublish.packageId, 5)}
                                     </span>
                                   </p>
-                                  <Label
-                                    className="!flex-[0_0_auto] !pt-[3px] !pb-[7px] !px-[8px]"
-                                    labelClassName="!tracking-[-0.28px] !text-[14px] ![font-style:unset] !font-normal ![font-family:'Aeonik-Regular',Helvetica] !leading-[15.7px]"
-                                    status="hover"
-                                    text="Copy"
+                                  <CopyIcon
+                                    handleClick={() => copyToClipBoard(packagePublish.packageId)}
                                   />
                                 </div>
                                 <div>
@@ -274,11 +273,8 @@ export const BuildTestPublish = () => {
                                         {shortenAddress(pkg.packageName, 5)}
                                       </span>
                                     </p>
-                                    <Label
-                                      className="!flex-[0_0_auto] !pt-[3px] !pb-[7px] !px-[8px]"
-                                      labelClassName="!tracking-[-0.28px] !text-[14px] ![font-style:unset] !font-normal ![font-family:'Aeonik-Regular',Helvetica] !leading-[15.7px]"
-                                      status="hover"
-                                      text="Copy"
+                                    <CopyIcon
+                                      handleClick={() => copyToClipBoard(packagePublish.packageId)}
                                     />
                                   </div>
                                   {getModulesOfPackage(pkg.packageName).map((module) => {
@@ -288,7 +284,12 @@ export const BuildTestPublish = () => {
                                         {getObjectsOfModule(pkg.packageName, module).map((obj) => {
                                           return (
                                             <div className="py-2">
-                                              <div>Object id:{shortenAddress(obj.objectId, 5)}</div>
+                                              <div className="flex">
+                                                Object id:{shortenAddress(obj.objectId, 5)}{" "}
+                                                <CopyIcon
+                                                  handleClick={() => copyToClipBoard(obj.objectId)}
+                                                />
+                                              </div>
                                               <div>
                                                 Object type: {shortenObjectType(obj.objectType, 5)}
                                               </div>
