@@ -25,3 +25,7 @@ export function convertWindowsToUnixPath(filePath: string) {
 
   return filePath;
 }
+
+export function getFolderPathFromFilePath(filePath: string) {
+  return filePath.replace(/\/[^/]+$/, "");
+}

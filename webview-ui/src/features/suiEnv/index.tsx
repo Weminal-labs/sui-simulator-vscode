@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Toggle from "react-toggle";
 import "react-toggle/style.css";
-import { convertWindowsToUnixPath } from "../../utils";
+import { convertWindowsToUnixPath, getFolderPathFromFilePath } from "../../utils";
 import { FileWithPath } from "../../types";
 import { useSuiClientContext } from "@mysten/dapp-kit";
 import { useMySuiEnv } from "../../context/MySuiEnvProvider";
@@ -92,12 +92,15 @@ export const SuiEnv = () => {
     // projectInputRef?.current?.setAttribute("webkitdirectory", "");
     projectInputRef.current?.addEventListener("change", () => {
       setProjectPath(
-        convertWindowsToUnixPath((projectInputRef.current?.files?.item(0) as FileWithPath)?.path)
+        getFolderPathFromFilePath(
+          convertWindowsToUnixPath((projectInputRef.current?.files?.item(0) as FileWithPath)?.path)
+        )
       );
-      console.log(projectInputRef.current?.files);
-      console.log(
-        convertWindowsToUnixPath((projectInputRef.current?.files?.item(0) as FileWithPath)?.path)
-      );
+      messageHandler.send("CHANGE_PROJECT_PATH", {
+        projectPath: getFolderPathFromFilePath(
+          convertWindowsToUnixPath((projectInputRef.current?.files?.item(0) as FileWithPath)?.path)
+        ),
+      });
     });
   }, [projectInputRef]);
 
