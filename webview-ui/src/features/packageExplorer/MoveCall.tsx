@@ -33,6 +33,7 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
 
   const [isPackageIdValid, setIsPackageIdValid] = React.useState<boolean>(false);
   const [objects, setObjects] = useState<any[]>([]); // set type later
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handlePackageIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: MoveCallActionType.SET_PACKAGE_ID, payload: e.target.value });
@@ -120,6 +121,7 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
 
   const handleCall = async () => {
     try {
+      setIsLoading(true);
       const resp = await requestDataFromTerminal({
         cmd: SuiCommand.CALL_FUNCTION,
         packageId,
@@ -130,21 +132,31 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
       const { stdout, stderr } = resp;
       // const objects = JSON.parse(stdout);
 
+      let isEmptyArgs = args.length !== argsUserInput.length;
+
+      if (isEmptyArgs) {
+        dispatch({ type: MoveCallActionType.SET_ERROR, payload: "Please fill all args" });
+        setIsLoading(false);
+        return;
+      }
+
       if (stderr.isError) {
-        dispatch({ type: MoveCallActionType.SET_ERROR, payload: stderr.message });
+        // dispatch({ type: MoveCallActionType.SET_ERROR, payload: stderr.message });
       } else {
         const { digest, objectChanges } = JSON.parse(stdout);
         setObjects(objectChanges);
         console.log(digest);
         console.log(objectChanges);
+        dispatch({ type: MoveCallActionType.SET_RESPONSE, payload: stdout });
       }
       console.log(stdout);
       console.log(stderr);
-      dispatch({ type: MoveCallActionType.SET_RESPONSE, payload: stdout });
+
+      setIsLoading(false);
     } catch (err: any) {
       dispatch({ type: MoveCallActionType.SET_ERROR, payload: err.message });
     }
-  }
+  };
 
   const navigate = useNavigate();
 
@@ -211,7 +223,9 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
         <div className="relative w-[1023px] h-[1421px] top-[-178px] left-[-158px]">
           <div className="flex flex-col w-[640px] sidebar:w-[360px] items-start gap-[64px] py-0 absolute top-[228px] left-[198px]">
             <div className="flex flex-col items-start gap-[40px] px-0 py-[24px] relative self-stretch w-full flex-[0_0_auto] rounded-[16px]">
-              <div className="flex items-start gap-[8px] relative self-stretch w-full flex-[0_0_auto]" onClick={handleNavigate}>
+              <div
+                className="flex items-start gap-[8px] relative self-stretch w-full flex-[0_0_auto]"
+                onClick={handleNavigate}>
                 <ArrowLeft className="!relative !w-[24px] !h-[24px]" />
                 <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[18px] text-center tracking-[0] leading-[21.6px] whitespace-nowrap">
                   Package Explorer
@@ -230,7 +244,12 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
                       text={network}
                     />
                   </div>
-                  <input className="block w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]" placeholder="Package ID" value={packageId} onChange={handlePackageIdChange} />
+                  <input
+                    className="block w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
+                    placeholder="Package ID"
+                    value={packageId}
+                    onChange={handlePackageIdChange}
+                  />
                 </div>
               </div>
             </div>
@@ -245,78 +264,92 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
                                     </div>
                                 </div>
                             </div> */}
-              {isPackageIdValid && <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto]">
-                <div className="flex flex-col items-start gap-[24px] p-[24px] relative self-stretch w-full flex-[0_0_auto] bg-[#0e1011] rounded-[8px] border border-solid border-[#676767]">
-                  <div className="flex items-start justify-between relative self-stretch w-full flex-[0_0_auto]">
-                    <p className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-transparent text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-                      <span className="text-[#8f8f8f]">Package ID: </span>
-                      <span className="text-white">{shortenAddress(packageId, 5)}</span>
-                    </p>
-                    <Label
-                      className="!flex-[0_0_auto] !pt-[3px] !pb-[7px] !px-[8px]"
-                      labelClassName="!tracking-[-0.28px] !text-[14px] ![font-style:unset] !font-normal ![font-family:'Aeonik-Regular',Helvetica] !leading-[15.7px]"
-                      status="hover"
-                      text="Copy"
-                    />
-                  </div>
-                  {/* <div className="flex items-start justify-between px-[24px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px] border border-solid border-[#5a5a5a]">
+              {isPackageIdValid && (
+                <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto]">
+                  <div className="flex flex-col items-start gap-[24px] p-[24px] relative self-stretch w-full flex-[0_0_auto] bg-[#0e1011] rounded-[8px] border border-solid border-[#676767]">
+                    <div className="flex items-start justify-between relative self-stretch w-full flex-[0_0_auto]">
+                      <p className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-transparent text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+                        <span className="text-[#8f8f8f]">Package ID: </span>
+                        <span className="text-white">{shortenAddress(packageId, 5)}</span>
+                      </p>
+                      <Label
+                        className="!flex-[0_0_auto] !pt-[3px] !pb-[7px] !px-[8px]"
+                        labelClassName="!tracking-[-0.28px] !text-[14px] ![font-style:unset] !font-normal ![font-family:'Aeonik-Regular',Helvetica] !leading-[15.7px]"
+                        status="hover"
+                        text="Copy"
+                      />
+                    </div>
+                    {/* <div className="flex items-start justify-between px-[24px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px] border border-solid border-[#5a5a5a]">
                     <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] text-center tracking-[0] leading-[21.6px] whitespace-nowrap">
                       Module
                     </div>
                     <ArrowDown className="!relative !w-[24px] !h-[24px]" />
                   </div> */}
 
-                  {modulesName.length > 0 && (
-                    <>
-                      <select className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]" value={currentModule} onChange={handleChooseModule}>
-                        <option selected value="">
-                          Choose module
-                        </option>
-                        {modulesName.map((moduleName) => {
-                          return <option value={moduleName}>{moduleName}</option>;
-                        })}
-                      </select>
-                    </>
-                  )}
+                    {modulesName.length > 0 && (
+                      <>
+                        <select
+                          className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
+                          value={currentModule}
+                          onChange={handleChooseModule}>
+                          <option selected value="">
+                            Choose module
+                          </option>
+                          {modulesName.map((moduleName) => {
+                            return <option value={moduleName}>{moduleName}</option>;
+                          })}
+                        </select>
+                      </>
+                    )}
 
-                  {/* <div className="flex items-start justify-between px-[24px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px] border border-solid border-[#5a5a5a]">
+                    {/* <div className="flex items-start justify-between px-[24px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px] border border-solid border-[#5a5a5a]">
                     <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] text-center tracking-[0] leading-[21.6px] whitespace-nowrap">
                       Function
                     </div>
                     <ArrowDown className="!relative !w-[24px] !h-[24px]" />
                   </div> */}
 
-                  {currentModule.length > 0 && (
-                    <>
-                      <select className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]" value={currentFunction} onChange={handleChooseFunction}>
-                        <option selected value="">
-                          Choose function
-                        </option>
-                        {functionsName.map((functionName) => {
-                          return <option value={functionName}>{functionName}</option>;
-                        })}
-                      </select>
-                    </>
-                  )}
-
-                  {args.length > 0 && <div className="flex flex-col items-start justify-center gap-[10px] px-[24px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px] border border-solid border-[#5a5a5a]">
-                    <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] text-center tracking-[0] leading-[21.6px] whitespace-nowrap">
-                      Args
-                    </div>
-                    {currentFunction.length > 0 && (
+                    {currentModule.length > 0 && (
                       <>
-                        {args.map((arg, index) => {
-                          return (
-                            <div>
-                              <input className="block w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]" placeholder={arg.startsWith("0x") ? shortenObjectType(arg, 5) : arg} value={argsUserInput[index] ? argsUserInput[index] : ""}
-                                onChange={(e) => handleSetValueToArg(index, e.target.value)} />
-                              {/* value need to set like above if not will have bug when choose between functions */}
-                            </div>
-                          );
-                        })}
+                        <select
+                          className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
+                          value={currentFunction}
+                          onChange={handleChooseFunction}>
+                          <option selected value="">
+                            Choose function
+                          </option>
+                          {functionsName.map((functionName) => {
+                            return <option value={functionName}>{functionName}</option>;
+                          })}
+                        </select>
                       </>
                     )}
-                    {/* <div className="flex h-[56px] items-start gap-[10px] px-[24px] py-[16px] relative self-stretch w-full rounded-[8px] border border-solid border-[#5a5a5a]">
+
+                    {args.length > 0 && (
+                      <div className="flex flex-col items-start justify-center gap-[10px] px-[24px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px] border border-solid border-[#5a5a5a]">
+                        <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] text-center tracking-[0] leading-[21.6px] whitespace-nowrap">
+                          Args
+                        </div>
+                        {currentFunction.length > 0 && (
+                          <>
+                            {args.map((arg, index) => {
+                              return (
+                                <div>
+                                  <input
+                                    className="block w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
+                                    placeholder={
+                                      arg.startsWith("0x") ? shortenObjectType(arg, 5) : arg
+                                    }
+                                    value={argsUserInput[index] ? argsUserInput[index] : ""}
+                                    onChange={(e) => handleSetValueToArg(index, e.target.value)}
+                                  />
+                                  {/* value need to set like above if not will have bug when choose between functions */}
+                                </div>
+                              );
+                            })}
+                          </>
+                        )}
+                        {/* <div className="flex h-[56px] items-start gap-[10px] px-[24px] py-[16px] relative self-stretch w-full rounded-[8px] border border-solid border-[#5a5a5a]">
                       <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-[#8f8f8f] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
                         U64
                       </div>
@@ -331,64 +364,72 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
                         Hero
                       </div>
                     </div> */}
-                  </div>}
-
-                  <button className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]" onClick={handleCall}>
-                    <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-                      Call
-                    </div>
-                  </button>
-                </div>
-              </div>}
-
-              {status === MoveCallStatus.FINISH && <>
-                <div className="relative w-fit [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[28px] tracking-[0] leading-[33.6px] whitespace-nowrap">
-                  Result
-                </div>
-
-                <div className="flex flex-col items-start gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
-                  {uniquePackages.map((pkg) => {
-                    return (
-                      <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto]">
-                        <div className="flex flex-col items-start gap-[24px] p-[24px] relative self-stretch w-full flex-[0_0_auto] bg-[#0e1011] rounded-[8px] border border-solid border-[#676767]">
-                          <div className="flex items-start justify-between relative self-stretch w-full flex-[0_0_auto]">
-                            <p className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-transparent text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-                              <span className="text-[#8f8f8f]">Package ID: </span>
-                              <span className="text-white">
-                                {shortenAddress(pkg.packageName, 5)}
-                              </span>
-                            </p>
-                            <Label
-                              className="!flex-[0_0_auto] !pt-[3px] !pb-[7px] !px-[8px]"
-                              labelClassName="!tracking-[-0.28px] !text-[14px] ![font-style:unset] !font-normal ![font-family:'Aeonik-Regular',Helvetica] !leading-[15.7px]"
-                              status="hover"
-                              text="Copy"
-                            />
-                          </div>
-                          {getModulesOfPackage(pkg.packageName).map((module) => {
-                            return (
-                              <div>
-                                <div>Module: {module}</div>
-                                {getObjectsOfModule(pkg.packageName, module).map((obj) => {
-                                  return (
-                                    <div>
-                                      <div>Object id:{shortenAddress(obj.objectId, 5)}</div>
-                                      <div>
-                                        Object type: {shortenObjectType(obj.objectType, 5)}
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            );
-                          })}
-                        </div>
                       </div>
-                    );
-                  })}
-                </div>
+                    )}
 
-                {/* {objects.map((obj) => {
+                    <button
+                      className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]"
+                      onClick={handleCall}>
+                      <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+                        Call
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {isLoading ? (
+                <p>Loading....</p>
+              ) : (
+                status === MoveCallStatus.FINISH && (
+                  <>
+                    <div className="relative w-fit [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[28px] tracking-[0] leading-[33.6px] whitespace-nowrap">
+                      Result
+                    </div>
+
+                    <div className="flex flex-col items-start gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
+                      {uniquePackages.map((pkg) => {
+                        return (
+                          <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto]">
+                            <div className="flex flex-col items-start gap-[24px] p-[24px] relative self-stretch w-full flex-[0_0_auto] bg-[#0e1011] rounded-[8px] border border-solid border-[#676767]">
+                              <div className="flex items-start justify-between relative self-stretch w-full flex-[0_0_auto]">
+                                <p className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-transparent text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+                                  <span className="text-[#8f8f8f]">Package ID: </span>
+                                  <span className="text-white">
+                                    {shortenAddress(pkg.packageName, 5)}
+                                  </span>
+                                </p>
+                                <Label
+                                  className="!flex-[0_0_auto] !pt-[3px] !pb-[7px] !px-[8px]"
+                                  labelClassName="!tracking-[-0.28px] !text-[14px] ![font-style:unset] !font-normal ![font-family:'Aeonik-Regular',Helvetica] !leading-[15.7px]"
+                                  status="hover"
+                                  text="Copy"
+                                />
+                              </div>
+                              {getModulesOfPackage(pkg.packageName).map((module) => {
+                                return (
+                                  <div>
+                                    <div>Module: {module}</div>
+                                    {getObjectsOfModule(pkg.packageName, module).map((obj) => {
+                                      return (
+                                        <div>
+                                          <div>Object id:{shortenAddress(obj.objectId, 5)}</div>
+                                          <div>
+                                            Object type: {shortenObjectType(obj.objectType, 5)}
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* {objects.map((obj) => {
                       if (obj.type !== "published") {
                         return (
                           <>
@@ -400,7 +441,10 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
                         );
                       }
                     })} */}
-              </>}
+                  </>
+                )
+              )}
+
               {status === MoveCallStatus.ERROR && <Error errorMsg={error} />}
             </div>
           </div>
