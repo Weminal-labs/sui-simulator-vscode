@@ -65,7 +65,7 @@ export const SuiEnv = () => {
       setIsLoading(false);
     }
     getUserNetworks();
-  }, []);
+  }, [suiPath]);
 
   useEffect(() => {
     // fileInputRef?.current?.setAttribute("directory", "");
