@@ -28,13 +28,13 @@ export const BuildTestPublish = () => {
     await requestDataFromTerminal({
       cmd: SuiCommand.TEST_PACKAGE,
     });
-  }
+  };
 
   const handleBuild = async () => {
     await requestDataFromTerminal({
       cmd: SuiCommand.BUILD_PACKAGE,
     });
-  }
+  };
 
   const handlePublish = async () => {
     setIsLoading(true);
@@ -49,7 +49,7 @@ export const BuildTestPublish = () => {
     // need to handle error case
 
     if (stderr.isError) {
-      setError(stderr.message);
+      setError("Build Failed");
       setIsError(true);
       setIsLoading(false);
     } else {
@@ -79,6 +79,8 @@ export const BuildTestPublish = () => {
       }
     })
     .filter((item) => item !== undefined);
+
+  const packagePublish = objects.find((obj) => obj.type === "published");
 
   let uniquePackages = [...new Set(packages)];
 
@@ -124,6 +126,16 @@ export const BuildTestPublish = () => {
     return objectOfModule;
   };
 
+  const getOwnerOfObject = (object: any) => {
+    if (typeof object.owner === "object") {
+      if (object.owner.hasOwnProperty("AddressOwner")) {
+        return shortenAddress(object.owner.AddressOwner, 5);
+      }
+    } else {
+      return object.owner;
+    }
+  };
+
   return (
     <>
       <div className="bg-[#0e0f0e] overflow-hidden w-full">
@@ -141,12 +153,16 @@ export const BuildTestPublish = () => {
               <div className="flex flex-col items-start gap-[32px] relative self-stretch w-full flex-[0_0_auto]">
                 <div className="flex flex-col items-start gap-[24px] p-[24px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px] border border-solid border-[#676767]">
                   <div className="flex flex-col items-start gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
-                    <button className="items-center justify-center flex-[0_0_auto] border-white flex gap-[10px] px-[23px] py-[16px] relative self-stretch w-full rounded-[8px] border border-solid" onClick={handleTest}>
+                    <button
+                      className="items-center justify-center flex-[0_0_auto] border-white flex gap-[10px] px-[23px] py-[16px] relative self-stretch w-full rounded-[8px] border border-solid"
+                      onClick={handleTest}>
                       <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-white text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
                         Test
                       </div>
                     </button>
-                    <button className="bg-white flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px]" onClick={handleBuild}>
+                    <button
+                      className="bg-white flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px]"
+                      onClick={handleBuild}>
                       <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
                         Build
                       </div>
@@ -205,12 +221,46 @@ export const BuildTestPublish = () => {
                     {isError && <Error errorMsg={error} />}
                     {!isError && (
                       <>
-                        {currentDigest && <>
-                          <div className="relative w-fit [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[28px] tracking-[0] leading-[33.6px] whitespace-nowrap">
-                            Result
+                        {currentDigest && (
+                          <>
+                            <div className="relative w-fit [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[28px] tracking-[0] leading-[33.6px] whitespace-nowrap">
+                              Result
+                            </div>
+                            <div>Transaction: {currentDigest}</div>
+                          </>
+                        )}
+
+                        {packagePublish && (
+                          <div className="flex flex-col items-start gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
+                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto]">
+                              <div className="flex flex-col items-start gap-[24px] p-[24px] relative self-stretch w-full flex-[0_0_auto] bg-[#0e1011] rounded-[8px] border border-solid border-white">
+                                <div className="flex items-start justify-between relative self-stretch w-full flex-[0_0_auto]">
+                                  <p className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-transparent text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+                                    <span className="text-[#8f8f8f]">Publish Object: </span>
+                                    <span className="text-white">
+                                      {shortenAddress(packagePublish.packageId, 5)}
+                                    </span>
+                                  </p>
+                                  <Label
+                                    className="!flex-[0_0_auto] !pt-[3px] !pb-[7px] !px-[8px]"
+                                    labelClassName="!tracking-[-0.28px] !text-[14px] ![font-style:unset] !font-normal ![font-family:'Aeonik-Regular',Helvetica] !leading-[15.7px]"
+                                    status="hover"
+                                    text="Copy"
+                                  />
+                                </div>
+                                <div>
+                                  {packagePublish.modules.map((module: any) => {
+                                    return (
+                                      <>
+                                        <div>Module: {module}</div>
+                                      </>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                          <div>Transaction: {currentDigest}</div>
-                        </>}
+                        )}
 
                         <div className="flex flex-col items-start gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
                           {uniquePackages.map((pkg) => {
@@ -237,11 +287,12 @@ export const BuildTestPublish = () => {
                                         <div>Module: {module}</div>
                                         {getObjectsOfModule(pkg.packageName, module).map((obj) => {
                                           return (
-                                            <div>
+                                            <div className="py-2">
                                               <div>Object id:{shortenAddress(obj.objectId, 5)}</div>
                                               <div>
                                                 Object type: {shortenObjectType(obj.objectType, 5)}
                                               </div>
+                                              <div>Owner: {getOwnerOfObject(obj)}</div>
                                             </div>
                                           );
                                         })}

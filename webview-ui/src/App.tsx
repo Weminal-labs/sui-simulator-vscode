@@ -7,12 +7,11 @@ import { ExplorerIcon } from "./icons/ExplorerIcon";
 import { Link } from "react-router-dom";
 import { Logo } from "./components/Logo";
 
-export interface IAppProps { }
+export interface IAppProps {}
 
-export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChildren<IAppProps>) => {
+export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChildren<IAppProps>) => {
   return (
     <>
-      {/* <Aliases /> */}
       <div className="overflow-hidden w-full relative">
         <div className="w-full">
           <div className="ml-10 mt-12 inline-flex flex-col h-[500px] items-start gap-[64px]">
