@@ -132,16 +132,8 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
       const { stdout, stderr } = resp;
       // const objects = JSON.parse(stdout);
 
-      let isEmptyArgs = args.length !== argsUserInput.length;
-
-      if (isEmptyArgs) {
-        dispatch({ type: MoveCallActionType.SET_ERROR, payload: "Please fill all args" });
-        setIsLoading(false);
-        return;
-      }
-
       if (stderr.isError) {
-        // dispatch({ type: MoveCallActionType.SET_ERROR, payload: stderr.message });
+        dispatch({ type: MoveCallActionType.SET_ERROR, payload: stderr.message });
       } else {
         const { digest, objectChanges } = JSON.parse(stdout);
         setObjects(objectChanges);

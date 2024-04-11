@@ -191,7 +191,8 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
 
 				case SuiCommand.CALL_FUNCTION:
 					try {
-						resp = await execNew(`${suiPath} client call --package ${payload.packageId} --module ${payload.moduleName} --function ${payload.functionName}   --json --gas-budget 10000000 ${payload.args.length > 0 ? "--args" : ""} ${payload.args?.join(" ")}
+						console.log(process.cwd());
+						resp = await execNew(`${suiPath} client call --package ${payload.packageId} --module ${payload.moduleName} --function ${payload.functionName}   --json --gas-budget 10000000 ${payload.args.length > 0 ? "--args" : ""} ${payload.args?.join(" ")} >&2
 						`);
 
 						finalResp = {
