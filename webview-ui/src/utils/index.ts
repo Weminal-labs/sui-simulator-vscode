@@ -4,12 +4,28 @@ export const copyToClipBoard = async (text: string) => {
   } catch (err) {}
 };
 
-export const convertWindowsToUnixPath = (windowsPath: string) => {
-  // Replace double backslashes with single backslashes
-  let singleBackslashes = windowsPath.replace(/\\\\/g, "\\");
+export function convertWindowsToUnixPath(filePath: string) {
   // Replace backslashes with forward slashes
-  let unixPath = singleBackslashes.replace(/\\/g, "/");
-  // Remove the initial part of the path up to "Ubuntu"
-  unixPath = unixPath.substring(unixPath.indexOf("Ubuntu") + "Ubuntu".length);
-  return unixPath;
-};
+  filePath = filePath.replace(/\\/g, "/");
+
+  // Check if it's a WSL path
+  if (filePath.startsWith("//wsl.localhost/")) {
+    // Remove the prefix "//wsl.localhost/"
+    filePath = filePath.replace(/^\/\/wsl\.localhost\//, "");
+
+    // Remove any version number after "Ubuntu"
+    filePath = filePath.replace(/^Ubuntu(-\d+\.\d+)?\//, "");
+
+    // Replace all backslashes with forward slashes
+    filePath = filePath.replace(/\\/g, "/");
+  }
+
+  // Ensure that the path after "home" has forward slashes
+  filePath = filePath.replace(/^([^/]+)\//, "/$1/");
+
+  return filePath;
+}
+
+export function getFolderPathFromFilePath(filePath: string) {
+  return filePath.replace(/\/[^/]+$/, "");
+}
