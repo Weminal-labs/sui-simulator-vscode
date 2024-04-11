@@ -88,8 +88,8 @@ export const SuiEnv = () => {
   }, [fileInputRef]);
 
   useEffect(() => {
-    // projectInputRef?.current?.setAttribute("directory", "");
-    // projectInputRef?.current?.setAttribute("webkitdirectory", "");
+    projectInputRef?.current?.setAttribute("directory", "");
+    projectInputRef?.current?.setAttribute("webkitdirectory", "");
     projectInputRef.current?.addEventListener("change", () => {
       setProjectPath(
         getFolderPathFromFilePath(

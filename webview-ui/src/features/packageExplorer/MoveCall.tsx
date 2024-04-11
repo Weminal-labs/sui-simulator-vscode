@@ -64,6 +64,7 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
 
       const fn = functions[e.target.value];
       const { parameters } = fn;
+      console.log(parameters);
       for (const param of parameters) {
         // handle typescript error by this way is suck => refactor later
         if (typeof param === "object") {
@@ -80,9 +81,33 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
               }
             }
           } else if ("Reference" in param) {
+            if (typeof param.Reference === "object" && "Struct" in param.Reference) {
+              let {
+                Struct: { address, module, name },
+              } = param.Reference;
+              if (name !== "TxContext") {
+                dispatch({
+                  type: MoveCallActionType.ADD_ARG,
+                  payload: `${address}::${module}::${name}`,
+                });
+              }
+            }
           } else if ("Vector" in param) {
+
           } else if ("Struct" in param) {
+            if (typeof param.Struct === "object") {
+              let {
+                Struct: { address, module, name },
+              } = param;
+              if (name !== "TxContext") {
+                dispatch({
+                  type: MoveCallActionType.ADD_ARG,
+                  payload: `${address}::${module}::${name}`,
+                });
+              }
+            }
           } else if ("TypeParameter" in param) {
+
           }
         } else {
           dispatch({ type: MoveCallActionType.ADD_ARG, payload: param });
