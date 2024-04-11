@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Toggle from "react-toggle";
 import "react-toggle/style.css";
-import { convertWindowsToUnixPath } from "../../utils";
+import { convertWindowsToUnixPath, getFolderPathFromFilePath } from "../../utils";
 import { FileWithPath } from "../../types";
 import { useSuiClientContext } from "@mysten/dapp-kit";
 import { useMySuiEnv } from "../../context/MySuiEnvProvider";
@@ -13,11 +13,13 @@ import { messageHandler } from "@estruyf/vscode/dist/client";
 
 export const SuiEnv = () => {
   const { network, selectNetwork } = useSuiClientContext();
-  const { isSuiFile, setIsSuiFile, suiPath, setSuiPath } = useMySuiEnv();
+  const { isSuiFile, setIsSuiFile, suiPath, setSuiPath, projectPath, setProjectPath } =
+    useMySuiEnv();
   const [userNetworks, setUserNetworks] = useState<any[]>([]); // type later
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const projectInputRef = useRef<HTMLInputElement>(null);
 
   const navigate = useNavigate();
 
@@ -38,14 +40,14 @@ export const SuiEnv = () => {
   };
 
   const handleToogle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsSuiFile(e.target.checked)
-  }
+    setIsSuiFile(e.target.checked);
+  };
 
   useEffect(() => {
     if (!isSuiFile) {
       messageHandler.send("CHANGE_SUI_PATH", { suiPath: "sui" });
     }
-  }, [isSuiFile])
+  }, [isSuiFile]);
 
   useEffect(() => {
     async function getUserNetworks() {
@@ -77,9 +79,30 @@ export const SuiEnv = () => {
       console.log(
         convertWindowsToUnixPath((fileInputRef.current?.files?.item(0) as FileWithPath)?.path)
       );
-      messageHandler.send("CHANGE_SUI_PATH", { suiPath: convertWindowsToUnixPath((fileInputRef.current?.files?.item(0) as FileWithPath)?.path) });
+      messageHandler.send("CHANGE_SUI_PATH", {
+        suiPath: convertWindowsToUnixPath(
+          (fileInputRef.current?.files?.item(0) as FileWithPath)?.path
+        ),
+      });
     });
   }, [fileInputRef]);
+
+  useEffect(() => {
+    // projectInputRef?.current?.setAttribute("directory", "");
+    // projectInputRef?.current?.setAttribute("webkitdirectory", "");
+    projectInputRef.current?.addEventListener("change", () => {
+      setProjectPath(
+        getFolderPathFromFilePath(
+          convertWindowsToUnixPath((projectInputRef.current?.files?.item(0) as FileWithPath)?.path)
+        )
+      );
+      messageHandler.send("CHANGE_PROJECT_PATH", {
+        projectPath: getFolderPathFromFilePath(
+          convertWindowsToUnixPath((projectInputRef.current?.files?.item(0) as FileWithPath)?.path)
+        ),
+      });
+    });
+  }, [projectInputRef]);
 
   return (
     <>
@@ -103,15 +126,17 @@ export const SuiEnv = () => {
                         Binaries
                       </div>
                       <div className="inline-flex items-center gap-[8px] relative flex-[0_0_auto]">
-                        <Toggle
-                          defaultChecked={isSuiFile}
-                          icons={false}
-                          onChange={handleToogle}
-                        />
+                        <Toggle defaultChecked={isSuiFile} icons={false} onChange={handleToogle} />
                       </div>
                     </div>
                     {/* not sure why bug if use conditional rendering? when this input element is not rendered for first time, the ref to this element will always be null */}
-                    <input className={`w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] ${isSuiFile ? "block" : "hidden"}`} type="file" ref={fileInputRef} />
+                    <input
+                      className={`w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] ${
+                        isSuiFile ? "block" : "hidden"
+                      }`}
+                      type="file"
+                      ref={fileInputRef}
+                    />
                     <div>{isSuiFile && suiPath && <p>{suiPath}</p>}</div>
                     {isLoading ? (
                       "Loading"
@@ -152,6 +177,17 @@ export const SuiEnv = () => {
                   RPC Custom
                 </div>
               </div>
+              <div className="flex w-full items-center justify-between px-0 py-[4px] relative flex-1 grow rounded-[8px]">
+                <div className="[font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] relative w-fit mt-[-1.00px] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+                  Project Path
+                </div>
+              </div>
+              <input
+                className={`w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]`}
+                type="file"
+                ref={projectInputRef}
+              />
+              <div>{projectPath && <p>{projectPath}</p>}</div>
             </div>
           </div>
         </div>

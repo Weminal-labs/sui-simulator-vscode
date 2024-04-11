@@ -9,6 +9,25 @@ export function shortenAddress(address: string, truncateLength: number): string 
 }
 
 export function shortenObjectType(objectType: string, truncateLength: number): string {
+  const angleBracketIndex = objectType.indexOf("<");
+  const angleBracketCloseIndex = objectType.lastIndexOf(">");
+
+  // Case 1: No angle brackets present
+  if (angleBracketIndex === -1 || angleBracketCloseIndex === -1) {
+    return shortenObjectTypeHelper(objectType, truncateLength);
+  }
+
+  // Case 2: Angle brackets present, truncate content inside them
+  const outerObjectType = objectType.slice(0, angleBracketIndex);
+  const innerObjectType = objectType.slice(angleBracketIndex + 1, angleBracketCloseIndex);
+
+  return `${shortenObjectTypeHelper(outerObjectType, truncateLength)}<${shortenObjectTypeHelper(
+    innerObjectType,
+    truncateLength
+  )}>`;
+}
+
+export function shortenObjectTypeHelper(objectType: string, truncateLength: number): string {
   const parts = objectType.split("::");
 
   const length = parts[0].length - 2;
