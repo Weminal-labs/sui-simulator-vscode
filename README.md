@@ -4,11 +4,7 @@
 
 
 ## Introduction 
-In the spirit to develop a strong developer community, Weminal team build an open-source IDE to simplify the development of SUI smart contracts.
-
-Our vision is as a hub for builders to write code, build, simulate and publish objects  smart contracts on SUI.
-
-Sui-simulator is the core vision and technical development of Weminal team, as a hub for builders to write code, build, simulate, and publish objects smart contracts on SUI.
+In the spirit to develop a strong developer community, Weminal team build an open-source IDE to simplify the development of SUI smart contracts. Sui-simulator is the core vision and technical development of Weminal team, as a hub for builders to write code, build, simulate, and publish objects on SUI.
 
 This project provide sui developer with a set of quick tools to reduce the time consumption with readily available testing and developing environments.
 
