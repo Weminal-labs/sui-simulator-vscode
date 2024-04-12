@@ -9,6 +9,7 @@ import { shortenAddress, shortenObjectType } from "../../utils/address_shortener
 import { Error } from "../../components/Error";
 import { CopyIcon } from "../../icons/CopyIcon";
 import { copyToClipBoard } from "../../utils";
+import { Aliases } from "../../components/Aliases";
 
 export const BuildTestPublish = () => {
   const { currentAddress, currentGasObject } = useMySuiAccount();
@@ -322,6 +323,8 @@ export const BuildTestPublish = () => {
                     )}
                   </>
                 )}
+
+                <Aliases />
 
                 {/* <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto]">
                     <div className="flex flex-col items-start gap-[24px] p-[24px] relative self-stretch w-full flex-[0_0_auto] bg-[#0e1011] rounded-[8px] border border-solid border-[#676767]">
