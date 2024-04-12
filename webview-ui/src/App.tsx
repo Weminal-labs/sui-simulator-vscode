@@ -12,7 +12,7 @@ export interface IAppProps {}
 export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChildren<IAppProps>) => {
   return (
     <>
-      <div className="overflow-hidden w-full relative">
+      <div className="overflow-hidden w-full relative min-h-screen grow">
         <div className="w-full">
           <div className="ml-10 mt-12 inline-flex flex-col h-[500px] items-start gap-[64px]">
             <div className="relative w-full mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[48px] text-center tracking-[-2.56px] leading-[76.8px] whitespace-nowrap flex flex-row justify-evenly">

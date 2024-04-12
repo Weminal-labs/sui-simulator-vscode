@@ -10,6 +10,7 @@ import { SuiCommand } from "../../../../src/enums";
 import { ArrowLeft } from "../../icons/ArrowLeft";
 import { useNavigate } from "react-router-dom";
 import { messageHandler } from "@estruyf/vscode/dist/client";
+import { InfoIcon } from "../../icons/InfoIcon";
 
 export const SuiEnv = () => {
   const { network, selectNetwork } = useSuiClientContext();
@@ -106,15 +107,15 @@ export const SuiEnv = () => {
 
   return (
     <>
-      <div className="">
-        <div className="absolute w-[640px] sidebar:w-[400px] h-[766px] top-[-178px] left-[40px]">
+      <div className="h-[1100px] grow">
+        <div className="absolute w-[640px] sidebar:w-[400px] h-[766px] top-[-178px] left-[25px]">
           <div className="flex flex-col w-full items-start gap-[64px] absolute top-[228px] left-0">
             <div className="flex-col gap-[40px] p-[24px] self-stretch w-full flex-[0_0_auto] rounded-[16px] flex items-start relative">
               <div
-                className="flex items-start gap-[8px] relative self-stretch w-full flex-[0_0_auto]"
+                className="flex items-end gap-[8px] relative self-stretch w-full flex-[0_0_auto]"
                 onClick={handleNavigate}>
                 <ArrowLeft className="!relative !w-[24px] !h-[24px]" />
-                <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[18px] text-center tracking-[0] leading-[21.6px] whitespace-nowrap">
+                <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[18px] text-center tracking-[0] leading-[21.6px] whitespace-nowrap uppercase">
                   Environment
                 </div>
               </div>
@@ -122,8 +123,8 @@ export const SuiEnv = () => {
                 <div className="flex flex-col items-end gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
                   <div className="flex flex-col items-start gap-[8px] relative self-stretch w-full">
                     <div className="flex w-full items-center justify-between px-0 py-[4px] relative flex-1 grow rounded-[8px]">
-                      <div className="[font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] relative w-fit mt-[-1.00px] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-                        Binaries
+                      <div className="[font-family:'Aeonik-Regular',Helvetica] font-normal text-white relative w-fit mt-[-1.00px] text-[18px] tracking-[0] leading-[21.6px] break-all font-bold">
+                        Sui binaries: Switch to binaries mode and locate your path
                       </div>
                       <div className="inline-flex items-center gap-[8px] relative flex-[0_0_auto]">
                         <Toggle defaultChecked={isSuiFile} icons={false} onChange={handleToogle} />
@@ -177,16 +178,37 @@ export const SuiEnv = () => {
                   RPC Custom
                 </div>
               </div>
-              <div className="flex w-full items-center justify-between px-0 py-[4px] relative flex-1 grow rounded-[8px]">
-                <div className="[font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] relative w-fit mt-[-1.00px] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-                  Project Path
+              <div className="w-full">
+                <div className="flex w-full items-center justify-between px-0 py-[4px] relative flex-1 grow rounded-[8px] mb-5">
+                  <div className="[font-family:'Aeonik-Regular',Helvetica] font-normal text-white relative w-fit mt-[-1.00px] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap text-bold">
+                    Project Path
+                  </div>
+                </div>
+                <input
+                  className={`w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]`}
+                  type="file"
+                  ref={projectInputRef}
+                />
+              </div>
+              <div className="flex flex-col items-start gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
+                <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto]">
+                  <div className="flex flex-col items-start gap-[24px] p-[24px] relative self-stretch w-full flex-[0_0_auto] bg-[#0e1011] rounded-[8px] border border-solid border-white">
+                    <div className="flex flex-col items-start justify-between relative self-stretch w-full flex-[0_0_auto] text-[18px]">
+                      <div className="flex items-center">
+                        <InfoIcon />
+                        <span className="ml-2 text-bold">Note</span>
+                      </div>
+                      This section will help you configure your SUI path to connect to the Sui
+                      Network. If your machine is installed from binaries, we've covered this with
+                      binary mode, which allows you to locate your path on files.
+                      <br />
+                      <br /> Also, ensure that you have chosen the path where your project directory
+                      is located, because we need to set your path (-p) when building a smart
+                      contract
+                    </div>
+                  </div>
                 </div>
               </div>
-              <input
-                className={`w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]`}
-                type="file"
-                ref={projectInputRef}
-              />
               <div>{projectPath && <p>{projectPath}</p>}</div>
             </div>
           </div>
