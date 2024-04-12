@@ -351,7 +351,7 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
                           <>
                             {args.map((arg, index) => {
                               return (
-                                <div>
+                                <div className="w-full">
                                   <input
                                     className="block w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
                                     placeholder={
