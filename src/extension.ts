@@ -7,6 +7,7 @@ import { WebviewProvider } from "./WebviewProvider";
 import { exec } from "child_process";
 import { promisify } from "util";
 import { SuiCommand } from "./enums";
+import { isJsonString } from "./utils";
 
 interface MyCustomTerminalResponse {
   stdout: string;
@@ -202,16 +203,34 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
               payload.moduleName
             } --function ${payload.functionName}   --json --gas-budget 10000000 ${
               payload.args.length > 0 ? "--args" : ""
-            } ${payload.args?.join(" ")} >&2
+            } ${payload.args?.join(" ")} 2>&1 | tee output.txt
 						`);
 
-            finalResp = {
-              stderr: {
-                message: resp.stderr,
-                isError: false,
-              },
-              stdout: resp.stdout,
-            };
+            if (isJsonString(resp.stdout)) {
+              finalResp = {
+                stderr: {
+                  message: resp.stderr,
+                  isError: false,
+                },
+                stdout: resp.stdout,
+              };
+            } else {
+              finalResp = {
+                stderr: {
+                  message: resp.stdout,
+                  isError: true,
+                },
+                stdout: "",
+              };
+            }
+
+            // finalResp = {
+            //   stderr: {
+            //     message: resp.stderr,
+            //     isError: false,
+            //   },
+            //   stdout: resp.stdout,
+            // };
 
             console.log("stderr:", finalResp.stderr);
             console.log("stdout:", finalResp.stdout);
