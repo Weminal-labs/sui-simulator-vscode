@@ -21,6 +21,12 @@ Sui Simulator requires the following:
 # Discover how to use Sui-simulator and what all it offers: 
 Open Sui-simulator extension: You can open by Command Palette if you're using on MacOS. Or you can click on the sui-simulator logo in the sidebar/Activity Bar to open the extension. 
 * Environments: Choose your network environments and also your installation source maybe by Cargo or binaries. If you want install binaries, we want to help you by this docs.
+<p align="center">
+<img width="767" alt="image" src="https://github.com/Weminal-labs/sui-simulator-vscode/assets/70145901/bce7074d-25e7-41f1-af29-e6132554896f">
+</p>
 * Add address and gas: You can create new address by import an existing seed phrase or generate new one
 * Build, test and Publish: publish your package ID on the Sui network.
 * Package Explorer: Developers can examine  modules, functions, and make calls to them
+
+![image](https://github.com/Weminal-labs/sui-simulator-vscode/assets/70145901/96e6893e-c1a1-4e0a-a349-7078a0736fea)
+
