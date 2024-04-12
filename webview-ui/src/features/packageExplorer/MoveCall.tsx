@@ -8,6 +8,7 @@ import { ArrowLeft } from "../../icons/ArrowLeft";
 import { shortenAddress, shortenObjectType } from "../../utils/address_shortener";
 import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
 import { Error } from "../../components/Error";
+import { Aliases } from "../../components/Aliases";
 
 export interface IMoveCallProps {
   state: MoveCallState;
@@ -236,8 +237,8 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
 
   return (
     <>
-      <div className="bg-[#0e0f0e] overflow-hidden w-full h-full">
-        <div className="relative w-[1023px] h-[1421px] top-[-178px] left-[-158px]">
+      <div className="bg-[#0e0f0e] overflow-y-scroll w-full h-full">
+        <div className="relative w-full h-[800px] top-[-178px] left-[-158px]">
           <div className="flex flex-col w-[640px] sidebar:w-[360px] items-start gap-[64px] py-0 absolute top-[228px] left-[198px]">
             <div className="flex flex-col items-start gap-[40px] px-0 py-[24px] relative self-stretch w-full flex-[0_0_auto] rounded-[16px]">
               <div
@@ -248,6 +249,7 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
                   Package Explorer
                 </div>
               </div>
+              <Aliases />
               <div className="flex flex-col items-end gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
                 <div className="flex flex-col h-[92px] items-start gap-[8px] relative self-stretch w-full">
                   <div className="flex w-full items-center justify-between px-0 py-[4px] relative flex-1 grow rounded-[8px]">

@@ -1,5 +1,6 @@
 import React from "react";
 import { copyToClipBoard } from "../utils";
+import { CopyIcon } from "../icons/CopyIcon";
 
 export interface IAliasItemProps {
   aliasItem: {
@@ -17,16 +18,14 @@ export const AliasItem = ({
 }: IAliasItemProps) => {
   return (
     <tr>
-      <td>
-        <p>{aliasItem.alias}</p>
+      <td className="pt-[16px]">
+        {aliasItem.alias}
+      </td>
+      <td className="pt-[16px]">
+        {aliasItem.objectId}
       </td>
       <td>
-        <p>{aliasItem.objectId}</p>
-      </td>
-      <td>
-        <button onClick={() => copyToClipBoard(aliasItem.objectId)}>
-          Copy
-        </button>
+        <CopyIcon handleClick={() => copyToClipBoard(aliasItem.objectId)} />
       </td>
       <td>
         <button onClick={() => handleDeleteAlias(index)}>X</button>

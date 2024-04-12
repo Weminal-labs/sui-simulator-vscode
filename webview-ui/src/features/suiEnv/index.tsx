@@ -137,7 +137,7 @@ export const SuiEnv = () => {
 
   return (
     <>
-      <div className="h-[1100px] grow">
+      <div className="h-[1100px] grow overflow-y-scroll">
         <div className="absolute w-[640px] sidebar:w-[400px] h-[766px] top-[-178px] left-[25px]">
           <div className="flex flex-col w-full items-start gap-[64px] absolute top-[228px] left-0">
             <div className="flex-col gap-[40px] p-[24px] self-stretch w-full flex-[0_0_auto] rounded-[16px] flex items-start relative">
@@ -162,9 +162,8 @@ export const SuiEnv = () => {
                     </div>
                     {/* not sure why bug if use conditional rendering? when this input element is not rendered for first time, the ref to this element will always be null */}
                     <input
-                      className={`w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] ${
-                        isSuiFile ? "block" : "hidden"
-                      }`}
+                      className={`w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] ${isSuiFile ? "block" : "hidden"
+                        }`}
                       type="file"
                       ref={fileInputRef}
                     />

@@ -12,6 +12,7 @@ import { BuildTestPublish } from "./features/buildTestPublish";
 import { MySuiEnvProvider } from "./context/MySuiEnvProvider";
 import { MySuiAccountProvider } from "./context/MySuiAccountProvider";
 import { PackageExplorer } from "./features/packageExplorer/index";
+import { MySuiAliasProvider } from "./context/MySuiAliasProvider";
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -28,17 +29,19 @@ if (root) {
       <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
         <MySuiEnvProvider>
           <MySuiAccountProvider>
-            <MemoryRouter initialEntries={["/"]}>
-              <Routes>
-                <Route element={<RootLayout />}>
-                  <Route index element={<App />} />
-                  <Route path="environment" element={<SuiEnv />} />
-                  <Route path="gas-address" element={<GasAddress />} />
-                  <Route path="build-test-publish" element={<BuildTestPublish />} />
-                  <Route path="explorer" element={<PackageExplorer />} />
-                </Route>
-              </Routes>
-            </MemoryRouter>
+            <MySuiAliasProvider>
+              <MemoryRouter initialEntries={["/"]}>
+                <Routes>
+                  <Route element={<RootLayout />}>
+                    <Route index element={<App />} />
+                    <Route path="environment" element={<SuiEnv />} />
+                    <Route path="gas-address" element={<GasAddress />} />
+                    <Route path="build-test-publish" element={<BuildTestPublish />} />
+                    <Route path="explorer" element={<PackageExplorer />} />
+                  </Route>
+                </Routes>
+              </MemoryRouter>
+            </MySuiAliasProvider>
           </MySuiAccountProvider>
         </MySuiEnvProvider>
       </SuiClientProvider>

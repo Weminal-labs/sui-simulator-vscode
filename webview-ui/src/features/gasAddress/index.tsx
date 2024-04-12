@@ -13,8 +13,8 @@ export const GasAddress = () => {
 
   return (
     <>
-      <div className="bg-[#0e0f0e] overflow-hidden w-full">
-        <div className="relative w-[1023px] h-[600px] top-[-178px] left-[-158px]">
+      <div className="bg-[#0e0f0e] overflow-y-scroll w-full">
+        <div className="relative w-full h-[600px] top-[-178px] left-[-158px]">
           <div className="flex flex-col w-[640px] sidebar:w-[360px] items-start gap-[64px] absolute top-[228px] left-[198px]">
             <div className="flex flex-col items-start gap-[40px] relative self-stretch w-full flex-[0_0_auto] rounded-[16px]">
               <div
