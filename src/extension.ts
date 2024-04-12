@@ -206,14 +206,28 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
             } ${payload.args?.join(" ")} 2>&1 | tee output.txt
 						`);
 
-            if (isJsonString(resp.stdout)) {
+            // has curly braces means it's a json => no need to check if it's a json
+            let openCurlyBraceIndex = resp.stdout.indexOf("{");
+            if (openCurlyBraceIndex !== -1) {
+              let resultAfterRemoveWarn = resp.stdout.slice(openCurlyBraceIndex);
+              console.log(resultAfterRemoveWarn);
               finalResp = {
                 stderr: {
                   message: resp.stderr,
                   isError: false,
                 },
-                stdout: resp.stdout,
+                stdout: resultAfterRemoveWarn,
               };
+              // if (isJsonString(resultAfterRemoveWarn)) {
+              // } else {
+              // finalResp = {
+              //   stderr: {
+              //     message: resultAfterRemoveWarn,
+              //     isError: true,
+              //   },
+              //   stdout: "",
+              // };
+              // }
             } else {
               finalResp = {
                 stderr: {
