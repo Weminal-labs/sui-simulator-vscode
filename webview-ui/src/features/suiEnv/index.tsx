@@ -58,9 +58,39 @@ export const SuiEnv = () => {
       });
       const { stdout, stderr } = resp;
       const result = JSON.parse(stdout);
-      const networks = result[0];
+      let networks = result[0];
+      networks = networks.map((network: any) => {
+        if (network.rpc === "http://0.0.0.0:9000") {
+          return {
+            alias: "localnet",
+            rpc: network.rpc,
+          };
+        } else if (network.rpc === "https://fullnode.mainnet.sui.io:443") {
+          return {
+            alias: "mainnet",
+            rpc: network.rpc,
+          };
+        } else if (network.rpc === "https://fullnode.testnet.sui.io:443") {
+          return {
+            alias: "testnet",
+            rpc: network.rpc,
+          };
+        } else if (network.rpc === "https://fullnode.devnet.sui.io:443") {
+          return {
+            alias: "devnet",
+            rpc: network.rpc,
+          };
+        }
+      });
+      networks = networks.filter(
+        (network: any) =>
+          network.rpc !== "http://0.0.0.0:9000" &&
+          network.rpc !== "https://fullnode.mainnet.sui.io:443"
+      );
+      console.log(networks);
       const currentNetwork = result[1];
-      console.log(JSON.parse(stdout));
+      console.log(currentNetwork);
+      // console.log(JSON.parse(stdout));
       setUserNetworks(networks);
       selectNetwork(currentNetwork);
       setIsLoading(false);
@@ -146,6 +176,7 @@ export const SuiEnv = () => {
                         className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
                         value={network}
                         onChange={handleNetworkChange}>
+                        <option value="">Choose network</option>
                         {userNetworks.map((network: any, index) => {
                           return (
                             <option className="text-[#8f8f8f] text-[18px]" key={index}>
