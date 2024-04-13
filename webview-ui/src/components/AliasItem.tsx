@@ -1,6 +1,7 @@
 import React from "react";
 import { copyToClipBoard } from "../utils";
 import { CopyIcon } from "../icons/CopyIcon";
+import { shortenAddress } from "../utils/address_shortener";
 
 export interface IAliasItemProps {
   aliasItem: {
@@ -22,7 +23,7 @@ export const AliasItem = ({
         {aliasItem.alias}
       </td>
       <td className="pt-[16px]">
-        {aliasItem.objectId}
+        {shortenAddress(aliasItem.objectId, 5)}
       </td>
       <td>
         <CopyIcon handleClick={() => copyToClipBoard(aliasItem.objectId)} />

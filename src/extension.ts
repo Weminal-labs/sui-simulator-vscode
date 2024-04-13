@@ -199,11 +199,9 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
         case SuiCommand.CALL_FUNCTION:
           try {
             console.log(process.cwd());
-            resp = await execNew(`${suiPath} client call --package ${payload.packageId} --module ${
-              payload.moduleName
-            } --function ${payload.functionName}   --json --gas-budget 10000000 ${
-              payload.args.length > 0 ? "--args" : ""
-            } ${payload.args?.join(" ")} 2>&1 | tee output.txt
+            resp = await execNew(`${suiPath} client call --package ${payload.packageId} --module ${payload.moduleName
+              } --function ${payload.functionName}   --json --gas-budget ${payload.gasBudget} ${payload.args.length > 0 ? "--args" : ""
+              } ${payload.args?.join(" ")} 2>&1 | tee /tmp/output.txt
 						`);
 
             // has curly braces means it's a json => no need to check if it's a json
@@ -342,6 +340,6 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
 };
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
 
 export const execNew = promisify(exec);

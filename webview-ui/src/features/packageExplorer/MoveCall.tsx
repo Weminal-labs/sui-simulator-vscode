@@ -35,6 +35,7 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
   const [isPackageIdValid, setIsPackageIdValid] = React.useState<boolean>(false);
   const [objects, setObjects] = useState<any[]>([]); // set type later
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [gasBudget, setGasBudget] = useState<number>(100000000);
 
   const handlePackageIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: MoveCallActionType.SET_PACKAGE_ID, payload: e.target.value });
@@ -154,6 +155,7 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
         moduleName: currentModule,
         functionName: currentFunction,
         args: argsUserInput,
+        gasBudget,
       });
       const { stdout, stderr } = resp;
       // const objects = JSON.parse(stdout);
@@ -385,6 +387,20 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
                     </div> */}
                       </div>
                     )}
+
+                    <div className="flex flex-col items-start gap-[8px] relative self-stretch w-full flex-[0_0_auto]">
+                      <div className="flex items-center px-0 py-[4px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px]">
+                        <div className="text-[18px] leading-[21.6px] relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] tracking-[0] whitespace-nowrap">
+                          Gas Budget
+                        </div>
+                      </div>
+                      <input
+                        className="border-[#676767] gap-[10px] px-[23px] py-[16px] relative w-full rounded-[8px] border border-solid relative w-fit mt-[-1.00px] mr-[-8.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[14px] tracking-[0] leading-[16.8px] bg-[#0e0f0e]"
+                        type="number"
+                        value={gasBudget}
+                        onChange={(e) => setGasBudget(Number(e.target.value))}
+                      />
+                    </div>
 
                     <button
                       className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]"
