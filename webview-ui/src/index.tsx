@@ -13,6 +13,7 @@ import { MySuiEnvProvider } from "./context/MySuiEnvProvider";
 import { MySuiAccountProvider } from "./context/MySuiAccountProvider";
 import { PackageExplorer } from "./features/packageExplorer/index";
 import { MySuiAliasProvider } from "./context/MySuiAliasProvider";
+import { SuiGpt } from "./features/suiGpt";
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -38,6 +39,7 @@ if (root) {
                     <Route path="gas-address" element={<GasAddress />} />
                     <Route path="build-test-publish" element={<BuildTestPublish />} />
                     <Route path="explorer" element={<PackageExplorer />} />
+                    <Route path="sui-gpt" element={<SuiGpt />} />
                   </Route>
                 </Routes>
               </MemoryRouter>

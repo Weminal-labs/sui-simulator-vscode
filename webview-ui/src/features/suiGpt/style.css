@@ -1,0 +1,38 @@
+:root {
+    --big-text-font-family: "LexendDeca-Regular", Helvetica;
+    --big-text-font-size: 24px;
+    --big-text-font-style: normal;
+    --big-text-font-weight: 400;
+    --big-text-letter-spacing: 0px;
+    --big-text-line-height: normal;
+    --box-color: rgba(25, 27, 33, 1);
+    --header-1-font-family: "LexendDeca-Light", Helvetica;
+    --header-1-font-size: 70px;
+    --header-1-font-style: normal;
+    --header-1-font-weight: 300;
+    --header-1-letter-spacing: -7px;
+    --header-1-line-height: normal;
+    --header-2-font-family: "LexendDeca-Regular", Helvetica;
+    --header-2-font-size: 42px;
+    --header-2-font-style: normal;
+    --header-2-font-weight: 400;
+    --header-2-letter-spacing: 0px;
+    --header-2-line-height: normal;
+    --header-3-font-family: "LexendDeca-Regular", Helvetica;
+    --header-3-font-size: 24px;
+    --header-3-font-style: normal;
+    --header-3-font-weight: 400;
+    --header-3-letter-spacing: -2.4px;
+    --header-3-line-height: normal;
+    --hover: rgba(43, 45, 59, 1);
+    --line-color: rgba(45, 41, 56, 1);
+    --purple-text: rgba(161, 151, 181, 1);
+    --text-color: rgba(165, 165, 165, 1);
+    --text-font-family: "Gabarito-Regular", Helvetica;
+    --text-font-size: 16px;
+    --text-font-style: normal;
+    --text-font-weight: 400;
+    --text-letter-spacing: 0px;
+    --text-line-height: normal;
+    --white: rgba(255, 255, 255, 1);
+}

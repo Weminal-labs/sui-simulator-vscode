@@ -7,9 +7,9 @@ import { ExplorerIcon } from "./icons/ExplorerIcon";
 import { Link } from "react-router-dom";
 import { Logo } from "./components/Logo";
 
-export interface IAppProps {}
+export interface IAppProps { }
 
-export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChildren<IAppProps>) => {
+export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChildren<IAppProps>) => {
   return (
     <>
       <div className="overflow-hidden w-full relative min-h-screen grow">
@@ -42,6 +42,12 @@ export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChild
                 <Tab
                   icon={<ExplorerIcon className="!relative !w-[24px] !h-[24px]" />}
                   title="Explorer"
+                />
+              </Link>
+              <Link to="/sui-gpt">
+                <Tab
+                  icon={<ExplorerIcon className="!relative !w-[24px] !h-[24px]" />}
+                  title="Sui GPT"
                 />
               </Link>
             </div>
