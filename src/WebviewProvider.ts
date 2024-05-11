@@ -40,7 +40,9 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
 		theme: {
 			extend: {},
 			screens: {
-			  'sidebar': { 'max': '500px' },
+			  'sidebar': { 'max': '700px' },
+			  'mini': { 'max': '350px' },
+
 			},
 		}
     }

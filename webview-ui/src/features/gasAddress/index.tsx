@@ -3,6 +3,8 @@ import { Address } from "./address";
 import { Gas } from "./gas";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "../../icons/ArrowLeft";
+import Merge from "../../components/Merge";
+import Split from "../../components/Split";
 
 export const GasAddress = () => {
   const navigate = useNavigate();
@@ -28,6 +30,8 @@ export const GasAddress = () => {
               <div className="flex flex-col items-end gap-[32px] relative self-stretch w-full flex-[0_0_auto]">
                 <Address />
                 <Gas />
+                {/* <Merge/> */}
+                <Split/>
               </div>
             </div>
           </div>

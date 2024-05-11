@@ -4,6 +4,7 @@ import { SuiCommand } from "../../../../src/enums";
 import { useSuiClient, useSuiClientContext } from "@mysten/dapp-kit";
 import { useMySuiAccount } from "../../context/MySuiAccountProvider";
 import { shortenAddress } from "../../utils/address_shortener";
+import styles from "./address.module.css";
 
 export interface GasObject {
   gasCoinId: string;
@@ -18,6 +19,7 @@ export const Gas = () => {
     useMySuiAccount();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isShowObjects,setIsShowObjects]= useState(false);
   const [reload, setReload] = useState(1);
 
   const requestFaucet = async () => {
@@ -51,6 +53,7 @@ export const Gas = () => {
       const { stdout, stderr } = resp;
       const objects = JSON.parse(stdout);
       setGasObjects(objects);
+      setCurrentGasObject(null)
       setIsLoading(false);
       // console.log(objects);
     }
@@ -61,8 +64,12 @@ export const Gas = () => {
     (gasObject) => gasObject.gasCoinId === currentGasObject
   )?.suiBalance;
 
-  console.log(currentGasObject);
+  const handleSelected = (gasCoinId: String)=>{
+    setCurrentGasObject(gasCoinId)
+    console.log(currentGasObject);
 
+    setIsShowObjects(!isShowObjects)
+  }
   return (
     <>
       <div className="flex flex-col items-start justify-center gap-[24px] relative self-stretch w-full flex-[0_0_auto]">
@@ -77,29 +84,49 @@ export const Gas = () => {
               </div>
             </div>
             <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto]">
-              {/* <div className="flex items-center justify-between px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] rounded-[8px] border border-solid border-[#676767]">
-                <div className="relative w-fit [font-family:'Aeonik-Medium',Helvetica] font-medium text-[#8f8f8f] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-                  Ox122346...heh8faf
-                </div>
-                <ArrowDown className="!relative !w-[24px] !h-[24px]" />
-              </div> */}
+              
               {isLoading ? (
                 <p>Loading...</p>
-              ) : (
-                <select
-                  className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
-                  value={currentGasObject}
-                  onChange={(e) => setCurrentGasObject(e.target.value)}>
-                  <option selected>Choose gas object</option>
+              ) : 
+              (
+              
+                <div className="relative block w-full">
+                <div onClick={()=>{setIsShowObjects(!isShowObjects)}} className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
+                  <span>{currentGasObject?shortenAddress(currentGasObject, 5):"Choose gas object"}</span>
+          
+                </div>
+                {
+                  isShowObjects && 
+                  <ul className="z-10 absolute block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
                   {gasObjects.map((gasObject: GasObject, index) => {
                     return (
-                      <option value={gasObject.gasCoinId}>
-                        {shortenAddress(gasObject.gasCoinId, 5)}
-                      </option>
+                      <li
+                        className="flex justify-between items-center"
+                        onClick={() => handleSelected(gasObject.gasCoinId) }
+                        key={index}
+                      >
+                        
+                        <span className={`${currentGasObject && currentGasObject === gasObject.gasCoinId ? styles["activeAddress"] : ""}`}>{shortenAddress(gasObject.gasCoinId, 5)}</span>
+                        <button
+                          className="copy-button"
+                          onClick={(e) => {
+                            setIsShowObjects(false)
+                            e.stopPropagation(); 
+                            navigator.clipboard.writeText(gasObject.gasCoinId);
+                          }}
+                        >
+                          Copy
+                        </button>
+                      </li>
                     );
                   })}
-                </select>
-              )}
+                </ul>
+                }
+                </div>
+                
+              
+              )
+              }
               <div className="flex w-full items-center px-0 py-[4px] relative flex-[0_0_auto] rounded-[8px]">
                 <p className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#5c5c5c] text-[14px] tracking-[0] leading-[16.8px] whitespace-nowrap">
                   The gas owed by the address
