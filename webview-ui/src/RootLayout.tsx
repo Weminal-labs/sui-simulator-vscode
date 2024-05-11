@@ -2,6 +2,7 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import { Rainbow } from "./components/Rainbow";
 import { Feedback } from "./components/Feedback";
+import TestComponent from "./components/Test";
 
 export const RootLayout = () => {
   return (

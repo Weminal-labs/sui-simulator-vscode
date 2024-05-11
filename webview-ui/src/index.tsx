@@ -13,6 +13,7 @@ import { MySuiEnvProvider } from "./context/MySuiEnvProvider";
 import { MySuiAccountProvider } from "./context/MySuiAccountProvider";
 import { PackageExplorer } from "./features/packageExplorer/index";
 import { MySuiAliasProvider } from "./context/MySuiAliasProvider";
+import Development from "./features/development";
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -36,6 +37,8 @@ if (root) {
                     <Route index element={<App />} />
                     <Route path="environment" element={<SuiEnv />} />
                     <Route path="gas-address" element={<GasAddress />} />
+                    <Route path="development" element={<Development />} />
+
                     <Route path="build-test-publish" element={<BuildTestPublish />} />
                     <Route path="explorer" element={<PackageExplorer />} />
                   </Route>
