@@ -5,3 +5,6 @@ dist-ssr
 build
 build-ssr
 *.local
+
+# config 
+pakage-lock.json
