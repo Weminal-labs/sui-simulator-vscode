@@ -18,7 +18,6 @@ export const CreateTransaction = () => {
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setselectedCommand(event.target.value);
-    console.log(event);
   };
 
   const renderSelectedComponent = () => {
@@ -41,8 +40,8 @@ export const CreateTransaction = () => {
     <>
       <div className="h-[200vh] grow overflow-y-scroll">
         <div className="absolute w-[940px] sidebar:w-[400px] h-[766px] top-[-178px] left-[25px]">
-          <div className="flex flex-col w-full items-start gap-[36px] absolute top-[228px] left-0">
-            {/* <div className="relative w-full top-16"> */}
+          <div className="flex flex-col w-full items-start gap-[64px] absolute top-[228px] left-0">
+            <div className="relative w-full top-16">
               <div
                 className="flex items-end gap-[8px] relative self-stretch w-full flex-[0_0_auto]"
                 onClick={handleNavigate}>
@@ -50,15 +49,15 @@ export const CreateTransaction = () => {
                 <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[18px] text-center tracking-[0] leading-[21.6px] whitespace-nowrap uppercase">
                   Simulation
                 </div>
-              {/* </div> */}
+              </div>
             </div>
-            <div className="relative flex flex-col mt-4 w-full gap-3">
+            <div className="relative flex flex-col ">
               <div className="w-fit font-normal text-white text-[20px] uppercase">Command</div>
               <div className="font-normal text-white text-[20px] ">
                 <select
                   value={selectedCommand}
                   onChange={handleChange}
-                  className="text-white bg-black p-3 rounded-md">
+                  className="text-white bg-black">
                   <option value="" className="text-white">
                     Select an option
                   </option>
@@ -77,6 +76,7 @@ export const CreateTransaction = () => {
                 </select>
                 {renderSelectedComponent()}
               </div>
+              {renderSelectedComponent()}
             </div>
           </div>
         </div>
