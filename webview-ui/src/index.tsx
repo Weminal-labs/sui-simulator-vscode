@@ -14,6 +14,8 @@ import { MySuiAccountProvider } from "./context/MySuiAccountProvider";
 import { PackageExplorer } from "./features/packageExplorer/index";
 import { MySuiAliasProvider } from "./context/MySuiAliasProvider";
 import Development from "./features/development";
+import Simulation from "./features/simulation";
+import { CreateTransaction } from "./features/simulation/createTransaction";
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -40,6 +42,8 @@ if (root) {
                     <Route path="development" element={<Development />} />
 
                     <Route path="build-test-publish" element={<BuildTestPublish />} />
+                    <Route path="simulation" element={<Simulation />} />
+                    <Route path="create-transaction" element={<CreateTransaction />} />
                     <Route path="explorer" element={<PackageExplorer />} />
                   </Route>
                 </Routes>
