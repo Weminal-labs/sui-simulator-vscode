@@ -8,7 +8,6 @@ import { CreateTransaction } from "./createTransaction";
 import { ListTransaction } from "./listTransaction";
 
 const Simulation = () => {
-  const [showCreateTransaction, setShowCreateTransaction] = useState<boolean>(false);
   const navigate = useNavigate();
   const handleNavigate = () => {
     navigate("/");

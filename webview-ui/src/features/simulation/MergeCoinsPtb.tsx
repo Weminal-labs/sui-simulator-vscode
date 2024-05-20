@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 
 const MergeCoinsPtb = () => {
+  const [addReceiver, setAddReceiver] = useState('@')
   const objectList = [
     { name: "Object 1", value: 100, balance: 50 },
     { name: "Object 2", value: 200, balance: 100 },
@@ -18,13 +19,17 @@ const MergeCoinsPtb = () => {
         </button>
       </div>
       <div className="flex gap-5 items-center">
-        <div className="border border-red-100 w-[200px] p-4">Object Sender</div>
+        <div className="border border-red-100 w-[200px] p-4">
+          <button>
+Object Recerver
+          </button>
+        </div>
         <div className="flex-1">
           <input
-            type="number"
-            // value={amount}
+            type="text"
+            value={addReceiver}
             onChange={(e) => {
-              // setAmount(e.target.value);
+              setAddReceiver(e.target.value);
             }}
             className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"></input>
         </div>
@@ -61,6 +66,7 @@ const MergeCoinsPtb = () => {
                   <td className="px-6 py-4 border-b border-white text-white">{obj.balance}</td>
                   <td className="px-6 py-4 border-b border-white text-white">
                     <button className="bg-white text-black px-3 py-1 rounded">Action</button>
+                    <input type="checkbox" />
                   </td>
                 </tr>
               ))}

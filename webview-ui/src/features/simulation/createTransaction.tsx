@@ -74,7 +74,6 @@ export const CreateTransaction = () => {
                     Merge-Coins
                   </option>
                 </select>
-                {renderSelectedComponent()}
               </div>
               {renderSelectedComponent()}
             </div>
