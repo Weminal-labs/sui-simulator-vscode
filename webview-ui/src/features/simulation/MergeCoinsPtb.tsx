@@ -42,14 +42,12 @@ const MergeCoinsPtb = () => {
   const handleSelectedMerged = async (gasCoinId: string) => {
     setMerged(gasCoinId);
     setIsShowMerged(!isShowMerged);
-    // const gasObject = await getObjectGas(gasCoinId);
-    // setGasMerged(gasObject);
+ 
   };
   const handleSelectedObjectPay = async (gasCoinId: string) => {
     setobjectPay(gasCoinId);
     setIsShowPay(!isShowPay);
-    // const gasObject = await getObjectGas(gasCoinId);
-    // setGasMerged(gasObject);
+
   };
   const handledSelectObject = (object:GasObject, isChecked:boolean)=>{
     setSelected((prevSelected) =>
@@ -58,6 +56,9 @@ const MergeCoinsPtb = () => {
         : prevSelected.filter((element) => element.gasCoinId !== object.gasCoinId)
     );
 
+  }
+  const handleSubmit = ()=>{
+    
   }
   return (
     <div className="flex flex-col gap-10 mt-5 ml-5 w-full">
@@ -169,7 +170,10 @@ const MergeCoinsPtb = () => {
                   Object
                 </th>
                 <th className="px-6 py-3 border-b border-white text-left text-white  leading-4 font-medium">
-                  Balance
+                  Mist Balance
+                </th>
+                <th className="px-6 py-3 border-b border-white text-left text-white  leading-4 font-medium">
+                  Sui Balance
                 </th>
                 <th className="px-6 py-3 border-b border-white text-left text-white leading-4 font-medium">
                   Selected
@@ -185,7 +189,10 @@ const MergeCoinsPtb = () => {
                         {shortenAddress(obj.gasCoinId, 5)}
                       </td>
                       <td className="px-6 py-4 border-b border-white text-white">
-                        {obj.gasBalance.toString()}
+                        {obj.mistBalance.toString()}
+                      </td>
+                      <td className="px-6 py-4 border-b border-white text-white">
+                        {obj.suiBalance}
                       </td>
                       <td className="px-6 py-4 border-b border-white text-white">
                         <input

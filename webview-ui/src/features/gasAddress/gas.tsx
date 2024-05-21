@@ -8,7 +8,8 @@ import styles from "./address.module.css";
 
 export interface GasObject {
   gasCoinId: string;
-  gasBalance: number;
+  mistBalance:Number;
+  suiBalance: string;
 }
 
 export const Gas = () => {
