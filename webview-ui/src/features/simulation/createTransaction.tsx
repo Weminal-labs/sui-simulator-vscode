@@ -51,13 +51,13 @@ export const CreateTransaction = () => {
                 </div>
               </div>
             </div>
-            <div className="relative flex flex-col ">
+            <div className="relative flex flex-col w-full gap-3">
               <div className="w-fit font-normal text-white text-[20px] uppercase">Command</div>
               <div className="font-normal text-white text-[20px] ">
                 <select
                   value={selectedCommand}
                   onChange={handleChange}
-                  className="text-white bg-black">
+                  className="text-white bg-black p-3 rounded-md">
                   <option value="" className="text-white">
                     Select an option
                   </option>
