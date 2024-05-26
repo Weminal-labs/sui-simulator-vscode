@@ -18,6 +18,7 @@ import Simulation from "./features/simulation";
 import { CreateTransaction } from "./features/simulation/createTransaction";
 import { AssignPbtProvider } from "./context/AssignPtbProvider";
 import DetailTransaction from "./features/simulation/DetailTransaction";
+import SavePtb from "./features/simulation/SavePtb";
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -43,6 +44,7 @@ if (root) {
                       <Route path="environment" element={<SuiEnv />} />
                       <Route path="gas-address" element={<GasAddress />} />
                       <Route path="development" element={<Development />} />
+                      <Route path="SavePtb" element={<SavePtb />} />
 
                       <Route path="build-test-publish" element={<BuildTestPublish />} />
                       <Route path="simulation" element={<Simulation />} />

@@ -3,14 +3,12 @@ import { AssignObject } from "../types";
 import { GasObject } from "../features/gasAddress/gas";
 
 export type AssignContextType = {
+  assignList:AssignObject[]
   assigns: string;
-  mergeCommand:string,
-  splitCommand:string,
-  // value: string;
+  handleAddCommand(value:string):void
+  setAssignList:React.Dispatch<React.SetStateAction<AssignObject[]>>
   setAssigns: React.Dispatch<React.SetStateAction<string>>;
 
-  setMergeCommand: React.Dispatch<React.SetStateAction<string>>;
-  setSplitCommand: React.Dispatch<React.SetStateAction<string>>;
   // mergeReceiver:GasObject,
   // mergeList:GasObject[],
   // mergePayObject:GasObject,
@@ -29,9 +27,12 @@ const AssignContext = createContext<AssignContextType | null>(null);
 export const AssignPbtProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // const [assigns, setAssigns] = useState<AssignObject[]>([]);
   const [assigns, setAssigns] = useState<string>("");
-
-  const [mergeCommand,setMergeCommand]= useState<string>("")
-  const [splitCommand,setSplitCommand] = useState<string>("")
+  const [assignList,setAssignList] =  useState<AssignObject[]>([]);
+  const handleAddCommand = (value: string)=>{
+    setAssigns((prev)=>{
+      return prev+" "+value
+    })
+  }
   // const [name, setName] = useState<string>("");
   // const [value, setValue] = useState<string>("");
   // const [assignValue,setAssignValue] = useState<AssignObject>()
@@ -59,12 +60,12 @@ export const AssignPbtProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     <AssignContext.Provider
       value={{
         assigns,
-        
-        mergeCommand,
-        splitCommand,
-        setMergeCommand,
-        setSplitCommand,
-        setAssigns
+        assignList,
+
+        setAssigns,
+        setAssignList,
+        handleAddCommand,
+ 
         // name,
         // setName,
         // value,

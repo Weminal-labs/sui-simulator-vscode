@@ -7,11 +7,16 @@ import MergeCoinsPtb from "./MergeCoinsPtb";
 import MoveCallPtb from "./MoveCallPtb";
 import SplitCoinsPtb from "./SplitCoinsPtb";
 import TransferObjectPtb from "./TransferObjectPtb";
+import { useAssignContext } from "../../context/AssignPtbProvider";
 
 export const CreateTransaction = () => {
   const [selectedCommand, setselectedCommand] = useState<string>("");
   const navigate = useNavigate();
-
+  const {
+   
+    assigns,
+   assignList
+  } = useAssignContext();
   const handleNavigate = () => {
     navigate("/simulation");
   };
@@ -19,7 +24,11 @@ export const CreateTransaction = () => {
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setselectedCommand(event.target.value);
   };
+  const runHandle = ()=>{
+    console.log("assisg: "+assignList[0].command+"\nname: "+assignList[0].name)
 
+
+  }
   const renderSelectedComponent = () => {
     switch (selectedCommand) {
       case "Assign":
@@ -52,7 +61,18 @@ export const CreateTransaction = () => {
               </div>
             </div>
             <div className="relative flex flex-col w-full gap-3">
-              <div className="w-fit font-normal text-white text-[20px] uppercase">Command</div>
+              <div className="flex justify-between">
+                <div className="w-fit font-normal text-white text-[20px] uppercase">Command</div>
+                <div className="w-[100px]" onClick={()=>{navigate("/SavePtb")}}>
+                  <button className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]">
+                    <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+                      Save
+                    </div>
+                  </button>
+                </div>
+                <div onClick={()=>runHandle()}>Runnnnnnnnnn</div>
+
+              </div>
               <div className="font-normal text-white text-[20px] ">
                 <select
                   value={selectedCommand}
@@ -79,6 +99,7 @@ export const CreateTransaction = () => {
             </div>
           </div>
         </div>
+
       </div>
     </>
   );

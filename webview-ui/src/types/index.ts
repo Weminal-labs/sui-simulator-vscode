@@ -34,5 +34,6 @@ export interface MyCustomTerminalResponse {
 }
 export interface AssignObject{
   name: string,
-  value: string,
+  index: string,
+  command: string,
 }
