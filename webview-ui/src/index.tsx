@@ -17,6 +17,7 @@ import Development from "./features/development";
 import Simulation from "./features/simulation";
 import { CreateTransaction } from "./features/simulation/createTransaction";
 import { AssignPbtProvider } from "./context/AssignPtbProvider";
+import DetailTransaction from "./features/simulation/DetailTransaction";
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -45,8 +46,10 @@ if (root) {
 
                       <Route path="build-test-publish" element={<BuildTestPublish />} />
                       <Route path="simulation" element={<Simulation />} />
+                      <Route  path="detail-transaction/:id" element={<DetailTransaction />} />
                       <Route path="create-transaction" element={<CreateTransaction />} />
                       <Route path="explorer" element={<PackageExplorer />} />
+
                     </Route>
                   </Routes>
                 </MemoryRouter>

@@ -1,21 +1,50 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-export const ListTransaction = () => {
-  const navigate = useNavigate();
-  return (
-    <>
-      <div className="relative h-10 w-full top-16 border border-solid border-white">
-        <div className="grid grid-cols-3 gap-4 [font-family:'Aeonik-Medium',Helvetica] font-medium text-white text-[14px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-          <div className="text-center p-2">Number</div>
-          <div className="text-center  p-2">Name</div>
-          <div className="text-center  p-2">Status</div>
+interface Transaction {
+  id: number;
+  name: string;
+  command: string;
+}
 
-          <div className="text-center p-2">1</div>
-          <div className="text-center p-2">test_game_func</div>
-          <div className="text-center p-2">Active</div>
-        </div>
-      </div>
-    </>
+export const ListTransaction: React.FC = () => {
+  const navigate = useNavigate();
+
+  // se sd useContext de lay transaction
+  const transactions: Transaction[] = [
+    { id: 1, name: "test_game_func", command: `sui client ptb \\ \n--assign A none` },
+    { id: 2, name: "test_command", command: `sui client ptb \\ \n--assign to_add @0x123` }
+  ];
+
+  const handleRowClick = (id: number) => {
+    navigate(`/detail-transaction/${id}`);
+    console.log("detail transaction: " + id);
+  };
+  const handleClickTransaction = () => {
+    console.log("handleClickTransaction");
+  };
+
+  return (
+    <div className="container mx-auto mt-10">
+      <table className="text-center min-w-full ">
+        <thead className="text-white border border-solid border-white">
+          <tr>
+            <th className="w-1/3 py-3 px-4 font-semibold text-sm">Number</th>
+            <th className="w-1/3 py-3 px-4 font-semibold text-sm">Name</th>
+          </tr>
+        </thead>
+        <tbody className="text-white">
+          {transactions.map((row) => (
+            <tr
+              key={row.id}
+              onClick={() => handleRowClick(row.id)}
+              className="hover:bg-gray-800 cursor-pointer">
+              <td className="w-1/3 py-3 px-4">{row.id}</td>
+              <td className="w-1/3 py-3 px-4">{row.name}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
