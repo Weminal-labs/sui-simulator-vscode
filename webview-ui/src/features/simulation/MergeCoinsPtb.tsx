@@ -55,14 +55,14 @@ const MergeCoinsPtb = () => {
     );
   };
   function convertSelectedToString(selected: GasObject[]): string {
-    return selected.map(item => `@${item.gasCoinId}`).join(',');
-}
+    return selected.map((item) => `@${item.gasCoinId}`).join(",");
+  }
   const handleSubmit = () => {
     console.log("-----SUBMIT MERGE PTB-----");
-   const SelectObjectID: string = convertSelectedToString(selected);
+    const SelectObjectID: string = convertSelectedToString(selected);
 
-   let result = `--merge-coins @${merged} "[${SelectObjectID}]" --gas-coin @${objectPay}`
-  console.log(result);
+    let result = `--merge-coins @${merged} "[${SelectObjectID}]" --gas-coin @${objectPay}`;
+    console.log(result);
   };
   return (
     <div className="flex flex-col gap-10 mt-5 ml-5 w-full">
@@ -159,7 +159,7 @@ const MergeCoinsPtb = () => {
           className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]"
           onClick={handleSubmit}>
           <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-           Add Command 
+            Add Command
           </div>
         </button>
       </div>

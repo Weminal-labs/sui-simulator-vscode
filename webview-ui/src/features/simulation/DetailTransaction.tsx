@@ -1,7 +1,13 @@
-import React, { useContext } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "../../icons/ArrowLeft";
 
+import { Controlled as CodeMirror } from "react-codemirror2";
+
+// Import Codemirror styles and modes
+import "codemirror/lib/codemirror.css";
+import "codemirror/theme/material.css";
+import "codemirror/mode/shell/shell.js";
 interface DetailParams {
   id: string;
 }
@@ -17,12 +23,24 @@ const DetailTransaction: React.FC = () => {
 
   const transaction = transactions.find((t) => t.id === parseInt(id));
 
+  const [textarea, setTextarea] = useState<string>(transaction?.command || "");
+  const [editorHeight, setEditorHeight] = useState("auto");
+  const editorRef = useRef<any>(null);
+  //   useEffect(() => {
+  //     if (editorRef.current) {
+  //       const doc = editorRef.current.editor.getDoc();
+  //       const lineCount = doc.lineCount();
+  //       const lineHeight = 24; // Assume 24px per line height
+  //       const newHeight = lineCount * lineHeight + 50; // Adjust height with padding
+  //       editorRef.current.editor.setSize("100%", newHeight);
+  //     }
+  //   }, [textarea]);
   if (!transaction) {
     return <div> Transaction not found</div>;
   }
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(transaction.command);
+    navigator.clipboard.writeText(textarea);
   };
 
   const handleNavigate = () => {
@@ -31,7 +49,6 @@ const DetailTransaction: React.FC = () => {
   const handleRun = () => {
     console.log(transaction.command);
   };
-
   return (
     <div className="h-[200vh] grow overflow-y-scroll">
       <div className="absolute w-[640px] sidebar:w-[400px] h-[766px] top-[-178px] left-[25px]">
@@ -49,12 +66,39 @@ const DetailTransaction: React.FC = () => {
             <div>Transaction Detail: </div>
             <div className="container mx-auto mt-10 p-6 rounded-lg">
               <h2 className="text-xl font-bold">Transaction: #{transaction.name}</h2>
-              <textarea
-                className="w-full mt-4 p-2 border rounded text-black"
-                rows={10}
-                value={transaction.command}
-                readOnly
-              />
+              <div className="relative bg-gray-800 rounded-lg p-4">
+                <CodeMirror
+                  value={textarea}
+                  options={{
+                    mode: "shell",
+                    theme: "dracula",
+                    lineNumbers: false,
+                    viewportMargin: Infinity,
+                    style: { backgroundColor: "1F1F1F" },
+                  }}
+                  editorDidMount={(editor) => {
+                    editorRef.current = editor;
+                    editor.setSize("100%", "auto");
+                  }}
+                  className="my-codemirror w-full bg-gray-800"
+                  // style={{ height: editorHeight }} // Apply dynamic height
+                  onBeforeChange={(editor, data, value) => {
+                    setTextarea(value);
+                  }}
+                />
+                <button
+                  onClick={handleCopy}
+                  className="absolute top-2 right-2 p-1 bg-gray-700 text-white rounded hover:bg-gray-600 focus:outline-none">
+                  <svg
+                    className="w-6 h-6"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 4a2 2 0 00-2 2v10a2 2 0 002 2h6a2 2 0 002-2v-4h-2v4H8V6h4V4H8z" />
+                    <path d="M10 2v2h6v10h2V4a2 2 0 00-2-2h-6z" />
+                  </svg>
+                </button>
+              </div>
               <div className="mt-4 flex space-x-2">
                 <button
                   onClick={handleRun}
