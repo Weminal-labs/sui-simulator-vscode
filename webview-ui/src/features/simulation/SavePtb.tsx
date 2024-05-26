@@ -7,6 +7,7 @@ import { useMySuiAccount } from "../../context/MySuiAccountProvider";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "../../icons/ArrowLeft";
 import { useAssignContext } from "../../context/AssignPtbProvider";
+import { v4 as uuidv4 } from 'uuid';
 
 const SavePtb = () => {
   const [objectPay, setObjectPay] = useState<GasObject | null>(null);
@@ -27,13 +28,14 @@ const [name,setName]= useState<string>("")
   };
   const {
         assigns,
-        setAssignList,
+        setTransactions,
         setAssigns
   } = useAssignContext();
   const handleSubmit = () => {
+    const newId = uuidv4(); // Generate a unique ID
 
-    setAssignList((prev)=>{
-        return [...prev,{command:assigns,index:"1",name:name}]
+    setTransactions((prev)=>{
+        return [...prev,{command:assigns,id:newId,name:name}]
     })
     setAssigns("")
   };

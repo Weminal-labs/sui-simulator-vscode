@@ -23,7 +23,7 @@ export const SplitCoinsPtb = () => {
     setAssigns,
  
     handleAddCommand
-  } = useAssignContext();
+    } = useAssignContext();
   useEffect(() => {
     async function getGasObjects() {
       const resp = await requestDataFromTerminal({ cmd: SuiCommand.GET_GAS_OBJECTS });

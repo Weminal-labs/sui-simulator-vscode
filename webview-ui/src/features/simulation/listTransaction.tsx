@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useAssignContext } from "../../context/AssignPtbProvider";
 
 interface Transaction {
   id: number;
@@ -11,12 +12,14 @@ export const ListTransaction: React.FC = () => {
   const navigate = useNavigate();
 
   // se sd useContext de lay transaction
-  const transactions: Transaction[] = [
-    { id: 1, name: "test_game_func", command: `sui client ptb \\ \n--assign A none` },
-    { id: 2, name: "test_command", command: `sui client ptb \\ \n--assign to_add @0x123` }
-  ];
 
-  const handleRowClick = (id: number) => {
+  const {
+ 
+    setTransactions,
+    transactions,
+    
+  } = useAssignContext();
+  const handleRowClick = (id: string) => {
     navigate(`/detail-transaction/${id}`);
     console.log("detail transaction: " + id);
   };

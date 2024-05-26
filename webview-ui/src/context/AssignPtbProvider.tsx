@@ -3,10 +3,10 @@ import { AssignObject } from "../types";
 import { GasObject } from "../features/gasAddress/gas";
 
 export type AssignContextType = {
-  assignList:AssignObject[]
+  transactions:AssignObject[]
   assigns: string;
   handleAddCommand(value:string):void
-  setAssignList:React.Dispatch<React.SetStateAction<AssignObject[]>>
+  setTransactions:React.Dispatch<React.SetStateAction<AssignObject[]>>
   setAssigns: React.Dispatch<React.SetStateAction<string>>;
 
   // mergeReceiver:GasObject,
@@ -27,7 +27,7 @@ const AssignContext = createContext<AssignContextType | null>(null);
 export const AssignPbtProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // const [assigns, setAssigns] = useState<AssignObject[]>([]);
   const [assigns, setAssigns] = useState<string>("");
-  const [assignList,setAssignList] =  useState<AssignObject[]>([]);
+  const [transactions,setTransactions] =  useState<AssignObject[]>([]);
   const handleAddCommand = (value: string)=>{
     setAssigns((prev)=>{
       return prev+" "+value
@@ -60,10 +60,10 @@ export const AssignPbtProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     <AssignContext.Provider
       value={{
         assigns,
-        assignList,
+        transactions,
 
         setAssigns,
-        setAssignList,
+        setTransactions,
         handleAddCommand,
  
         // name,

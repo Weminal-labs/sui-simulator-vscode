@@ -15,7 +15,7 @@ export const CreateTransaction = () => {
   const {
    
     assigns,
-   assignList
+   
   } = useAssignContext();
   const handleNavigate = () => {
     navigate("/simulation");
@@ -24,11 +24,7 @@ export const CreateTransaction = () => {
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setselectedCommand(event.target.value);
   };
-  const runHandle = ()=>{
-    console.log("assisg: "+assignList[0].command+"\nname: "+assignList[0].name)
 
-
-  }
   const renderSelectedComponent = () => {
     switch (selectedCommand) {
       case "Assign":
@@ -70,7 +66,6 @@ export const CreateTransaction = () => {
                     </div>
                   </button>
                 </div>
-                <div onClick={()=>runHandle()}>Runnnnnnnnnn</div>
 
               </div>
               <div className="font-normal text-white text-[20px] ">

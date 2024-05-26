@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "../../icons/ArrowLeft";
+import { useAssignContext } from "../../context/AssignPtbProvider";
 
 import { Controlled as CodeMirror } from "react-codemirror2";
 
@@ -13,16 +14,21 @@ interface DetailParams {
   id: string;
 }
 // se sd useContext de lay transaction
-const transactions = [
-  { id: 1, name: "test_game_func", command: `sui client ptb \\ \n--assign A none` },
-  { id: 2, name: "test_command", command: `sui client ptb \\ \n--assign to_add @0x123` },
-];
+// const transactions = [
+//   { id: 1, name: "test_game_func", command: `sui client ptb \\ \n--assign A none` },
+//   { id: 2, name: "test_command", command: `sui client ptb \\ \n--assign to_add @0x123` },
+// ];
 
 const DetailTransaction: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-
-  const transaction = transactions.find((t) => t.id === parseInt(id));
+  const {
+ 
+    setTransactions,
+    transactions,
+    
+  } = useAssignContext();
+  const transaction = transactions.find((t) => t.id === id);
 
   const [textarea, setTextarea] = useState<string>(transaction?.command || "");
   const [editorHeight, setEditorHeight] = useState("auto");
