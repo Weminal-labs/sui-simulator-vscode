@@ -8,6 +8,7 @@ import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
 import "codemirror/mode/shell/shell.js";
+import '../../css/codeBlockLines.css';
 interface DetailParams {
   id: string;
 }
@@ -26,15 +27,15 @@ const DetailTransaction: React.FC = () => {
   const [textarea, setTextarea] = useState<string>(transaction?.command || "");
   const [editorHeight, setEditorHeight] = useState("auto");
   const editorRef = useRef<any>(null);
-  //   useEffect(() => {
-  //     if (editorRef.current) {
-  //       const doc = editorRef.current.editor.getDoc();
-  //       const lineCount = doc.lineCount();
-  //       const lineHeight = 24; // Assume 24px per line height
-  //       const newHeight = lineCount * lineHeight + 50; // Adjust height with padding
-  //       editorRef.current.editor.setSize("100%", newHeight);
-  //     }
-  //   }, [textarea]);
+    // useEffect(() => {
+    //   if (editorRef.current) {
+    //       const doc = editorRef.current.editor;
+    //     const lineCount = doc.lineCount();
+    //     const lineHeight = 24; // Assume 24px per line height
+    //     const newHeight = lineCount * lineHeight + 50; // Adjust height with padding
+    //     editorRef.current.editor.setSize("100%", newHeight);
+    //   }
+    // }, [textarea]);
   if (!transaction) {
     return <div> Transaction not found</div>;
   }
@@ -63,7 +64,7 @@ const DetailTransaction: React.FC = () => {
               </div>
             </div>
             {/* Transaction Detail */}
-            <div>Transaction Detail: </div>
+            <div className="text-lg front-bold ">Transaction Detail: </div>
             <div className="container mx-auto mt-10 p-6 rounded-lg">
               <h2 className="text-xl font-bold">Transaction: #{transaction.name}</h2>
               <div className="relative bg-gray-800 rounded-lg p-4">
@@ -71,7 +72,7 @@ const DetailTransaction: React.FC = () => {
                   value={textarea}
                   options={{
                     mode: "shell",
-                    theme: "dracula",
+                    theme:"material",
                     lineNumbers: false,
                     viewportMargin: Infinity,
                     style: { backgroundColor: "1F1F1F" },
