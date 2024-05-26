@@ -68,7 +68,7 @@ const MergeCoinsPtb = () => {
     <div className="flex flex-col gap-10 mt-5 ml-5 w-full">
       <div className="flex gap-5 items-center ">
         <div className="border border-red-100 w-[200px] p-4">
-          <button>Object Recerver</button>
+          <div>Object Recerver</div>
         </div>
         <div className="relative block flex-1">
           <div

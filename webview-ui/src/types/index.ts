@@ -32,3 +32,7 @@ export interface MyCustomTerminalResponse {
     isError: boolean;
   };
 }
+export interface AssignObject{
+  name: string,
+  value: string,
+}
