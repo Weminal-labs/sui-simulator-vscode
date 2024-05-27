@@ -6,12 +6,12 @@ import { useSuiClientContext } from "@mysten/dapp-kit";
 import { useMySuiAccount } from "../../context/MySuiAccountProvider";
 import { shortenAddress } from "../../utils/address_shortener";
 import styles from "../gasAddress/address.module.css";
-import { AssignObject } from "../../types";
+import { TransactionObject } from "../../types";
 
 export const AssignPtb = () => {
   const [name, setName] = useState<string>("");
   const [value, setValue] = useState<string>("");
-  const [assignList,setAssignList] =useState<AssignObject[]>([])
+  const [assignList,setAssignList] =useState<TransactionObject[]>([])
   const [isShowAddress, setIsShow] = useState<Boolean>(false);
   const { network } = useSuiClientContext();
   const {
@@ -24,16 +24,16 @@ export const AssignPtb = () => {
   } = useMySuiAccount();
   const [totalGas, setTotalGas] = useState<Number | null>(null);
 
-  const {
-    assigns,
-    // name,
-    // value,
-    // setName,
-    // setValue,
-    // handleAddAssign,
-    // handleEditAssign,
-    // handleRemoveAssign,
-  } = useAssignContext();
+  // const {
+  //   assigns,
+  //   // name,
+  //   // value,
+  //   // setName,
+  //   // setValue,
+  //   // handleAddAssign,
+  //   // handleEditAssign,
+  //   // handleRemoveAssign,
+  // } = useAssignContext();
 
   useEffect(() => {
     async function getAddresses() {
@@ -52,9 +52,9 @@ export const AssignPtb = () => {
     getAddresses();
     // showTotalGas();
   }, [network]);
-  if (assigns === null) {
-    console.log("assigs is null");
-  }
+  // if (assigns === null) {
+  //   console.log("assigs is null");
+  // }
 
   return (
     <>

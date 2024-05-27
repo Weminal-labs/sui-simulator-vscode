@@ -15,8 +15,9 @@ export const ListTransaction: React.FC = () => {
 
   const {
  
-    setTransactions,
-    transactions,
+    // setTransactions,
+    // transactions,
+    state
     
   } = useAssignContext();
   const handleRowClick = (id: string) => {
@@ -37,7 +38,7 @@ export const ListTransaction: React.FC = () => {
           </tr>
         </thead>
         <tbody className="text-white">
-          {transactions.map((row) => (
+          {state.transactions.map((row) => (
             <tr
               key={row.id}
               onClick={() => handleRowClick(row.id)}

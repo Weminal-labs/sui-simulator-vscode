@@ -1,5 +1,6 @@
 import { SuiMoveNormalizedFunction } from "@mysten/sui.js/client";
 import { MoveCallStatus } from "../../../src/enums";
+import { GasObject } from "../features/gasAddress/gas";
 
 export interface ActionType {
   type: string;
@@ -32,8 +33,16 @@ export interface MyCustomTerminalResponse {
     isError: boolean;
   };
 }
-export interface AssignObject{
+export interface TransactionObject{
   name: string,
   id: string,
   command: string,
+}
+export interface PTBType{
+  transactions:TransactionObject[]
+  command: string;
+  receiver: GasObject|null; 
+  selected: GasObject[];
+  splitObject:GasObject|null;
+
 }

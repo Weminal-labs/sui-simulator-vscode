@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "../../icons/ArrowLeft";
 
@@ -8,15 +8,19 @@ import MoveCallPtb from "./MoveCallPtb";
 import SplitCoinsPtb from "./SplitCoinsPtb";
 import TransferObjectPtb from "./TransferObjectPtb";
 import { useAssignContext } from "../../context/AssignPtbProvider";
+import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
+import { SuiCommand } from "../../../../src/enums";
+import { useMySuiAccount } from "../../context/MySuiAccountProvider";
 
 export const CreateTransaction = () => {
   const [selectedCommand, setselectedCommand] = useState<string>("");
   const navigate = useNavigate();
   const {
    
-    assigns,
-   
+  
   } = useAssignContext();
+  const { getObjectGas, gasObjects, setGasObjects } = useMySuiAccount();
+
   const handleNavigate = () => {
     navigate("/simulation");
   };
@@ -24,7 +28,18 @@ export const CreateTransaction = () => {
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setselectedCommand(event.target.value);
   };
+  // useEffect(()=>{
+  //       async function getGasObjects() {
+  //     const resp = await requestDataFromTerminal({
+  //       cmd: SuiCommand.GET_GAS_OBJECTS,
+  //     });
+  //     const { stdout } = resp;
+  //     const objects = JSON.parse(stdout);
+  //     setGasObjects(objects);
+  //   }
 
+  //   getGasObjects();
+  // },[])
   const renderSelectedComponent = () => {
     switch (selectedCommand) {
       case "Assign":

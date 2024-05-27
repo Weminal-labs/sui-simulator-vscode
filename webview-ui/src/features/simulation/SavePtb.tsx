@@ -7,14 +7,14 @@ import { useMySuiAccount } from "../../context/MySuiAccountProvider";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "../../icons/ArrowLeft";
 import { useAssignContext } from "../../context/AssignPtbProvider";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const SavePtb = () => {
   const [objectPay, setObjectPay] = useState<GasObject | null>(null);
   const [isShowObjectPay, setIsShowObjectPay] = useState(false);
   const [budget, setBudget] = useState<string>("100000000"); // Change the type to string
-const [name,setName]= useState<string>("")
-  
+  const [name, setName] = useState<string>("");
+
   const navigate = useNavigate();
 
   const { gasObjects, getObjectGas, setGasObjects } = useMySuiAccount();
@@ -26,19 +26,25 @@ const [name,setName]= useState<string>("")
 
     setIsShowObjectPay(!isShowObjectPay);
   };
-  const {
-        assigns,
-        setTransactions,
-        setAssigns
-  } = useAssignContext();
+  const {addTransaction,state} = useAssignContext();
   const handleSubmit = () => {
     const newId = uuidv4(); // Generate a unique ID
+    const addBudget = `--gas-budget ${objectPay?.gasCoinId} ${budget}`;
+        addTransaction( { command:state.command + addBudget, id: newId, name: name })
 
-    setTransactions((prev)=>{
-        return [...prev,{command:assigns,id:newId,name:name}]
-    })
-    setAssigns("")
   };
+  const checkGasId = (gasCoin: GasObject): Boolean=>{
+    if(state.receiver!==null &&state.receiver.gasCoinId===gasCoin.gasCoinId){
+      return false
+    }
+    else if(state.splitObject!==null &&state.splitObject.gasCoinId===gasCoin.gasCoinId){
+      return false
+    }
+    else if(state.selected!==null &&state.selected.includes(gasCoin)){
+      return false
+    }
+    return true
+  }
   return (
     <div className="h-[100vh] grow overflow-y-scroll">
       <div className="absolute w-[640px] sidebar:w-[400px] h-[766px] top-[-178px] left-[25px]">
@@ -72,11 +78,14 @@ const [name,setName]= useState<string>("")
                 setIsShowObjectPay(!isShowObjectPay);
               }}
               className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
-              <span>{objectPay ? shortenAddress(objectPay.gasCoinId, 5) : "Choose gas object"}</span>
+              <span>
+                {objectPay ? shortenAddress(objectPay.gasCoinId, 5) : "Choose gas object"}
+              </span>
             </div>
             {isShowObjectPay && (
               <ul className="z-10 absolute block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
-                {gasObjects.map((gasObject: GasObject, index: number) => {
+                {gasObjects.map((gasObject: GasObject, index: number) => 
+                {if(checkGasId(gasObject)){
                   return (
                     <li className="flex justify-between items-center" key={index}>
                       <span
@@ -93,7 +102,7 @@ const [name,setName]= useState<string>("")
                       />
                     </li>
                   );
-                })}
+                }})}
               </ul>
             )}
           </div>

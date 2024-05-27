@@ -47,4 +47,3 @@ export interface effects {
     };
     dependencies: string[];
   }
-  

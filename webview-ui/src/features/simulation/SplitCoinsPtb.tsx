@@ -19,10 +19,9 @@ export const SplitCoinsPtb = () => {
     setCurrentGasObject,
   } = useMySuiAccount();
   const {
-    assigns,
-    setAssigns,
+    state,
  
-    handleAddCommand
+    addSplitCommand
     } = useAssignContext();
   useEffect(() => {
     async function getGasObjects() {
@@ -33,18 +32,17 @@ export const SplitCoinsPtb = () => {
       setGasObjects(objects);
     }
     getGasObjects();
-  }, [setGasObjects]);
+  }, []);
 
-  const [split, setSplit] = useState<string>("");
-  const [objectPay, setobjectPay] = useState<string>("");
+  const [split, setSplit] = useState<GasObject>();
   const [isShowSplit, setIsShowSplit] = useState<boolean>(false);
-  const [selected, setSelected] = useState<GasObject[]>([]);
+  // const [selected, setSelected] = useState<GasObject[]>([]);
   const [entries, setEntries] = useState<{ amount: number; address: string }[]>([
     { amount: 10000, address: "" },
   ]);
 
-  const handleSelectedSplit = async (gasCoinId: string) => {
-    setSplit(gasCoinId);
+  const handleSelectedSplit = async (gasCoin: GasObject) => {
+    setSplit(gasCoin);
     setIsShowSplit(!isShowSplit);
   };
 
@@ -72,14 +70,14 @@ export const SplitCoinsPtb = () => {
   // }
   const handleSubmit = () => {
     const result = entries.map((element, index) => {
-      return `--transfer object [coins.${index}] @${element.address}`;
+      return `--transfer-object "[coins.${index}]" @${element.address}`;
     });
     const amounts = entries.map((ele) => ele.amount);
-    const splitCommand = `--split-coins ${split} "[${amounts.join(",")}]"\\--assign coins \\`;
+    const splitCommand = `--split-coins ${split?.gasCoinId} "[${amounts.join(",")}]"\\ \n--assign coins \\ \n`;
 
-    const finalCommand = splitCommand + result.join("\\");
+    const finalCommand = splitCommand + result.join("\\ \n");
     console.log(finalCommand);
-    handleAddCommand(finalCommand)
+    addSplitCommand(finalCommand,split!)
     };
   return (
     <div className="flex flex-col gap-10 mt-5 ml-5 w-full">
@@ -92,21 +90,21 @@ export const SplitCoinsPtb = () => {
           <div
             className="block w-full h-[54px] px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
             onClick={() => setIsShowSplit(!isShowSplit)}>
-            <span>{split ? shortenAddress(split, 5) : "Choose gas object"}</span>
+            <span>{split ? shortenAddress(split.gasCoinId, 5) : "Choose gas object"}</span>
           </div>
 
           {isShowSplit && (
             <ul className="z-10 absolute block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
               {gasObjects.map((gasObject: GasObject, index) => {
-                if (!selected.includes(gasObject) && gasObject.gasCoinId !== objectPay) {
+                if (!state.selected?.includes(gasObject) && state.receiver?.gasCoinId!==gasObject.gasCoinId) {
                   return (
                     <li
                       className="flex justify-between items-center"
-                      onClick={() => handleSelectedSplit(gasObject.gasCoinId)}
+                      onClick={() => handleSelectedSplit(gasObject)}
                       key={index}>
                       <span
                         className={`${
-                          split && split === gasObject.gasCoinId ? styles["activeAddress"] : ""
+                          split && split.gasCoinId === gasObject.gasCoinId ? styles["activeAddress"] : ""
                         }`}>
                         {shortenAddress(gasObject.gasCoinId, 5)}
                       </span>
@@ -155,7 +153,7 @@ export const SplitCoinsPtb = () => {
         <div className="w-[200px]">
           <button
             className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]"
-            onClick={handleSubmit}>
+            onClick={()=>handleSubmit()}>
             <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
               Add Command
             </div>

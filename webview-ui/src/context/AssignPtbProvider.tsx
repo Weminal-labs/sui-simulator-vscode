@@ -1,14 +1,18 @@
-import React, { createContext, useContext, useState } from "react";
-import { AssignObject } from "../types";
+import React, { createContext, useContext, useReducer, useState } from "react";
+import { PTBType, TransactionObject } from "../types";
 import { GasObject } from "../features/gasAddress/gas";
+import { PTBReducer } from "../reducer/PtbReducer";
 
 export type AssignContextType = {
-  transactions:AssignObject[]
-  assigns: string;
-  handleAddCommand(value:string):void
-  setTransactions:React.Dispatch<React.SetStateAction<AssignObject[]>>
-  setAssigns: React.Dispatch<React.SetStateAction<string>>;
-
+  // transactions:TransactionObject[]
+  // command: string;
+  // handleAddCommand(value:string):void
+  // setTransactions:React.Dispatch<React.SetStateAction<TransactionObject[]>>
+  // setCommand: React.Dispatch<React.SetStateAction<string>>;
+  state: PTBType;
+  addMergeCommand(value: string, receiver: GasObject, selected: GasObject[]): void;
+  addSplitCommand(value: string, splitObject: GasObject): void;
+  addTransaction (value: TransactionObject) :void
   // mergeReceiver:GasObject,
   // mergeList:GasObject[],
   // mergePayObject:GasObject,
@@ -23,16 +27,33 @@ export type AssignContextType = {
 };
 
 const AssignContext = createContext<AssignContextType | null>(null);
-
+const initState: PTBType = {
+  command: "",
+  transactions: [],
+  receiver: null,
+  selected: [],
+  splitObject: null,
+};
 export const AssignPbtProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // const [assigns, setAssigns] = useState<AssignObject[]>([]);
-  const [assigns, setAssigns] = useState<string>("");
-  const [transactions,setTransactions] =  useState<AssignObject[]>([]);
-  const handleAddCommand = (value: string)=>{
-    setAssigns((prev)=>{
-      return prev+" "+value
-    })
-  }
+  const [state, dispatch] = useReducer(PTBReducer, initState);
+
+  const [command, setCommand] = useState<string>("");
+  const [transactions, setTransactions] = useState<TransactionObject[]>([]);
+  const handleAddCommand = (value: string) => {
+    setCommand((prev) => {
+      return prev + "\n" + value;
+    });
+  };
+  const addMergeCommand = (value: string, receiver: GasObject, selected: GasObject[]) => {
+    dispatch({ type: "ADD_MERGE_COMMAND", value, receiver, selected });
+  };
+  const addSplitCommand = (value: string, splitObject: GasObject) => {
+    dispatch({ type: "ADD_SPLIT_COMMAND", value, splitObject });
+  };
+  const addTransaction = (value: TransactionObject) => {
+    dispatch({ type: "ADD_TRANSACTION", value });
+  };
   // const [name, setName] = useState<string>("");
   // const [value, setValue] = useState<string>("");
   // const [assignValue,setAssignValue] = useState<AssignObject>()
@@ -59,20 +80,10 @@ export const AssignPbtProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   return (
     <AssignContext.Provider
       value={{
-        assigns,
-        transactions,
-
-        setAssigns,
-        setTransactions,
-        handleAddCommand,
- 
-        // name,
-        // setName,
-        // value,
-        // setValue,
-        // handleAddAssign,
-        // handleEditAssign,
-        // handleRemoveAssign,
+        addMergeCommand,
+        addSplitCommand,
+        addTransaction,
+        state
       }}>
       {children}
     </AssignContext.Provider>

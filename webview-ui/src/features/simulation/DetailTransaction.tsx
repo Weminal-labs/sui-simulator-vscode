@@ -9,7 +9,7 @@ import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
 import "codemirror/mode/shell/shell.js";
-import '../../css/codeBlockLines.css';
+// import '../../css/codeBlockLines.css';
 interface DetailParams {
   id: string;
 }
@@ -24,11 +24,12 @@ const DetailTransaction: React.FC = () => {
   const { id } = useParams();
   const {
  
-    setTransactions,
-    transactions,
+    // setTransactions,
+    // transactions,
+    state
     
   } = useAssignContext();
-  const transaction = transactions.find((t) => t.id === id);
+  const transaction =state.transactions.find((t) => t.id === id);
 
   const [textarea, setTextarea] = useState<string>(transaction?.command || "");
   const [editorHeight, setEditorHeight] = useState("auto");
