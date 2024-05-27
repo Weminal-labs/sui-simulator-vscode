@@ -22,7 +22,7 @@ export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChild
     const { getObjectGas, gasObjects, setGasObjects } = useMySuiAccount();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     // fileInputRef?.current?.setAttribute("directory", "");
     // fileInputRef?.current?.setAttribute("webkitdirectory", "");
@@ -58,16 +58,26 @@ export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChild
   return (
     <>
       <div className="overflow-hidden w-full relative min-h-screen grow">
-        <div className="w-full">
-          <div className="ml-10 mt-12 flex flex-col h-[500px] items-start gap-[32px] w-[640px] sidebar:w-[400px]">
+        <div className="w-full min-h-screen">
+          <div className="ml-10 mt-12 flex flex-col items-start gap-[32px] w-[640px] sidebar:w-[400px]">
             <div className="relative w-[400px] mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[48px] text-center tracking-[-2.56px] leading-[76.8px] whitespace-nowrap flex flex-row justify-evenly">
               <Logo className="w-[64px] h-[64px]" />
               <div>Sui simulator</div>
             </div>
             <div className="w-full flex justify-center	">
               <div className=" flex justify-between text-black rounded-lg bg-slate-50 w-[160px] border-2 border-black cursor-pointer	">
-                <div className={`px-4 py-3 grow border-r-2	rounded-lg border-solid ${isSuiFile ? '' : 'bg-gray-400'}`} onClick={()=>handleToogle(false)}>Default</div>
-                <div className={`px-4 py-3 grow 	rounded-lg ${isSuiFile ? 'bg-gray-400' : ''}`}  onClick={()=>handleToogle(true)}>Config</div>
+                <div
+                  className={`px-4 py-3 grow border-r-2	rounded-lg border-solid ${
+                    isSuiFile ? "" : "bg-gray-400"
+                  }`}
+                  onClick={() => handleToogle(false)}>
+                  Default
+                </div>
+                <div
+                  className={`px-4 py-3 grow 	rounded-lg ${isSuiFile ? "bg-gray-400" : ""}`}
+                  onClick={() => handleToogle(true)}>
+                  Config
+                </div>
               </div>
             </div>
             <div className="w-full">
@@ -79,7 +89,9 @@ export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChild
               />
               <label
                 htmlFor="fileInput"
-                className={`flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px] ${ isSuiFile ? "block" : "hidden"}`}>
+                className={`flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px] ${
+                  isSuiFile ? "block" : "hidden"
+                }`}>
                 <span className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
                   Choose a file
                 </span>
@@ -106,15 +118,28 @@ export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChild
                   title="Build, Test And Publish"
                 />
               </Link>
-            <Link to="simulation" className="focus:outline-none">
-              <Tab icon={<RowVerticalIcon className="!relative !w-[24px] !h-[24px]" />}
-                title="Simulation"
-              />
+              <Link to="simulation" className="focus:outline-none">
+                <Tab
+                  icon={<RowVerticalIcon className="!relative !w-[24px] !h-[24px]" />}
+                  title="Simulation"
+                />
               </Link>
               <Link to="/explorer" className="focus:outline-none">
                 <Tab
                   icon={<ExplorerIcon className="!relative !w-[24px] !h-[24px]" />}
                   title="Explorer"
+                />
+              </Link>
+              <Link to="/front-end-simulation" className="focus:outline-none">
+                <Tab
+                  icon={<ExplorerIcon className="!relative !w-[24px] !h-[24px]" />}
+                  title="Front end Simulation"
+                />
+              </Link>
+              <Link to="/dynamic-object-graph" className="focus:outline-none">
+                <Tab
+                  icon={<ExplorerIcon className="!relative !w-[24px] !h-[24px]" />}
+                  title="Dynamic object graph"
                 />
               </Link>
             </div>

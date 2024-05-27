@@ -17,7 +17,7 @@ interface NewTransactionType {
   typeParameters: Record<string, string>; // Type parameters for the transaction
   inputs: (string | { object: string })[]; // Expected inputs for the transaction
   expectedInputs: (string | SuiMoveNormalizedType)[]; // Expected inputs for the transaction
-  outputs: { type: string }[]; // Expected outputs for the transaction
+  outputs: any[]; // Expected outputs for the transaction
   index: number; // Index of the transaction
 
   // For TransferObjects transactions
@@ -350,7 +350,7 @@ const prepareAssignment = (tx: NewTransactionType) => {
 };
 
 const ptbMoveCall = (tx: NewTransactionType) => {
-  return `${prepareAssignment(tx)}txb.moveCall({
+  return `\n${prepareAssignment(tx)}txb.moveCall({
 \t\ttarget: "${tx.target}",${prepareInputs(tx)}${getTypeParameters(tx)}
 });`;
 };
@@ -365,16 +365,54 @@ const ptbTransferObjects = (tx: NewTransactionType) => {
   }"))`;
 };
 
-export const ptbToCode = (transactions: NewTransactionType[]) => {
+const ptbSplitCoins = (tx: any) => {
+  return `\nconst [${tx.amounts.map(
+    (x: any, index: any) => `coin${index}`
+  )}] = txb.splitCoins(txb.gas, [${tx.amounts.map((x: any) => `txb.pure(${x.value})`)}]);`;
+};
+
+const ptbMergeCoins = (tx: any) => {
+  return `\ntxb.mergeCoins("${tx.destination.value}", [${tx.sources.map(
+    (x: any) => `txb.object("${x.value}")`
+  )}]);`;
+};
+
+export const ptbToCode = (transactions: any[]) => {
   const code = transactions
     .map((tx) => {
       if (tx.kind === "MoveCall") return ptbMoveCall(tx);
       if (tx.kind === "TransferObjects") return ptbTransferObjects(tx);
+      if (tx.kind === "SplitCoins") return ptbSplitCoins(tx);
+      if (tx.kind === "MergeCoins") return ptbMergeCoins(tx);
       return [];
     })
     .join("\n");
 
   return `${PTB_LAYOUT}\n${code}`;
+};
+
+const splitCoin = {
+  kind: "SplitCoins",
+  coin: {
+    // not sure
+    kind: "Input",
+    value: "",
+    type: "object",
+  },
+  amounts: [
+    {
+      index: 0,
+      kind: "Input",
+      type: "pure",
+      value: 100,
+    },
+    {
+      index: 0,
+      kind: "Input",
+      type: "pure",
+      value: 200,
+    },
+  ],
 };
 
 const k6 = {
@@ -398,7 +436,43 @@ const k6 = {
     },
   ],
   inputs: [],
-  outputs: [],
+  outputs: [
+    {
+      index: 0,
+      MutableReference: {
+        Struct: {
+          address: "0xcab68c8cd7e80f3dd06466da6b2c083d1fd50ab3e9be8e32395c19b53021c064",
+          module: "counter",
+          name: "Counter",
+          typeArguments: [],
+        },
+      },
+    },
+  ],
 } as NewTransactionType;
 
-console.log(ptbToCode([k6]));
+const mergeCoins = {
+  kind: "MergeCoins",
+  destination: {
+    index: 0,
+    kind: "Input",
+    value: "0x246e44c6f412b8f69475d4b6d64a51c58eec4896d0d0b24e55a63f74e0f34327",
+    type: "object",
+  },
+  sources: [
+    {
+      index: 0,
+      kind: "Input",
+      value: "0x59f58742fcdc02b9b74a4f3e898f6feb48dc3ab08aa6633c0f6ba32731440b8f",
+      type: "object",
+    },
+    {
+      index: 1,
+      kind: "Input",
+      value: "0xf29f35a20e28334e429898e884a61ccdefc7c112814c41f699654906f7c8989a",
+      type: "object",
+    },
+  ],
+};
+
+console.log(ptbToCode([mergeCoins, splitCoin, k6]));
