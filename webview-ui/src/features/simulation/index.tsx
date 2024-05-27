@@ -6,9 +6,9 @@ import { ArrowLeft } from "../../icons/ArrowLeft";
 import { useNavigate } from "react-router-dom";
 import { CreateTransaction } from "./createTransaction";
 import { ListTransaction } from "./listTransaction";
+import { Label } from "../../components/Label";
 
 const Simulation = () => {
-  const [showCreateTransaction, setShowCreateTransaction] = useState<boolean>(false);
   const navigate = useNavigate();
   const handleNavigate = () => {
     navigate("/");
@@ -16,7 +16,7 @@ const Simulation = () => {
 
   // Hàm xử lý sự kiện khi click vào nút "Create Transaction"
   const handleCreateTransaction = () => {
-    navigate("/create-transaction")
+    navigate("/create-transaction");
   };
 
   return (
@@ -39,14 +39,22 @@ const Simulation = () => {
 
               {/* Button Create transaction */}
               <div className="flex flex-col items-end gap-[16px] relative self-stretch w-full flex-[0_0_auto] ">
+                <div className=" absolute left-0 top-0 ">
+                  <Label
+                    status="default"
+                    text="Transaction"
+                    className={"font-medium text-3xl"}
+                    labelClassName={undefined}
+                  />
+                </div>
                 <div className="absolute top-0 right-5 w-fit [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#ffffff] text-[16px] tracking-[0] leading-[19.2px] whitespace-nowrap">
-                    <button
-                      className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]"
-                      onClick={handleCreateTransaction}>
-                      <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-                        Create Transaction
-                      </div>
-                    </button>
+                  <button
+                    className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]"
+                    onClick={handleCreateTransaction}>
+                    <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+                      Create Transaction
+                    </div>
+                  </button>
                 </div>
               </div>
               <ListTransaction />

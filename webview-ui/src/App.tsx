@@ -10,12 +10,17 @@ import { useMySuiEnv } from "./context/MySuiEnvProvider";
 import { convertWindowsToUnixPath } from "./utils";
 import { messageHandler } from "@estruyf/vscode/dist/client";
 import { FileWithPath } from "./types";
+import { requestDataFromTerminal } from "./utils/wv_communicate_ext";
+import { SuiCommand } from "../../src/enums";
+import { useMySuiAccount } from "./context/MySuiAccountProvider";
 
 export interface IAppProps {}
 
 export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChildren<IAppProps>) => {
   const { isSuiFile, setIsSuiFile, suiPath, setSuiPath, projectPath, setProjectPath } =
     useMySuiEnv();
+    const { getObjectGas, gasObjects, setGasObjects } = useMySuiAccount();
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false)
   useEffect(() => {
@@ -36,6 +41,16 @@ export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChild
         ),
       });
     });
+    // async function getGasObjects() {
+    //   const resp = await requestDataFromTerminal({
+    //     cmd: SuiCommand.GET_GAS_OBJECTS,
+    //   });
+    //   const { stdout, stderr } = resp;
+    //   const objects = JSON.parse(stdout);
+    //   setGasObjects(objects);
+  
+    // }
+    //  getGasObjects();
   }, [fileInputRef]);
   const handleToogle = (e: boolean) => {
     setIsSuiFile(e);
