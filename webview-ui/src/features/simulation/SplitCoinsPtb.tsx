@@ -20,9 +20,9 @@ export const SplitCoinsPtb = () => {
   } = useMySuiAccount();
   const {
     state,
- 
-    addSplitCommand
-    } = useAssignContext();
+
+    addSplitCommand,
+  } = useAssignContext();
   useEffect(() => {
     async function getGasObjects() {
       const resp = await requestDataFromTerminal({ cmd: SuiCommand.GET_GAS_OBJECTS });
@@ -70,15 +70,20 @@ export const SplitCoinsPtb = () => {
   // }
   const handleSubmit = () => {
     const result = entries.map((element, index) => {
-      return `--transfer-object "[coins.${index}]" @${element.address}`;
+      return `--transfer-object "[coins.${index}]" @${element.address} \\ \n`;
     });
-    const amounts = entries.map((ele) => ele.amount);
-    const splitCommand = `--split-coins ${split?.gasCoinId} "[${amounts.join(",")}]"\\ \n--assign coins \\ \n`;
+    console.log(result);
 
-    const finalCommand = splitCommand + result.join("\\ \n");
+    
+    const amounts = entries.map((ele) => ele.amount);
+    const splitCommand = `--split-coins ${split?.gasCoinId} "[${amounts.join(
+      ","
+    )}]" \\ \n--assign coins \\ \n`;
+    console.log(splitCommand);
+    const finalCommand = splitCommand + result.join("");
     console.log(finalCommand);
-    addSplitCommand(finalCommand,split!)
-    };
+    addSplitCommand(finalCommand, split!);
+  };
   return (
     <div className="flex flex-col gap-10 mt-5 ml-5 w-full">
       <div className="flex gap-5 items-center ">
@@ -96,7 +101,10 @@ export const SplitCoinsPtb = () => {
           {isShowSplit && (
             <ul className="z-10 absolute block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
               {gasObjects.map((gasObject: GasObject, index) => {
-                if (!state.selected?.includes(gasObject) && state.receiver?.gasCoinId!==gasObject.gasCoinId) {
+                if (
+                  !state.selected?.includes(gasObject) &&
+                  state.receiver?.gasCoinId !== gasObject.gasCoinId
+                ) {
                   return (
                     <li
                       className="flex justify-between items-center"
@@ -104,7 +112,9 @@ export const SplitCoinsPtb = () => {
                       key={index}>
                       <span
                         className={`${
-                          split && split.gasCoinId === gasObject.gasCoinId ? styles["activeAddress"] : ""
+                          split && split.gasCoinId === gasObject.gasCoinId
+                            ? styles["activeAddress"]
+                            : ""
                         }`}>
                         {shortenAddress(gasObject.gasCoinId, 5)}
                       </span>
@@ -153,7 +163,7 @@ export const SplitCoinsPtb = () => {
         <div className="w-[200px]">
           <button
             className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]"
-            onClick={()=>handleSubmit()}>
+            onClick={() => handleSubmit()}>
             <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
               Add Command
             </div>

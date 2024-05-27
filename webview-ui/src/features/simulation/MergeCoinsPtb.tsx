@@ -57,6 +57,8 @@ const MergeCoinsPtb = () => {
   const handleSubmit = () => {
     const SelectObjectID = convertSelectedToString(selected);
     let result = `--merge-coins @${receiver?.gasCoinId} "[${SelectObjectID}]" \\ \n`;
+    console.log(result);
+    
     addMergeCommand(result, receiver!, selected);
   };
 
