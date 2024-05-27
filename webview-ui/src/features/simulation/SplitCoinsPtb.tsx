@@ -70,7 +70,7 @@ export const SplitCoinsPtb = () => {
   // }
   const handleSubmit = () => {
     const result = entries.map((element, index) => {
-      return `--transfer-object "[coins.${index}]" @${element.address} \\ \n`;
+      return `--transfer-objects "[coins.${index}]" @${element.address} \\\n`;
     });
     console.log(result);
 
@@ -78,7 +78,7 @@ export const SplitCoinsPtb = () => {
     const amounts = entries.map((ele) => ele.amount);
     const splitCommand = `--split-coins ${split?.gasCoinId} "[${amounts.join(
       ","
-    )}]" \\ \n--assign coins \\ \n`;
+    )}]" \\\n--assign coins \\\n`;
     console.log(splitCommand);
     const finalCommand = splitCommand + result.join("");
     console.log(finalCommand);

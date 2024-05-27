@@ -29,7 +29,7 @@ const SavePtb = () => {
   const {addTransaction,state} = useAssignContext();
   const handleSubmit = () => {
     const newId = uuidv4(); // Generate a unique ID
-    const gasCoin = `--gas-coin ${objectPay?.gasCoinId} \\ \n`;
+    const gasCoin = `--gas-coin @${objectPay?.gasCoinId} \\\n`;
     const addBudget = `--gas-budget  ${budget}`;
         addTransaction( { command:state.command + gasCoin + addBudget, id: newId, name: name })
     navigate("/simulation");
