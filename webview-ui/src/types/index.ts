@@ -41,6 +41,8 @@ export interface TransactionObject{
 export interface PTBType{
   transactions:TransactionObject[]
   command: string;
+  mergeCommand:string|null,
+  splitCommand:string|null
   receiver: GasObject|null; 
   selected: GasObject[];
   splitObject:GasObject|null;

@@ -28,6 +28,8 @@ export type AssignContextType = {
 
 const AssignContext = createContext<AssignContextType | null>(null);
 const initState: PTBType = {
+  mergeCommand:null,
+  splitCommand:null,
   command: "",
   transactions: [],
   receiver: null,

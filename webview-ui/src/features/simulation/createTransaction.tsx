@@ -58,10 +58,10 @@ export const CreateTransaction = () => {
   };
   return (
     <>
-      <div className="flex flex-col flex-grow overflow-y-scroll">
-        <div className="absolute w-[940px] sidebar:w-[400px] h-[766px] top-[-178px] left-[25px]">
-          <div className="flex flex-col w-full items-start gap-[64px] absolute top-[228px] left-0">
-            <div className="relative w-full top-16">
+      <div className="h-[200vh] grow overflow-y-scroll">
+        <div className="absolute w-[800px] sidebar:w-[400px] h-[766px] top-[-178px] left-[25px]">
+          <div className="flex flex-col w-full items-start gap-[36px] absolute top-[228px] left-0">
+            {/* <div className="relative w-full top-16"> */}
               <div
                 className="flex items-end gap-[8px] relative self-stretch w-full flex-[0_0_auto]"
                 onClick={handleNavigate}>
@@ -69,7 +69,7 @@ export const CreateTransaction = () => {
                 <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[18px] text-center tracking-[0] leading-[21.6px] whitespace-nowrap uppercase">
                   Simulation
                 </div>
-              </div>
+              {/* </div> */}
             </div>
             <div className="relative flex flex-col w-full gap-3">
               <div className="flex justify-between">

@@ -14,13 +14,14 @@ export const PTBReducer = (state: PTBType, action: Action): PTBType => {
   if (action.type === "ADD_MERGE_COMMAND") {
     return {
       ...state,
-      command: state.command +  action.value,
+      mergeCommand:  action.value,
       selected:action.selected,
       receiver:action.receiver
     };
   } else if (action.type === "ADD_SPLIT_COMMAND") {
     return {
       ...state,
+      splitCommand:action.value,
       splitObject: action.splitObject,
       command: state.command + action.value,
     };
@@ -29,10 +30,12 @@ export const PTBReducer = (state: PTBType, action: Action): PTBType => {
     return {
       ...state,
         transactions:[...state.transactions,action.value],
-        // selected:[],
-        // splitObject:null,
-        // receiver:null,
-        // command:""
+        selected:[],
+        splitObject:null,
+        receiver:null,
+        command:"",
+        mergeCommand:null,
+        splitCommand:null
     }
   }
   return state;

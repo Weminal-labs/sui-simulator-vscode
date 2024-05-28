@@ -7,9 +7,16 @@ import { GasObject } from "../gasAddress/gas";
 import styles from "../gasAddress/address.module.css";
 import SplitInputRow from "../../components/SplitInputRow";
 import { useAssignContext } from "../../context/AssignPtbProvider";
+import { Error } from "../../components/Error";
+import Success from "../../components/Success";
 
 export const SplitCoinsPtb = () => {
   const { getObjectGas, gasObjects, setGasObjects } = useMySuiAccount();
+  const [isError, setIsError] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [success, setSuccess] = useState<string>("");
+
   const {
     addresses,
     currentAddress,
@@ -20,21 +27,21 @@ export const SplitCoinsPtb = () => {
   } = useMySuiAccount();
   const {
     state,
- 
-    addSplitCommand
-    } = useAssignContext();
+
+    addSplitCommand,
+  } = useAssignContext();
+  async function getGasObjects() {
+    const resp = await requestDataFromTerminal({ cmd: SuiCommand.GET_GAS_OBJECTS });
+    const { stdout } = resp;
+    const objects = JSON.parse(stdout);
+    console.log(objects);
+    setGasObjects(objects);
+  }
   useEffect(() => {
-    async function getGasObjects() {
-      const resp = await requestDataFromTerminal({ cmd: SuiCommand.GET_GAS_OBJECTS });
-      const { stdout } = resp;
-      const objects = JSON.parse(stdout);
-      console.log(objects);
-      setGasObjects(objects);
-    }
     getGasObjects();
   }, []);
 
-  const [split, setSplit] = useState<GasObject>();
+  const [split, setSplit] = useState<GasObject|null>(null);
   const [isShowSplit, setIsShowSplit] = useState<boolean>(false);
   // const [selected, setSelected] = useState<GasObject[]>([]);
   const [entries, setEntries] = useState<{ amount: number; address: string }[]>([
@@ -68,19 +75,72 @@ export const SplitCoinsPtb = () => {
   //   function convertSelectedToString(selected: GasObject[]): string {
   //     return selected.map(item => `@${item.gasCoinId}`).join(',');
   // }
+  const checkExistingAddress = (): boolean => {
+    return entries.find((ele) => {
+      return ele.address === "";
+    })
+      ? false
+      : true;
+  };
   const handleSubmit = () => {
-    const result = entries.map((element, index) => {
-      return `--transfer-object "[coins.${index}]" @${element.address}`;
-    });
-    const amounts = entries.map((ele) => ele.amount);
-    const splitCommand = `--split-coins ${split?.gasCoinId} "[${amounts.join(",")}]"\\ \n--assign coins \\ \n`;
+    // --assign to_address @0x02a212de6a9dfa3a69e22387acfbafbb1a9e591bd9d636e7895dcfc8de05f331 \
+    if (checkExistingAddress()==false || split===null) {
+      setIsError(true);
+      setIsSuccess(false)
 
-    const finalCommand = splitCommand + result.join("\\ \n");
-    console.log(finalCommand);
-    addSplitCommand(finalCommand,split!)
-    };
+      setError("Please! Fill your information");
+      return;
+    }
+    const assignAddress = entries.map((element, index) => {
+      return `--assign address_${index} @${element.address}`;
+    });
+
+    const targetObject = `--assign target @${split?.gasCoinId}`;
+
+    const result = entries.map((element, index) => {
+      return `--transfer-objects "[coins.${index}]" address_${index}`;
+    });
+
+    const amounts = entries.map((ele) => ele.amount);
+    const splitCommand = `--split-coins "target" "[${amounts.join(",")}]" \\\n--assign coins \\\n`;
+
+    const finalCommand =
+      targetObject +
+      " \\\n" +
+      splitCommand +
+      assignAddress.join(" \\\n") +
+      " \\\n" +
+      result.join(" \\\n") +
+      " \\\n";
+
+      setIsError(false);
+      setIsSuccess(true)
+      setSuccess("Add split command to PTB")
+    addSplitCommand(finalCommand, split!);
+    setTimeout(() => {
+      setIsSuccess(false);
+      setSuccess("");
+    }, 3000);
+  };
+
+  const checkGasObject = (gasObject: GasObject) => {
+    if (
+      checkInclude(gasObject.gasCoinId) == false &&
+      gasObject.gasCoinId != state.receiver?.gasCoinId
+    ) {
+      return true;
+    }
+    return false;
+  };
+  const checkInclude = (id: string): Boolean => {
+    return state.selected.find((ele) => {
+      return ele.gasCoinId === id;
+    })
+      ? true
+      : false;
+  };
   return (
-    <div className="flex flex-col gap-10 mt-5 ml-5 w-full">
+    <div className="flex flex-col gap-7 mt-5 ml-5 w-full">
       <div className="flex gap-5 items-center ">
         <div className="border border-red-100 w-[200px] p-4">
           <div>Split Object</div>
@@ -96,7 +156,7 @@ export const SplitCoinsPtb = () => {
           {isShowSplit && (
             <ul className="z-10 absolute block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
               {gasObjects.map((gasObject: GasObject, index) => {
-                if (!state.selected?.includes(gasObject) && state.receiver?.gasCoinId!==gasObject.gasCoinId) {
+                if (checkGasObject(gasObject)) {
                   return (
                     <li
                       className="flex justify-between items-center"
@@ -104,7 +164,9 @@ export const SplitCoinsPtb = () => {
                       key={index}>
                       <span
                         className={`${
-                          split && split.gasCoinId === gasObject.gasCoinId ? styles["activeAddress"] : ""
+                          split && split.gasCoinId === gasObject.gasCoinId
+                            ? styles["activeAddress"]
+                            : ""
                         }`}>
                         {shortenAddress(gasObject.gasCoinId, 5)}
                       </span>
@@ -122,6 +184,21 @@ export const SplitCoinsPtb = () => {
               })}
             </ul>
           )}
+        </div>
+      </div>
+      <div className="flex gap-5 items-center">
+      <div className="w-[200px]">
+          <button
+            className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]"
+            onClick={() => handleSubmit()}>
+            <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+              Add Command
+            </div>
+          </button>
+        </div>
+        <div className="flex-1  h-[60px] ">
+          {isError && <Error errorMsg={error} closeError={() => setIsError(false)} />}
+          {isSuccess && <Success successMsg={success} closeSuccess={() => setIsSuccess(false)} />}
         </div>
       </div>
       <div className="flex justify-around">
@@ -150,16 +227,9 @@ export const SplitCoinsPtb = () => {
           onClick={increaseAmountElement}>
           +
         </button>
-        <div className="w-[200px]">
-          <button
-            className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]"
-            onClick={()=>handleSubmit()}>
-            <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-              Add Command
-            </div>
-          </button>
-        </div>
+      
       </div>
+     
     </div>
   );
 };

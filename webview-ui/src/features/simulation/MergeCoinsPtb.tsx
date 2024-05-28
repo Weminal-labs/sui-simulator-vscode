@@ -7,6 +7,8 @@ import styles from "../gasAddress/address.module.css";
 import { useAssignContext } from "../../context/AssignPtbProvider";
 import { v4 as uuidv4 } from "uuid";
 import { useEffect, useState } from "react";
+import { Error } from "../../components/Error";
+import Success from "../../components/Success";
 
 const MergeCoinsPtb = () => {
   const { getObjectGas, gasObjects, setGasObjects } = useMySuiAccount();
@@ -14,29 +16,37 @@ const MergeCoinsPtb = () => {
   const [selected, setSelected] = useState<GasObject[]>([]);
   const [isShowMerged, setIsShowMerged] = useState(false);
   const { state, addMergeCommand } = useAssignContext();
+  const [isError, setIsError] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [success, setSuccess] = useState<string>("");
 
-  useEffect(() => {
-    initData()
-  }, []);
-  const initData =async()=>{
-    async function getGasObjects() {
-      const resp = await requestDataFromTerminal({
-        cmd: SuiCommand.GET_GAS_OBJECTS,
-      });
-      const { stdout } = resp;
-      const objects = JSON.parse(stdout);
-      setGasObjects(objects);
-    }
+  async function getGasObjects() {
+    const resp = await requestDataFromTerminal({
+      cmd: SuiCommand.GET_GAS_OBJECTS,
+    });
+    const { stdout } = resp;
+    const objects = JSON.parse(stdout);
 
-    await getGasObjects();
-
-    if (state.receiver !== null) {
-      setReceiver(state.receiver);
-    }
-    if (state.selected !== null) {
-      setSelected(state.selected);
-    }
+    setGasObjects(objects);
   }
+  useEffect(() => {
+    const initData = async () => {
+      getGasObjects();
+
+      if (state.receiver !== null) {
+        setReceiver(state.receiver);
+      }
+      if (state.selected !== null) {
+        setSelected((prev) => {
+          return [...prev, ...state.selected];
+        });
+      }
+    };
+
+    initData();
+  }, []);
+
   const handleSelectedMerged = async (gasCoin: GasObject) => {
     setReceiver(gasCoin);
     setIsShowMerged(false);
@@ -55,20 +65,44 @@ const MergeCoinsPtb = () => {
   }
 
   const handleSubmit = () => {
-    const SelectObjectID = convertSelectedToString(selected);
-    let result = `--merge-coins @${receiver?.gasCoinId} "[${SelectObjectID}]" \\ \n`;
-    addMergeCommand(result, receiver!, selected);
-  };
+    if (selected.length === 0 || receiver === null) {
+      setIsError(true);
+      setIsSuccess(false);
 
+      setError("Please! Fill your information");
+      return;
+    }
+    const SelectObjectID = convertSelectedToString(selected);
+    let result = `--merge-coins @${receiver?.gasCoinId} "[${SelectObjectID}]" \\\n`;
+    addMergeCommand(result, receiver!, selected);
+    setIsError(false);
+    setIsSuccess(true);
+    setSuccess("Add merrge command to PTB");
+    setIsError(false);
+    setIsSuccess(true);
+    setSuccess("Add merge command to PTB");
+
+    setTimeout(() => {
+      setIsSuccess(false);
+      setSuccess("");
+    }, 3000);
+  };
+  const checkInclude = (id: string): boolean => {
+    return selected.find((ele) => {
+      return ele.gasCoinId === id;
+    })
+      ? true
+      : false;
+  };
   return (
     <div className="flex flex-col gap-10 mt-5 ml-5 w-full">
       <div className="flex gap-5 items-center ">
-        <div className="border border-red-100 w-[200px] p-4">
+        <div className="border border-red-100 w-[200px] p-4 rounded-lg">
           <div>Object Receiver</div>
         </div>
         <div className="relative block flex-1">
           <div
-            className="block w-full h-[54px] px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
+            className="block w-full h-[54px] px-4 py-3 text-[#8f8f8f] text-[18px] border border-red-100 rounded-lg bg-[#0e0f0e]"
             onClick={() => setIsShowMerged(!isShowMerged)}>
             <span>{receiver ? shortenAddress(receiver.gasCoinId, 5) : "Choose gas object"}</span>
           </div>
@@ -110,13 +144,18 @@ const MergeCoinsPtb = () => {
           )}
         </div>
       </div>
-
-      <div className="w-[200px]">
-        <button
-          className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] w-full bg-white rounded-[8px]"
-          onClick={() => handleSubmit()}>
-          <div className="text-black text-[18px] font-medium">Add Command</div>
-        </button>
+      <div className="flex gap-5">
+        <div className="w-[200px]">
+          <button
+            className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] w-full bg-white rounded-[8px]"
+            onClick={() => handleSubmit()}>
+            <div className="text-black text-[18px] font-medium">Add Command</div>
+          </button>
+        </div>
+        <div className="flex-1  h-[60px]">
+          {isError && <Error errorMsg={error} closeError={() => setIsError(false)} />}
+          {isSuccess && <Success successMsg={success} closeSuccess={() => setIsSuccess(false)} />}
+        </div>
       </div>
 
       <div>
@@ -142,7 +181,7 @@ const MergeCoinsPtb = () => {
                   state.splitObject?.gasCoinId !== obj.gasCoinId
                 ) {
                   return (
-                    <tr key={obj.gasCoinId}>
+                    <tr key={uuidv4()}>
                       <td className="px-6 py-4 border-b border-white text-white">
                         {shortenAddress(obj.gasCoinId, 5)}
                       </td>
@@ -154,7 +193,7 @@ const MergeCoinsPtb = () => {
                       </td>
                       <td className="px-6 py-4 border-b border-white text-white">
                         <input
-                          checked={selected.includes(obj)}
+                          checked={checkInclude(obj.gasCoinId)}
                           onChange={(e) => handledSelectObject(obj, e.target.checked)}
                           type="checkbox"
                           className="form-checkbox h-6 w-6 text-green-500 rounded-md border-2 border-green-500 focus:ring-green-500"
