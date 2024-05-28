@@ -10,11 +10,7 @@ interface Transaction {
 
 export const ListTransaction: React.FC = () => {
   const navigate = useNavigate();
-
-  // se sd useContext de lay transaction
-
   const {
- 
     // setTransactions,
     // transactions,
     state

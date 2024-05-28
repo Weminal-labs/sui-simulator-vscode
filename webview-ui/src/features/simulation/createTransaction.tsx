@@ -72,40 +72,44 @@ export const CreateTransaction = () => {
               <div className="w-fit font-normal text-white text-[20px] uppercase p-3">Command</div>
 
               <div className="flex justify-between">
-                <div className="font-normal text-white text-[20px] ">
-                  <select
-                    value={selectedCommand}
-                    onChange={handleChange}
-                    className="text-white bg-black p-3 rounded-md">
-                    <option value="" className="text-white">
-                      Select an option
-                    </option>
-                    <option value="Assign" className="text-white">
-                      Assign
-                    </option>
-                    <option value="Split-coins" className="text-white">
-                      Split-Coins
-                    </option>
-                    <option value="Move-call" className="text-white">
-                      Move-call
-                    </option>
-                    <option value="Merge-coins" className="text-white">
-                      Merge-Coins
-                    </option>
-                  </select>
-                </div>
-
-                <button
-                  className="flex items-center justify-center  self-stretch	 w-[100px] cursor-pointer  bg-white rounded-[8px]"
+                <div className="w-fit font-normal text-white text-[20px] uppercase">Command</div>
+                <div
+                  className="w-[100px]"
                   onClick={() => {
                     navigate("/SavePtb");
                   }}>
-                  <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-                    Save
-                  </div>
-                </button>
+                  <button className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]">
+                    <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+                      Save
+                    </div>
+                  </button>
+                </div>
               </div>
-
+              <div className="font-normal text-white text-[20px] ">
+                <select
+                  value={selectedCommand}
+                  onChange={handleChange}
+                  className="text-white bg-black p-3 rounded-md">
+                  <option value="" className="text-white">
+                    Select an option
+                  </option>
+                  <option value="Assign" className="text-white">
+                    Assign
+                  </option>
+                  <option value="Split-coins" className="text-white">
+                    Split-Coins
+                  </option>
+                  <option value="Move-call" className="text-white">
+                    Move-call
+                  </option>
+                  <option value="Merge-coins" className="text-white">
+                    Merge-Coins
+                  </option>
+                  <option value="Transfer-object" className="text-white">
+                    Transfer-objects
+                  </option>
+                </select>
+              </div>
               {renderSelectedComponent()}
             </div>
           </div>
