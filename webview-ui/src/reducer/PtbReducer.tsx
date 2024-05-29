@@ -19,6 +19,7 @@ export const PTBReducer = (state: PTBType, action: Action): PTBType => {
       mergeCommand: action.value,
       selected: action.selected,
       receiver: action.receiver,
+      commandIndex:[...state.commandIndex,"Merge"]
     };
   } 
   else if (action.type === "ADD_SPLIT_COMMAND") {
@@ -27,7 +28,9 @@ export const PTBReducer = (state: PTBType, action: Action): PTBType => {
       splitCommand: action.value,
       splitObject: action.splitObject,
       command: state.command + action.value,
-      amounts:action.amounts
+      amounts:action.amounts,
+      commandIndex:[...state.commandIndex,"Split"]
+
     };
   }
   else if (action.type === "DISABLE_PTB_COMMAND") {
@@ -50,6 +53,8 @@ export const PTBReducer = (state: PTBType, action: Action): PTBType => {
       ...state,
       transferCommand: action.value,
       command: state.command + action.value,
+      commandIndex:[...state.commandIndex,"Transfer"]
+
     };
   } else if (action.type === "ADD_TRANSACTION") {
     return {
@@ -61,6 +66,7 @@ export const PTBReducer = (state: PTBType, action: Action): PTBType => {
       command: "",
       mergeCommand: null,
       splitCommand: null,
+      
     };
   }
   return state;

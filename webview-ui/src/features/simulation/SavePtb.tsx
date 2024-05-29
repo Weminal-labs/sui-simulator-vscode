@@ -53,9 +53,22 @@ const SavePtb = () => {
     return null;
   };
   const handleSubmit = () => {
-    const finalCommand =
-      (state?.mergeCommand ?? "") + (state?.splitCommand ?? "") + (state?.transferCommand ?? "");
+ 
+    let finalCommand =""
+      // (state?.mergeCommand ?? "") + (state?.splitCommand ?? "") + (state?.transferCommand ?? "");
     console.log(state?.splitCommand);
+    state.commandIndex.forEach((ele)=>{
+      if(ele==="Merge"){
+        finalCommand+=state?.mergeCommand ?? ""
+      }
+      else if(ele==="Split"){
+        finalCommand+=state?.splitCommand ?? ""
+
+      }else if(ele==="Transfer"){
+        finalCommand+=state?.transferCommand ?? ""
+
+      }
+    })
     if (name === "") {
       setIsError(true);
       setIsSuccess(false);
@@ -86,6 +99,7 @@ const SavePtb = () => {
       active: true,
       mergeState: createMergeState(),
       splitState: createSplitState(),
+      commandIndex: state.commandIndex
     });
     navigate(-2);
   };

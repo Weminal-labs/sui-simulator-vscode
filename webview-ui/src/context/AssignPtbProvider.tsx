@@ -31,7 +31,8 @@ const initState: PTBType = {
   receiver: null,
   selected: [],
   splitObject: null,
-  amounts:null
+  amounts:null,
+  commandIndex:[]
 };
 export const AssignPbtProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // const [assigns, setAssigns] = useState<AssignObject[]>([]);
@@ -60,29 +61,7 @@ export const AssignPbtProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const addTransferObjectCommand = (value: string ) => {
     dispatch({ type: "ADD_TRANSFER_COMMAND", value});
   };
-  // const [name, setName] = useState<string>("");
-  // const [value, setValue] = useState<string>("");
-  // const [assignValue,setAssignValue] = useState<AssignObject>()
-  // const handleAddAssign = (assisnObject:AssignObject) => {
-  //   if (assisnObject.name !== "" && assisnObject.value !== "") {
-  //     setAssigns([...assigns, assisnObject]);
-  //     // setName("");
-  //     // setValue("");
-  //   }
-  // };
-  // const handleEditAssign = (assignObject: AssignObject, index: number) => {
-  //   if (assignObject.name !== "" && assignObject.value !== "") {
-  //     setAssigns((prevState) => {
-  //       const updatedAssigns = [...prevState];
-  //       updatedAssigns[index] = assignObject;
-  //       return updatedAssigns;
-  //     });
-  //   }
-  // };
 
-  // const handleRemoveAssign = (index: number) => {
-  //   setAssigns((prevState) => prevState.filter((_, i) => i !== index));
-  // };
   return (
     <AssignContext.Provider
       value={{
