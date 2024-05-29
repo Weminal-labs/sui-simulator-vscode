@@ -78,9 +78,6 @@ const MergeCoinsPtb = () => {
     setIsError(false);
     setIsSuccess(true);
     setSuccess("Add merrge command to PTB");
-    setIsError(false);
-    setIsSuccess(true);
-    setSuccess("Add merge command to PTB");
 
     setTimeout(() => {
       setIsSuccess(false);
@@ -95,53 +92,59 @@ const MergeCoinsPtb = () => {
       : false;
   };
   return (
-    <div className="flex flex-col gap-10 mt-5 ml-5 w-full">
-      <div className="flex gap-5 items-center ">
+    <div className="flex flex-col gap-5 mt-5  w-full">
+      <div className="flex gap-5 items-start ">
         <div className="border border-red-100 w-[200px] p-4 rounded-lg">
           <div>Object Receiver</div>
         </div>
-        <div className="relative block flex-1">
-          <div
-            className="block w-full h-[54px] px-4 py-3 text-[#8f8f8f] text-[18px] border border-red-100 rounded-lg bg-[#0e0f0e]"
-            onClick={() => setIsShowMerged(!isShowMerged)}>
-            <span>{receiver ? shortenAddress(receiver.gasCoinId, 5) : "Choose gas object"}</span>
-          </div>
+        <div className="flex flex-col gap-1 flex-1">
+          <div className="relative block ">
+            <div
+              className="block w-full h-[54px] px-4 py-3 text-[#8f8f8f] text-[18px] border border-red-100 rounded-lg bg-[#0e0f0e]"
+              onClick={() => setIsShowMerged(!isShowMerged)}>
+              <span>{receiver ? shortenAddress(receiver.gasCoinId, 5) : "Choose gas object"}</span>
+            </div>
 
-          {isShowMerged && (
-            <ul className="z-10 absolute block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
-              {gasObjects.map((gasObject: GasObject) => {
-                if (
-                  !selected.includes(gasObject) &&
-                  state.splitObject?.gasCoinId !== gasObject.gasCoinId
-                ) {
-                  return (
-                    <li
-                      className="flex justify-between items-center"
-                      onClick={() => handleSelectedMerged(gasObject)}
-                      key={gasObject.gasCoinId}>
-                      <span
-                        className={`${
-                          receiver && receiver.gasCoinId === gasObject.gasCoinId
-                            ? styles["activeAddress"]
-                            : ""
-                        }`}>
-                        {shortenAddress(gasObject.gasCoinId, 5)}
-                      </span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigator.clipboard.writeText(gasObject.gasCoinId);
-                          setIsShowMerged(false);
-                        }}>
-                        Copy
-                      </button>
-                    </li>
-                  );
-                }
-                return null;
-              })}
-            </ul>
-          )}
+            {isShowMerged && (
+              <ul className="z-10 absolute block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
+                {gasObjects.map((gasObject: GasObject) => {
+                  if (
+                    !selected.includes(gasObject) &&
+                    state.splitObject?.gasCoinId !== gasObject.gasCoinId
+                  ) {
+                    return (
+                      <li
+                        className="flex justify-between items-center"
+                        onClick={() => handleSelectedMerged(gasObject)}
+                        key={gasObject.gasCoinId}>
+                        <span
+                          className={`${
+                            receiver && receiver.gasCoinId === gasObject.gasCoinId
+                              ? styles["activeAddress"]
+                              : ""
+                          }`}>
+                          {shortenAddress(gasObject.gasCoinId, 5)}
+                        </span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigator.clipboard.writeText(gasObject.gasCoinId);
+                            setIsShowMerged(false);
+                          }}>
+                          Copy
+                        </button>
+                      </li>
+                    );
+                  }
+                  return null;
+                })}
+              </ul>
+            )}
+        
+          </div>
+          <p className="relative flex-1 mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[14px] tracking-[0] leading-[16.8px]">
+              Gas Balance: {receiver ? +receiver.mistBalance : "0"}
+            </p>
         </div>
       </div>
       <div className="flex gap-5">
@@ -158,9 +161,9 @@ const MergeCoinsPtb = () => {
         </div>
       </div>
 
-      <div>
-        <div className="text-center text-3xl text-white">Object List</div>
-        <div className="overflow-x-auto">
+      <div className="flex flex-col gap-3">
+        <div className=" text-2xl text-white">Object List</div>
+        <div className="overflow-x-auto border border-white rounded-lg">
           <table className="min-w-full bg-[#0e0f0e] text-xl">
             <thead>
               <tr>
@@ -182,16 +185,16 @@ const MergeCoinsPtb = () => {
                 ) {
                   return (
                     <tr key={uuidv4()}>
-                      <td className="px-6 py-4 border-b border-white text-white">
+                      <td className="px-6 py-4 ">
                         {shortenAddress(obj.gasCoinId, 5)}
                       </td>
-                      <td className="px-6 py-4 border-b border-white text-white">
+                      <td className="px-6 py-4  ">
                         {obj.mistBalance.toString()}
                       </td>
-                      <td className="px-6 py-4 border-b border-white text-white">
+                      <td className="px-6 py-4  ">
                         {obj.suiBalance}
                       </td>
-                      <td className="px-6 py-4 border-b border-white text-white">
+                      <td className="px-6 py-4  ">
                         <input
                           checked={checkInclude(obj.gasCoinId)}
                           onChange={(e) => handledSelectObject(obj, e.target.checked)}

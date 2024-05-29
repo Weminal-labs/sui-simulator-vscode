@@ -81,7 +81,7 @@ let projectPath = "";
 
 export const handleReceivedMessage = async (message: any, webView: any, context: any) => {
   const { command, requestId, payload } = message;
-  console.log(suiPath+"test");
+  console.log(suiPath + "test");
 
   switch (command) {
     case "CHANGE_PROJECT_PATH":
@@ -107,33 +107,11 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
       };
       // console.log(payload);
       switch (payload.cmd) {
-        case SuiCommand.GET_OBJECTS:
-          resp = await execNew(`${suiPath} client objects --json`);
-          
-          finalResp = {
-            stderr: {
-              message: resp.stderr,
-              isError: false,
-            },
-            stdout: resp.stdout,
-          };
-          console.log("testing function"+resp.stdout);
-          break;
-        case SuiCommand.GET_OBJECT:
-          resp = await execNew(`${suiPath} client object ${payload.objectId} --json`);
-          
-          finalResp = {
-            stderr: {
-              message: resp.stderr,
-              isError: false,
-            },
-            stdout: resp.stdout,
-          };
-          console.log("testing function"+resp.stdout);
-          break;
-        case SuiCommand.MERGE_COIN:
+        case SuiCommand.EXEC_PTB:
           try {
-            resp = await execNew(`${suiPath}  client merge-coin --primary-coin ${payload.primaryCoin} --coin-to-merge ${payload.mergedCoin} --gas-budget ${payload.budget} --gas ${payload.payObject} --json`);
+            resp = await execNew(
+              `${suiPath} client ptb \\\n${payload.finalCmd}`
+            );
 
             finalResp = {
               stderr: {
@@ -142,9 +120,57 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
               },
               stdout: resp.stdout,
             };
-            console.log("testing function"+resp.stdout);
+            console.log("testing function" + resp.stdout);
+          } catch (err: any) {
+            console.log(err.message);
+            finalResp = {
+              stderr: {
+                message: err.message,
+                isError: true,
+              },
+              stdout: "",
+            };
+          }
+          break;
+        case SuiCommand.GET_OBJECTS:
+          resp = await execNew(`${suiPath} client objects --json`);
 
-          } catch (err:any) {
+          finalResp = {
+            stderr: {
+              message: resp.stderr,
+              isError: false,
+            },
+            stdout: resp.stdout,
+          };
+          console.log("testing function" + resp.stdout);
+          break;
+        case SuiCommand.GET_OBJECT:
+          resp = await execNew(`${suiPath} client object ${payload.objectId} --json`);
+
+          finalResp = {
+            stderr: {
+              message: resp.stderr,
+              isError: false,
+            },
+            stdout: resp.stdout,
+          };
+          console.log("testing function" + resp.stdout);
+          break;
+        case SuiCommand.MERGE_COIN:
+          try {
+            resp = await execNew(
+              `${suiPath}  client merge-coin --primary-coin ${payload.primaryCoin} --coin-to-merge ${payload.mergedCoin} --gas-budget ${payload.budget} --gas ${payload.payObject} --json`
+            );
+
+            finalResp = {
+              stderr: {
+                message: resp.stderr,
+                isError: false,
+              },
+              stdout: resp.stdout,
+            };
+            console.log("testing function" + resp.stdout);
+          } catch (err: any) {
             console.log(err.message);
             finalResp = {
               stderr: {
@@ -157,7 +183,9 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
           break;
         case SuiCommand.SPLIT_COIN:
           try {
-            resp = await execNew(`${suiPath}  client split-coin --coin-id ${payload.objectId} --gas-budget ${payload.budget} --${payload.type} ${payload.amount} --gas ${payload.payObject} --json`);
+            resp = await execNew(
+              `${suiPath}  client split-coin --coin-id ${payload.objectId} --gas-budget ${payload.budget} --${payload.type} ${payload.amount} --gas ${payload.payObject} --json`
+            );
 
             finalResp = {
               stderr: {
@@ -166,8 +194,7 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
               },
               stdout: resp.stdout,
             };
-            console.log("testing function"+resp.stdout);
-
+            console.log("testing function" + resp.stdout);
           } catch (err: any) {
             console.log(err.message);
             finalResp = {
@@ -179,9 +206,8 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
             };
           }
 
-
           break;
-          
+
         case SuiCommand.GET_ADDRESSES:
           resp = await execNew(`${suiPath} client addresses --json`);
 
@@ -212,8 +238,7 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
                 isError: true,
               },
               stdout: "",
-            };   
-          
+            };
           }
 
           break;
@@ -230,7 +255,9 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
           break;
         case SuiCommand.CREATE_NETWORK:
           try {
-            resp = await execNew(`${suiPath} client new-env --alias=${payload.alias} --rpc ${payload.rpc}`);
+            resp = await execNew(
+              `${suiPath} client new-env --alias=${payload.alias} --rpc ${payload.rpc}`
+            );
 
             finalResp = {
               stderr: {
@@ -247,8 +274,7 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
                 isError: true,
               },
               stdout: "",
-            };   
-          
+            };
           }
 
           break;
@@ -306,9 +332,11 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
         case SuiCommand.CALL_FUNCTION:
           try {
             console.log(process.cwd());
-            resp = await execNew(`${suiPath} client call --package ${payload.packageId} --module ${payload.moduleName
-              } --function ${payload.functionName}   --json --gas-budget ${payload.gasBudget} ${payload.args.length > 0 ? "--args" : ""
-              } ${payload.args?.join(" ")} 2>&1 | tee /tmp/output.txt
+            resp = await execNew(`${suiPath} client call --package ${payload.packageId} --module ${
+              payload.moduleName
+            } --function ${payload.functionName}   --json --gas-budget ${payload.gasBudget} ${
+              payload.args.length > 0 ? "--args" : ""
+            } ${payload.args?.join(" ")} 2>&1 | tee /tmp/output.txt
 						`);
 
             // has curly braces means it's a json => no need to check if it's a json
@@ -447,6 +475,6 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
 };
 
 // This method is called when your extension is deactivated
-export function deactivate() { }
+export function deactivate() {}
 
 export const execNew = promisify(exec);

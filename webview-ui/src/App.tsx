@@ -57,9 +57,9 @@ export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChild
   };
   return (
     <>
-      <div className="overflow-hidden w-full relative min-h-screen grow">
+      <div className="w-full relative min-h-screen grow">
         <div className="w-full">
-          <div className="ml-10 mt-12 flex flex-col h-[500px] items-start gap-[32px] w-[640px] sidebar:w-[400px]">
+          <div className="ml-10 mt-12 flex flex-col h-[500px] items-start gap-[32px] w-[640px] sidebar:w-[95%] ">
             <div className="relative w-[400px] mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[48px] text-center tracking-[-2.56px] leading-[76.8px] whitespace-nowrap flex flex-row justify-evenly">
               <Logo className="w-[64px] h-[64px]" />
               <div>Sui simulator</div>
@@ -87,8 +87,8 @@ export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChild
 
               <div>{isSuiFile && suiPath && <p>{suiPath}</p>}</div>
             </div>
-            <div className="flex flex-col gap-[16px] relative flex-[0_0_auto] w-full">
-              <Link to="/environment" className="focus:outline-none">
+            <div className="flex flex-col gap-[16px] relative flex-[0_0_auto] w-full  ">
+              <Link to="/environment" className="focus:outline-none ">
                 <Tab
                   icon={<EnvironmentIcon className="!relative !w-[24px] !h-[24px]" />}
                   title="Environment"
@@ -100,18 +100,18 @@ export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChild
                   title="development"
                 />
               </Link>
-              <Link to="build-test-publish" className="focus:outline-none">
+              <Link to="build-test-publish" className="focus:outline-none ">
                 <Tab
                   icon={<RowVerticalIcon className="!relative !w-[24px] !h-[24px]" />}
                   title="Build, Test And Publish"
                 />
               </Link>
-            <Link to="simulation" className="focus:outline-none">
+            <Link to="simulation" className="focus:outline-none ">
               <Tab icon={<RowVerticalIcon className="!relative !w-[24px] !h-[24px]" />}
                 title="Simulation"
               />
               </Link>
-              <Link to="/explorer" className="focus:outline-none">
+              <Link to="/explorer" className="focus:outline-none ">
                 <Tab
                   icon={<ExplorerIcon className="!relative !w-[24px] !h-[24px]" />}
                   title="Explorer"

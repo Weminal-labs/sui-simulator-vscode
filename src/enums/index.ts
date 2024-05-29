@@ -21,6 +21,8 @@ export enum MoveCallActionType {
 };
 
 export enum SuiCommand {
+    EXEC_PTB="EXEC_PTB",
+
     GET_ADDRESSES = "GET_ADDRESSES",
     GET_GAS_OBJECTS = "GET_GAS_OBJECTS",
 

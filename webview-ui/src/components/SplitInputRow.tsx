@@ -50,11 +50,11 @@ const SplitInputRow = ({
           }}
           value={valueAmount}
           type="number"
-          className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"></input>
+          className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-red-100 rounded-lg bg-[#0e0f0e]"></input>
       </div>
       <div className="relative block flex-1">
         <div
-          className="block w-full h-[54px] px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
+          className="block w-full h-[54px] px-4 py-3 text-[#8f8f8f] text-[18px] border border-red-100 rounded-lg bg-[#0e0f0e]"
           onClick={() => setIsShow(!isShowAddress)}>
           <span>{valueAddress ? shortenAddress(valueAddress, 5) : "Choose gas object"}</span>
         </div>

@@ -10,6 +10,7 @@ import { useAssignContext } from "../../context/AssignPtbProvider";
 import { v4 as uuidv4 } from "uuid";
 import { Error } from "../../components/Error";
 import Success from "../../components/Success";
+import { MergeState, SplitState } from "../../types";
 
 const SavePtb = () => {
   const [objectPay, setObjectPay] = useState<GasObject | null>(null);
@@ -26,17 +27,35 @@ const SavePtb = () => {
   const handleNavigate = () => {
     navigate(-1);
   };
+
   const handleSelectedObjectPay = async (gasCoin: GasObject) => {
     setObjectPay(gasCoin);
 
     setIsShowObjectPay(!isShowObjectPay);
   };
   const { addTransaction, state } = useAssignContext();
-
+  const createMergeState = (): MergeState | null => {
+    if (state.receiver !== null) {
+      return {
+        receiver: state.receiver,
+        selected: state.selected ?? [],
+      };
+    }
+    return null;
+  };
+  const createSplitState = (): SplitState | null => {
+    if (state.splitObject !== null) {
+      return {
+        amounts:state.amounts??[],
+        split:state.splitObject
+      };
+    }
+    return null;
+  };
   const handleSubmit = () => {
     const finalCommand = (state?.mergeCommand ?? "") + (state?.splitCommand ?? "");
     console.log(state?.splitCommand);
-    if(name===""){
+    if (name === "") {
       setIsError(true);
       setIsSuccess(false);
 
@@ -59,15 +78,17 @@ const SavePtb = () => {
     }
     const newId = uuidv4(); // Generate a unique ID
     const addBudget = `--gas-budget ${budget} \\\n--gas-coin @${objectPay?.gasCoinId}`;
-    addTransaction({ command: finalCommand + addBudget, id: newId, name: name });
-    setIsError(false);
-    setIsSuccess(true);
-    setSuccess("Create PTB!");
-    setTimeout(() => {
-      setIsSuccess(false);
-      setSuccess("");
-    }, 3000);
+    addTransaction({
+      command: finalCommand + addBudget,
+      id: newId,
+      name: name,
+      active: true,
+      mergeState: createMergeState(),
+      splitState:createSplitState()
+    });
+    navigate(-2);
   };
+
   const checkInclude = (id: string): Boolean => {
     return state.selected.find((ele) => {
       return ele.gasCoinId === id;
@@ -97,71 +118,89 @@ const SavePtb = () => {
               Save PTB Command
             </div>
           </div>
-          <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-            Transaction Name
-          </div>
-          <div className="relative block w-full">
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-              }}
-              className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"></input>
-          </div>
-          <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-            Gas Pay
-          </div>
-          <div className="relative block w-full">
-            <div
-              onClick={() => {
-                setIsShowObjectPay(!isShowObjectPay);
-              }}
-              className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
-              <span>
-                {objectPay ? shortenAddress(objectPay.gasCoinId, 5) : "Choose gas object"}
-              </span>
+          <div className="flex gap-5 items-start w-full">
+            <div className="border border-red-100 w-[200px] p-4">
+              <div className=" w-full mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+                Transaction Name
+              </div>
             </div>
-            {isShowObjectPay && (
-              <ul className="z-10 absolute block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
-                {gasObjects.map((gasObject: GasObject, index: number) => {
-                  if (checkGasId(gasObject)) {
-                    return (
-                      <li className="flex justify-between items-center" key={index}>
-                        <span
-                          onClick={() => handleSelectedObjectPay(gasObject)}
-                          className={`${
-                            objectPay && objectPay.gasCoinId === gasObject.gasCoinId
-                              ? styles["activeAddress"]
-                              : ""
-                          } flex-1`}>
-                          {shortenAddress(gasObject.gasCoinId, 5)}
-                        </span>
-                        <CopyIcon
-                          handleClick={() => navigator.clipboard.writeText(gasObject.gasCoinId)}
-                        />
-                      </li>
-                    );
-                  }
-                })}
-              </ul>
-            )}
+
+            <div className="flex flex-1">
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                }}
+                className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-red-100 rounded-lg bg-[#0e0f0e]"></input>
+            </div>
           </div>
-          <p className="relative flex-1 mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#5c5c5c] text-[14px] tracking-[0] leading-[16.8px]">
-            Gas: {objectPay ? +objectPay.mistBalance : "0"}
-          </p>
-          <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-            Gas budget
+          <div className="flex gap-5 items-start w-full">
+            <div className="border border-red-100 w-[200px] p-4 ">
+              <div className="relative w-full mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+                Gas Pay
+              </div>
+            </div>
+            <div className="flex flex-col gap-1 flex-1">
+              <div className="relative block w-full">
+                <div
+                  onClick={() => {
+                    setIsShowObjectPay(!isShowObjectPay);
+                  }}
+                  className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-red-100 rounded-lg bg-[#0e0f0e]">
+                  <span>
+                    {objectPay ? shortenAddress(objectPay.gasCoinId, 5) : "Choose gas object"}
+                  </span>
+                </div>
+                {isShowObjectPay && (
+                  <ul className="z-10 absolute block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
+                    {gasObjects.map((gasObject: GasObject, index: number) => {
+                      if (checkGasId(gasObject)) {
+                        return (
+                          <li className="flex justify-between items-center" key={index}>
+                            <span
+                              onClick={() => handleSelectedObjectPay(gasObject)}
+                              className={`${
+                                objectPay && objectPay.gasCoinId === gasObject.gasCoinId
+                                  ? styles["activeAddress"]
+                                  : ""
+                              } flex-1`}>
+                              {shortenAddress(gasObject.gasCoinId, 5)}
+                            </span>
+                            <CopyIcon
+                              handleClick={() => navigator.clipboard.writeText(gasObject.gasCoinId)}
+                            />
+                          </li>
+                        );
+                      }
+                    })}
+                  </ul>
+                )}
+              </div>
+              <p className="relative flex-1 mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[14px] tracking-[0] leading-[16.8px]">
+                Gas: {objectPay ? +objectPay.mistBalance : "0"}
+              </p>
+            </div>
           </div>
-          <div className="relative block w-full">
-            <input
-              type="number"
-              value={budget}
-              onChange={(e) => {
-                setBudget(e.target.value);
-              }}
-              className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"></input>
+
+          <div className="flex gap-5 items-start w-full">
+            <div className="border border-red-100 w-[200px] p-4 ">
+              <div className=" w-full mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+                Gas budget
+              </div>
+            </div>
+
+            <div className="flex-1">
+              <input
+                type="number"
+                value={budget}
+                onChange={(e) => {
+                  setBudget(e.target.value);
+                }}
+                className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-red-100 rounded-lg bg-[#0e0f0e]"></input>
+            </div>
           </div>
+
           <div className="flex gap-5 w-full">
             <div className="w-[200px]">
               <button

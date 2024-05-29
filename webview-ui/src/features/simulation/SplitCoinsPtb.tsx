@@ -41,11 +41,10 @@ export const SplitCoinsPtb = () => {
     getGasObjects();
   }, []);
 
-  const [split, setSplit] = useState<GasObject|null>(null);
+  const [split, setSplit] = useState<GasObject | null>(null);
   const [isShowSplit, setIsShowSplit] = useState<boolean>(false);
-  // const [selected, setSelected] = useState<GasObject[]>([]);
   const [entries, setEntries] = useState<{ amount: number; address: string }[]>([
-    { amount: 10000, address: "" },
+  { amount: 10000000, address: "" },
   ]);
 
   const handleSelectedSplit = async (gasCoin: GasObject) => {
@@ -72,9 +71,7 @@ export const SplitCoinsPtb = () => {
       return newEntries;
     });
   };
-  //   function convertSelectedToString(selected: GasObject[]): string {
-  //     return selected.map(item => `@${item.gasCoinId}`).join(',');
-  // }
+
   const checkExistingAddress = (): boolean => {
     return entries.find((ele) => {
       return ele.address === "";
@@ -82,13 +79,25 @@ export const SplitCoinsPtb = () => {
       ? false
       : true;
   };
+  const checkTotalAmounts = (): boolean => {
+    const totalAmounts = entries.reduce((total, entry) => total + entry.amount, 0);
+    return split ? totalAmounts <= split.mistBalance : false;
+  };
+
   const handleSubmit = () => {
     // --assign to_address @0x02a212de6a9dfa3a69e22387acfbafbb1a9e591bd9d636e7895dcfc8de05f331 \
-    if (checkExistingAddress()==false || split===null) {
+    if (checkExistingAddress() == false || split === null) {
       setIsError(true);
-      setIsSuccess(false)
+      setIsSuccess(false);
 
       setError("Please! Fill your information");
+      return;
+    }
+    if(checkTotalAmounts() == false){
+      setIsError(true);
+      setIsSuccess(false);
+
+      setError("Splited Object's balance must greater than amounts");
       return;
     }
     const assignAddress = entries.map((element, index) => {
@@ -113,10 +122,10 @@ export const SplitCoinsPtb = () => {
       result.join(" \\\n") +
       " \\\n";
 
-      setIsError(false);
-      setIsSuccess(true)
-      setSuccess("Add split command to PTB")
-    addSplitCommand(finalCommand, split!);
+    setIsError(false);
+    setIsSuccess(true);
+    setSuccess("Add split command to PTB");
+    addSplitCommand(finalCommand, split!,amounts);
     setTimeout(() => {
       setIsSuccess(false);
       setSuccess("");
@@ -140,54 +149,58 @@ export const SplitCoinsPtb = () => {
       : false;
   };
   return (
-    <div className="flex flex-col gap-7 mt-5 ml-5 w-full">
-      <div className="flex gap-5 items-center ">
-        <div className="border border-red-100 w-[200px] p-4">
+    <div className="flex flex-col gap-5 mt-5  w-full">
+      <div className="flex gap-5 items-start ">
+        <div className="border border-red-100 w-[200px] p-4 rounded-lg">
           <div>Split Object</div>
         </div>
+        <div className="flex flex-col gap-1 flex-1">
+          <div className="relative block ">
+            <div
+              className="block w-full h-[54px] px-4 py-3 text-[#8f8f8f] text-[18px] border border-red-100 rounded-lg bg-[#0e0f0e]"
+              onClick={() => setIsShowSplit(!isShowSplit)}>
+              <span>{split ? shortenAddress(split.gasCoinId, 5) : "Choose gas object"}</span>
+            </div>
 
-        <div className="relative block flex-1">
-          <div
-            className="block w-full h-[54px] px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
-            onClick={() => setIsShowSplit(!isShowSplit)}>
-            <span>{split ? shortenAddress(split.gasCoinId, 5) : "Choose gas object"}</span>
+            {isShowSplit && (
+              <ul className="z-10 absolute block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
+                {gasObjects.map((gasObject: GasObject, index) => {
+                  if (checkGasObject(gasObject)) {
+                    return (
+                      <li
+                        className="flex justify-between items-center"
+                        onClick={() => handleSelectedSplit(gasObject)}
+                        key={index}>
+                        <span
+                          className={`${
+                            split && split.gasCoinId === gasObject.gasCoinId
+                              ? styles["activeAddress"]
+                              : ""
+                          }`}>
+                          {shortenAddress(gasObject.gasCoinId, 5)}
+                        </span>
+                        <button
+                          onClick={(e) => {
+                            setIsShowSplit(false);
+                            e.stopPropagation();
+                            navigator.clipboard.writeText(gasObject.gasCoinId);
+                          }}>
+                          Copy
+                        </button>
+                      </li>
+                    );
+                  }
+                })}
+              </ul>
+            )}
           </div>
-
-          {isShowSplit && (
-            <ul className="z-10 absolute block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
-              {gasObjects.map((gasObject: GasObject, index) => {
-                if (checkGasObject(gasObject)) {
-                  return (
-                    <li
-                      className="flex justify-between items-center"
-                      onClick={() => handleSelectedSplit(gasObject)}
-                      key={index}>
-                      <span
-                        className={`${
-                          split && split.gasCoinId === gasObject.gasCoinId
-                            ? styles["activeAddress"]
-                            : ""
-                        }`}>
-                        {shortenAddress(gasObject.gasCoinId, 5)}
-                      </span>
-                      <button
-                        onClick={(e) => {
-                          setIsShowSplit(false);
-                          e.stopPropagation();
-                          navigator.clipboard.writeText(gasObject.gasCoinId);
-                        }}>
-                        Copy
-                      </button>
-                    </li>
-                  );
-                }
-              })}
-            </ul>
-          )}
+          <p className="relative flex-1 mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[14px] tracking-[0] leading-[16.8px]">
+            Gas Balance: {split ? +split.mistBalance : "0"}
+          </p>
         </div>
       </div>
       <div className="flex gap-5 items-center">
-      <div className="w-[200px]">
+        <div className="w-[200px]">
           <button
             className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]"
             onClick={() => handleSubmit()}>
@@ -201,35 +214,35 @@ export const SplitCoinsPtb = () => {
           {isSuccess && <Success successMsg={success} closeSuccess={() => setIsSuccess(false)} />}
         </div>
       </div>
-      <div className="flex justify-around">
-        <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-          Amount
+      <div className="flex flex-col gap-3 border border-white p-6">
+        <div className="flex justify-around">
+          <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+            Amount
+          </div>
+          <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+            Address Object
+          </div>
         </div>
-        <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-          Address Object
+        <div className="flex flex-col gap-7">
+          {entries.map((entry, index) => (
+            <SplitInputRow
+              key={index}
+              index={index}
+              valueAmount={entry.amount}
+              valueAddress={entry.address}
+              setValueNumber={setAmountValue}
+              setValueAddress={setAddressValue}
+            />
+          ))}
+        </div>
+        <div className="flex justify-between items-center ">
+          <button
+            className="bg-blue-500 text-white font-bold px-3 rounded text-2xl w-[40px] h-[40px] flex self-center "
+            onClick={increaseAmountElement}>
+            +
+          </button>
         </div>
       </div>
-      <div className="flex flex-col gap-7">
-        {entries.map((entry, index) => (
-          <SplitInputRow
-            key={index}
-            index={index}
-            valueAmount={entry.amount}
-            valueAddress={entry.address}
-            setValueNumber={setAmountValue}
-            setValueAddress={setAddressValue}
-          />
-        ))}
-      </div>
-      <div className="flex justify-between items-center ">
-        <button
-          className="bg-blue-500 text-white font-bold px-3 rounded text-2xl w-[40px] h-[40px] flex self-center "
-          onClick={increaseAmountElement}>
-          +
-        </button>
-      
-      </div>
-     
     </div>
   );
 };
