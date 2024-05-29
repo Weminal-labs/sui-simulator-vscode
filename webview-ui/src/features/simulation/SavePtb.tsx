@@ -10,7 +10,7 @@ import { useAssignContext } from "../../context/AssignPtbProvider";
 import { v4 as uuidv4 } from "uuid";
 import { Error } from "../../components/Error";
 import Success from "../../components/Success";
-import { MergeState, SplitState } from "../../types";
+import { MergeState, SplitState, TransferState } from "../../types";
 
 const SavePtb = () => {
   const [objectPay, setObjectPay] = useState<GasObject | null>(null);
@@ -49,6 +49,15 @@ const SavePtb = () => {
       return {
         amounts: state.amounts ?? [],
         split: state.splitObject,
+      };
+    }
+    return null;
+  };
+  const createTranferState = (): TransferState | null => {
+    if (state.address!== null) {
+      return {
+        address: state.address,
+        objectId: state.objectId ?? [],
       };
     }
     return null;
@@ -100,6 +109,7 @@ const SavePtb = () => {
       active: true,
       mergeState: createMergeState(),
       splitState: createSplitState(),
+      transferObject: createTranferState(),
       commandIndex: state.commandIndex
     });
     navigate(-2);
