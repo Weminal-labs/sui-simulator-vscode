@@ -5,6 +5,7 @@ import { useSuiClient, useSuiClientContext } from "@mysten/dapp-kit";
 import { MoveCallActionType, SuiCommand } from "../../../../src/enums";
 import { shortenAddress, shortenObjectType } from "../../utils/address_shortener";
 import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
+import { useAssignContext } from "../../context/AssignPtbProvider";
 
 export interface IMoveCallProps {
   state: MoveCallState;
@@ -12,6 +13,7 @@ export interface IMoveCallProps {
 }
 const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
 
+  const {  addMoveCallCommand} = useAssignContext();
   // ptb config
     const [packageIdCommand, setPackageIdCommand] = useState<string>("");
   const [moduleCommand, setModuleCommand] = useState<string>("");
@@ -35,17 +37,10 @@ const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
   } = state;
 
   const handleSubmit = () => {
-    console.log("Submit");
-      console.log(packageId);
-      console.log(currentModule);
-      console.log(currentFunction);
-      console.log(argsUserInput);
-    
     const AssignPKG = `--assign PKG ${packageId} \\\n`;
-    const args_list = args.map((item) => item);
 
-    const command = `--move-call ${packageId}::${currentModule}::${currentFunction} ${argsUserInput.join(" ")} \\\n `;
-    console.log(command);
+    const command = `--move-call ${packageId}::${currentModule}::${currentFunction} ${argsUserInput.join(" ")} \\\n`;
+    addMoveCallCommand(command);
   };
   const [isPackageIdValid, setIsPackageIdValid] = React.useState<boolean>(false);
   const [objects, setObjects] = useState<any[]>([]); // set type later

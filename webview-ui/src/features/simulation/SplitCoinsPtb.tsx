@@ -195,40 +195,7 @@ export const SplitCoinsPtb = () => {
             )}
           </div>
 
-          {isShowSplit && (
-            <ul className="z-10 absolute block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
-              {gasObjects.map((gasObject: GasObject, index) => {
-                if (
-                  !state.selected?.includes(gasObject) &&
-                  state.receiver?.gasCoinId !== gasObject.gasCoinId
-                ) {
-                  return (
-                    <li
-                      className="flex justify-between items-center"
-                      onClick={() => handleSelectedSplit(gasObject)}
-                      key={index}>
-                      <span
-                        className={`${
-                          split && split.gasCoinId === gasObject.gasCoinId
-                            ? styles["activeAddress"]
-                            : ""
-                        }`}>
-                        {shortenAddress(gasObject.gasCoinId, 5)}
-                      </span>
-                      <button
-                        onClick={(e) => {
-                          setIsShowSplit(false);
-                          e.stopPropagation();
-                          navigator.clipboard.writeText(gasObject.gasCoinId);
-                        }}>
-                        Copy
-                      </button>
-                    </li>
-                  );
-                }
-              })}
-            </ul>
-          )}
+          
         </div>
       </div>
       <div className="flex gap-5 items-center">
