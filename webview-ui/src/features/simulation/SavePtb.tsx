@@ -46,14 +46,15 @@ const SavePtb = () => {
   const createSplitState = (): SplitState | null => {
     if (state.splitObject !== null) {
       return {
-        amounts:state.amounts??[],
-        split:state.splitObject
+        amounts: state.amounts ?? [],
+        split: state.splitObject,
       };
     }
     return null;
   };
   const handleSubmit = () => {
-    const finalCommand = (state?.mergeCommand ?? "") + (state?.splitCommand ?? "");
+    const finalCommand =
+      (state?.mergeCommand ?? "") + (state?.splitCommand ?? "") + (state?.transferCommand ?? "");
     console.log(state?.splitCommand);
     if (name === "") {
       setIsError(true);
@@ -77,14 +78,14 @@ const SavePtb = () => {
       return;
     }
     const newId = uuidv4(); // Generate a unique ID
-    const addBudget = `--gas-budget ${budget} \\\n--gas-coin @${objectPay?.gasCoinId}`;
+    const addBudget = `--gas-coin @${objectPay?.gasCoinId} \\\n--gas-budget ${budget}`;
     addTransaction({
       command: finalCommand + addBudget,
       id: newId,
       name: name,
       active: true,
       mergeState: createMergeState(),
-      splitState:createSplitState()
+      splitState: createSplitState(),
     });
     navigate(-2);
   };

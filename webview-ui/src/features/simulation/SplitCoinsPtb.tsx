@@ -25,11 +25,9 @@ export const SplitCoinsPtb = () => {
     getTotalGas,
     setCurrentGasObject,
   } = useMySuiAccount();
-  const {
-    state,
 
-    addSplitCommand,
-  } = useAssignContext();
+  const { state, addSplitCommand } = useAssignContext();
+
   async function getGasObjects() {
     const resp = await requestDataFromTerminal({ cmd: SuiCommand.GET_GAS_OBJECTS });
     const { stdout } = resp;
@@ -242,6 +240,25 @@ export const SplitCoinsPtb = () => {
             +
           </button>
         </div>
+      </div>
+      <div className="flex flex-col gap-7">
+        {entries.map((entry, index) => (
+          <SplitInputRow
+            key={index}
+            index={index}
+            valueAmount={entry.amount}
+            valueAddress={entry.address}
+            setValueNumber={setAmountValue}
+            setValueAddress={setAddressValue}
+          />
+        ))}
+      </div>
+      <div className="flex justify-between items-center ">
+        <button
+          className="bg-blue-500 text-white font-bold px-3 rounded text-2xl w-[40px] h-[40px] flex self-center "
+          onClick={increaseAmountElement}>
+          +
+        </button>
       </div>
     </div>
   );

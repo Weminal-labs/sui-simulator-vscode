@@ -1,12 +1,19 @@
 import React, { useState } from "react";
+import { useAssignContext } from "../../context/AssignPtbProvider";
 
 const TransferObjectPtb = () => {
   const [address, setAddress] = useState<string>("");
-  const [objectId, setObjectId] = useState<string[]>([]);
+  const [objectId, setObjectId] = useState<string[]>([""]);
+
+  const { state, addTransferObjectCommand} = useAssignContext();
+  
 
   const handleSubmit = () => {
-    const command = `--transfer-objects "[@${objectId.join(",@")}]" @${address} \\\n`; 
-    console.log(command);
+    if (objectId[0] === ""){
+      return;
+    }
+    const command: string = `--transfer-objects "[@${objectId.join(",@")}]" @${address} \\\n`;
+    addTransferObjectCommand(command);
   };
   const increaseAmountElement = () => {
     setObjectId((prev) => [...prev, ""]);
