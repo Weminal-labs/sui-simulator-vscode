@@ -66,7 +66,8 @@ export const PTBReducer = (state: PTBType, action: Action): PTBType => {
       command: "",
       mergeCommand: null,
       splitCommand: null,
-      
+      commandIndex:[]
+
     };
   }
   return state;

@@ -6,8 +6,10 @@ import "@react-sigma/core/lib/react-sigma.min.css";
 import { SuiClient } from "@mysten/sui.js/client";
 import { useSuiClient } from "@mysten/dapp-kit";
 import { MyNode, Tree } from "./tree";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "../../icons/ArrowLeft";
 
-const sigmaStyle = { height: "500px", width: "100%" };
+const sigmaStyle = { height: "500px", width: "100%" ,backgroundColor:"white",color:"white"};
 
 interface MyGraphInterface {
   suiClient: SuiClient;
@@ -25,9 +27,9 @@ const MyGraph = ({ suiClient, parentId }: MyGraphInterface) => {
 
       graph.addNode(parentId, { x: 0, y: 0, label: parentId, size: 20 });
 
-      const tree = await create_dyn_tree(suiClient)
-      tree.preOrderTraversal(tree.root as MyNode, graph)
-      
+      const tree = await create_dyn_tree(suiClient);
+      tree.preOrderTraversal(tree.root as MyNode, graph);
+
       return graph;
     }
 
@@ -93,15 +95,42 @@ async function recur_add_tree(suiClient: SuiClient, currentNode: MyNode, tree: T
 }
 
 export default function DisplayGraph() {
+  const [objectId,setObjectId] = useState<string>("")
   const suiClient = useSuiClient();
-
+  const navigate = useNavigate();
+  const handleNavigate = () => {
+    navigate("/");
+  };
   return (
-    <SigmaContainer settings={sigmaSettings} style={sigmaStyle} graph={MultiDirectedGraph}>
-      <MyGraph
-        suiClient={suiClient}
-        parentId="0xe67586f62a2249e6b621cddae2c4a7088222801b0e54432dc26a2022054bea5a"
-      />
-      <GraphEvents />
-    </SigmaContainer>
+    <div className="h-[200vh] grow overflow-y-scroll">
+      <div className="absolute w-[800px] sidebar:w-[400px] h-[766px] top-[-178px] left-[25px]">
+        <div className="flex flex-col w-full items-start gap-[36px] absolute top-[228px] left-0">
+          <div
+            className="flex items-end gap-[8px] relative self-stretch w-full flex-[0_0_auto]"
+            onClick={handleNavigate}>
+            <ArrowLeft className="!relative !w-[24px] !h-[24px]" />
+            <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[18px] text-center tracking-[0] leading-[21.6px] whitespace-nowrap uppercase">
+              Objects Graph
+            </div>
+          </div>
+          <input
+          onChange={(e) => {
+            setObjectId
+          }}
+          value={objectId}
+          placeholder="Dynamic object Id"
+          type="text"
+          className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-red-100 rounded-lg bg-[#0e0f0e]"></input>
+    
+          <SigmaContainer settings={sigmaSettings} style={sigmaStyle} graph={MultiDirectedGraph}>
+            <MyGraph
+              suiClient={suiClient}
+              parentId="0xe67586f62a2249e6b621cddae2c4a7088222801b0e54432dc26a2022054bea5a"
+            />
+            <GraphEvents />
+          </SigmaContainer>
+        </div>
+      </div>
+    </div>
   );
 }

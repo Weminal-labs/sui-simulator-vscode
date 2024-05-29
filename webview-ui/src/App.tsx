@@ -112,12 +112,12 @@ export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChild
                   title="development"
                 />
               </Link>
-              <Link to="build-test-publish" className="focus:outline-none ">
+              {/* <Link to="build-test-publish" className="focus:outline-none ">
                 <Tab
                   icon={<RowVerticalIcon className="!relative !w-[24px] !h-[24px]" />}
                   title="Build, Test And Publish"
                 />
-              </Link>
+              </Link> */}
             <Link to="simulation" className="focus:outline-none ">
               <Tab icon={<RowVerticalIcon className="!relative !w-[24px] !h-[24px]" />}
                 title="Simulation"
@@ -129,12 +129,12 @@ export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChild
                   title="Explorer"
                 />
               </Link>
-              <Link to="/front-end-simulation" className="focus:outline-none">
+              {/* <Link to="/front-end-simulation" className="focus:outline-none">
                 <Tab
                   icon={<ExplorerIcon className="!relative !w-[24px] !h-[24px]" />}
                   title="Front end Simulation"
                 />
-              </Link>
+              </Link> */}
               <Link to="/dynamic-object-graph" className="focus:outline-none">
                 <Tab
                   icon={<ExplorerIcon className="!relative !w-[24px] !h-[24px]" />}
