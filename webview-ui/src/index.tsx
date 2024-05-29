@@ -17,6 +17,7 @@ import Development from "./features/development";
 import Simulation from "./features/simulation";
 import FrontEndSimulation from "./features/feSimulation";
 import DynamicObjectGraph from "./features/dynObjGraph";
+import Workflow from "./features/workflow";
 import { CreateTransaction } from "./features/simulation/createTransaction";
 import { AssignPbtProvider } from "./context/AssignPtbProvider";
 import DetailTransaction from "./features/simulation/DetailTransaction";
@@ -50,13 +51,14 @@ if (root) {
 
                       <Route path="build-test-publish" element={<BuildTestPublish />} />
                       <Route path="simulation" element={<Simulation />} />
-                      <Route  path="detail-transaction/:id" element={<DetailTransaction />} />
+                      <Route path="detail-transaction/:id" element={<DetailTransaction />} />
                       <Route path="create-transaction" element={<CreateTransaction />} />
                       <Route path="explorer" element={<PackageExplorer />} />
 
                       <Route path="front-end-simulation" element={<FrontEndSimulation />} />
-                    <Route path="dynamic-object-graph" element={<DynamicObjectGraph />} />
-                  </Route>
+                      <Route path="dynamic-object-graph" element={<DynamicObjectGraph />} />
+                      <Route path="workflow" element={<Workflow />} />
+                    </Route>
                   </Routes>
                 </MemoryRouter>
               </AssignPbtProvider>
