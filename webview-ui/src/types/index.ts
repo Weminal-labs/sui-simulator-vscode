@@ -51,6 +51,7 @@ export interface PTBType {
   mergeCommand: string | null;
   transferCommand: string | null;
   splitCommand: string | null;
+  moveCallCommand: string | null;
   receiver: GasObject | null;
   selected: GasObject[];
   splitObject:GasObject|null;

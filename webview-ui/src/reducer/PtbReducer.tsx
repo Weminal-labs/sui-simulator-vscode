@@ -10,7 +10,8 @@ type Action =
   | { type: "ADD_SPLIT_COMMAND"; value: string; splitObject:GasObject,amounts:number[] }
   | { type: "ADD_TRANSACTION"; value: TransactionObject }
   | { type: "DISABLE_PTB_COMMAND"; value: string }
-  | { type: "ADD_TRANSFER_COMMAND"; value: string };
+  | { type: "ADD_TRANSFER_COMMAND"; value: string }
+  | { type: "ADD_MOVE_CALL_COMMAND"; value: string };
 
 export const PTBReducer = (state: PTBType, action: Action): PTBType => {
   if (action.type === "ADD_MERGE_COMMAND") {
@@ -56,6 +57,12 @@ export const PTBReducer = (state: PTBType, action: Action): PTBType => {
       commandIndex:[...state.commandIndex,"Transfer"]
 
     };
+  } else if (action.type === "ADD_MOVE_CALL_COMMAND") {
+    return {
+      ...state,
+      moveCallCommand: action.value,
+      command: state.command + action.value,
+    };
   } else if (action.type === "ADD_TRANSACTION") {
     return {
       ...state,
@@ -66,8 +73,11 @@ export const PTBReducer = (state: PTBType, action: Action): PTBType => {
       command: "",
       mergeCommand: null,
       splitCommand: null,
-      commandIndex:[]
+      transferCommand: null,
+      moveCallCommand: null,
+      commandIndex:[],
 
+   
     };
   }
   return state;

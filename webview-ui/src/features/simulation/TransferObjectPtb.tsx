@@ -77,6 +77,7 @@ const TransferObjectPtb = () => {
       setSuccess("");
     }, 3000);
   };
+
   const increaseAmountElement = () => {
     setObjectId((prev) => [...prev, { gasCoinId: "", mistBalance: 0, suiBalance: "" }]);
   };
