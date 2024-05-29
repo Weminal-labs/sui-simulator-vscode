@@ -27,6 +27,8 @@ const initState: PTBType = {
   mergeCommand: null,
   splitCommand: null,
   transferCommand: null,
+  address: null,
+  objectId: [],
   moveCallCommand: null,
   command: "",
   transactions: [],

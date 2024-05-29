@@ -77,6 +77,8 @@ export const PTBReducer = (state: PTBType, action: Action): PTBType => {
       splitCommand: null,
       transferCommand: null,
       moveCallCommand: null,
+      address: null,
+      objectId: [],
       commandIndex: [],
     };
   }
