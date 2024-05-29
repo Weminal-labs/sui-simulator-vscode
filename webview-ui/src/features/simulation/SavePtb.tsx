@@ -42,7 +42,8 @@ const SavePtb = () => {
       };
     }
     return null;
-  };
+  }
+
   const createSplitState = (): SplitState | null => {
     if (state.splitObject !== null) {
       return {

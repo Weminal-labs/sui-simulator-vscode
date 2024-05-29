@@ -15,6 +15,8 @@ import { PackageExplorer } from "./features/packageExplorer/index";
 import { MySuiAliasProvider } from "./context/MySuiAliasProvider";
 import Development from "./features/development";
 import Simulation from "./features/simulation";
+import FrontEndSimulation from "./features/feSimulation";
+import DynamicObjectGraph from "./features/dynObjGraph";
 import { CreateTransaction } from "./features/simulation/createTransaction";
 import { AssignPbtProvider } from "./context/AssignPtbProvider";
 import DetailTransaction from "./features/simulation/DetailTransaction";
@@ -52,7 +54,9 @@ if (root) {
                       <Route path="create-transaction" element={<CreateTransaction />} />
                       <Route path="explorer" element={<PackageExplorer />} />
 
-                    </Route>
+                      <Route path="front-end-simulation" element={<FrontEndSimulation />} />
+                    <Route path="dynamic-object-graph" element={<DynamicObjectGraph />} />
+                  </Route>
                   </Routes>
                 </MemoryRouter>
               </AssignPbtProvider>
