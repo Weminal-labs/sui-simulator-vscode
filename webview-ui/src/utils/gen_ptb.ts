@@ -270,12 +270,17 @@ const prepareInputs = (tx: NewTransactionType) => {
         }
         if (isPure) {
           inputs.push(
+            //@ts-ignore
             "txb.pure([" + (value.object ?? "") + "])," + (!value.object ? ` // ${struct}` : "")
           );
         } else {
+                      //@ts-ignore
+
           inputs.push(printObject(struct, value.object));
         }
       } else {
+                    //@ts-ignore
+
         inputs.push(printObject(struct, value.object));
       }
     }

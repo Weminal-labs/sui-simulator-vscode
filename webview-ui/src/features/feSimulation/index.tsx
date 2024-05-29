@@ -18,27 +18,27 @@ export default function index() {
     evalWithTryCatch(code);
   };
 
-  function handleEditorChange(value, event) {
+  function handleEditorChange(value: any, event: any) {
     // here is the current value
     console.log(value);
     setCode(value);
   }
 
-  function handleEditorDidMount(editor, monaco) {
+  function handleEditorDidMount(editor: any, monaco: any) {
     console.log("onMount: the editor instance:", editor);
     console.log("onMount: the monaco instance:", monaco);
   }
 
-  function handleEditorWillMount(monaco) {
+  function handleEditorWillMount(monaco: any) {
     console.log("beforeMount: the monaco instance:", monaco);
   }
 
-  function handleEditorValidation(markers) {
+  function handleEditorValidation(markers: any) {
     // model markers
     // markers.forEach(marker => console.log('onValidate:', marker.message));
   }
 
-  function evalWithTryCatch(codeString) {
+  function evalWithTryCatch(codeString: any) {
     try {
       const result = eval(codeString);
       return result;
