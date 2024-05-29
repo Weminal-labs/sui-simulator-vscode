@@ -10,7 +10,7 @@ export type AssignContextType = {
   addSplitCommand(value: string, splitObject: GasObject, amounts:number[]): void;
   addTransaction (value: TransactionObject) :void,
   disablePtb  (value: string): void
-  addTransferObjectCommand(value: string): void;
+  addTransferObjectCommand(value: string, address: string, objectId: GasObject[]): void;
   addMoveCallCommand(value: string): void;
   // mergeReceiver:GasObject
   // mergeList:GasObject[],
@@ -63,8 +63,8 @@ export const AssignPbtProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     dispatch({ type: "ADD_MOVE_CALL_COMMAND", value });
   }
 
-  const addTransferObjectCommand = (value: string ) => {
-    dispatch({ type: "ADD_TRANSFER_COMMAND", value});
+  const addTransferObjectCommand = (value: string, address: string, objectId: GasObject[] ) => {
+    dispatch({ type: "ADD_TRANSFER_COMMAND", value, address, objectId});
   };
 
   return (

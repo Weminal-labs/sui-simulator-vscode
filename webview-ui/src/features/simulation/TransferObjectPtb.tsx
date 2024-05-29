@@ -67,7 +67,7 @@ const TransferObjectPtb = () => {
       resultArray.push(ele.gasCoinId)
     })
     const command: string = `--transfer-objects "[@${resultArray.join(",@")}]" @${addressValue} \\\n`;
-    addTransferObjectCommand(command);
+    addTransferObjectCommand(command,addressValue, objectId);
     setIsError(false);
     setIsSuccess(true);
     setSuccess("Add transfer command to PTB");
