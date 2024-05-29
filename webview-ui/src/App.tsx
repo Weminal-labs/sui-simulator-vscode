@@ -59,7 +59,7 @@ export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChild
     <>
       <div className="w-full relative min-h-screen grow">
         <div className="w-full">
-          <div className="ml-10 mt-12 flex flex-col h-[700px] items-start gap-[32px] w-[640px] sidebar:w-[400px]">
+          <div className="ml-10 mt-12 flex flex-col h-[700px] items-start gap-[32px] w-[640px] sidebar:w-[95%]">
             <div className="relative w-[400px] mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[48px] text-center tracking-[-2.56px] leading-[76.8px] whitespace-nowrap flex flex-row justify-evenly">
               <Logo className="w-[64px] h-[64px]" />
               <div>Sui simulator</div>

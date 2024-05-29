@@ -72,20 +72,7 @@ export const CreateTransaction = () => {
               <div className="w-fit font-normal text-white text-[20px] uppercase p-3">Command</div>
 
               <div className="flex justify-between">
-                <div className="w-fit font-normal text-white text-[20px] uppercase">Command</div>
-                <div
-                  className="w-[100px]"
-                  onClick={() => {
-                    navigate("/SavePtb");
-                  }}>
-                  <button className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]">
-                    <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-                      Save
-                    </div>
-                  </button>
-                </div>
-              </div>
-              <div className="font-normal text-white text-[20px] ">
+                <div className="font-normal text-white text-[20px] ">
                 <select
                   value={selectedCommand}
                   onChange={handleChange}
@@ -109,7 +96,19 @@ export const CreateTransaction = () => {
                     Transfer-objects
                   </option>
                 </select>
+                </div>
+
+                <button
+                  className="flex items-center justify-center  self-stretch	 w-[100px] cursor-pointer  bg-white rounded-[8px]"
+                  onClick={() => {
+                    navigate("/SavePtb");
+                  }}>
+                  <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+                    Save
+                  </div>
+                </button>
               </div>
+
               {renderSelectedComponent()}
             </div>
           </div>
