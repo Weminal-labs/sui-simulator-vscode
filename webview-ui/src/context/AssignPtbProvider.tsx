@@ -4,16 +4,14 @@ import { GasObject } from "../features/gasAddress/gas";
 import { PTBReducer } from "../reducer/PtbReducer";
 
 export type AssignContextType = {
-  // transactions:TransactionObject[]
-  // command: string;
-  // handleAddCommand(value:string):void
-  // setTransactions:React.Dispatch<React.SetStateAction<TransactionObject[]>>
-  // setCommand: React.Dispatch<React.SetStateAction<string>>;
+
   state: PTBType;
   addMergeCommand(value: string, receiver: GasObject, selected: GasObject[]): void;
-  addSplitCommand(value: string, splitObject: GasObject): void;
-  addTransaction (value: TransactionObject) :void
-  // mergeReceiver:GasObject,
+  addSplitCommand(value: string, splitObject: GasObject, amounts:number[]): void;
+  addTransaction (value: TransactionObject) :void,
+  disablePtb  (value: string): void
+  addTransferObjectCommand(value: string): void;
+  // mergeReceiver:GasObject
   // mergeList:GasObject[],
   // mergePayObject:GasObject,
   // splitObject:GasObject,
@@ -21,18 +19,20 @@ export type AssignContextType = {
   // splitType:string,
   // amount:Number[]
 
-  // handleAddAssign: (assignObject: AssignObject) => void;
-  // handleRemoveAssign: (index: number) => void;
-  // handleEditAssign: (assignObject: AssignObject,index: number) => void;
 };
 
 const AssignContext = createContext<AssignContextType | null>(null);
 const initState: PTBType = {
+  mergeCommand: null,
+  splitCommand: null,
+  transferCommand: null,
   command: "",
   transactions: [],
   receiver: null,
   selected: [],
   splitObject: null,
+  amounts:null,
+  commandIndex:[]
 };
 export const AssignPbtProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // const [assigns, setAssigns] = useState<AssignObject[]>([]);
@@ -48,42 +48,29 @@ export const AssignPbtProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const addMergeCommand = (value: string, receiver: GasObject, selected: GasObject[]) => {
     dispatch({ type: "ADD_MERGE_COMMAND", value, receiver, selected });
   };
-  const addSplitCommand = (value: string, splitObject: GasObject) => {
-    dispatch({ type: "ADD_SPLIT_COMMAND", value, splitObject });
+  const addSplitCommand = (value: string, splitObject: GasObject, amounts:number[]) => {
+    dispatch({ type: "ADD_SPLIT_COMMAND", value, splitObject,amounts });
   };
   const addTransaction = (value: TransactionObject) => {
     dispatch({ type: "ADD_TRANSACTION", value });
   };
-  // const [name, setName] = useState<string>("");
-  // const [value, setValue] = useState<string>("");
-  // const [assignValue,setAssignValue] = useState<AssignObject>()
-  // const handleAddAssign = (assisnObject:AssignObject) => {
-  //   if (assisnObject.name !== "" && assisnObject.value !== "") {
-  //     setAssigns([...assigns, assisnObject]);
-  //     // setName("");
-  //     // setValue("");
-  //   }
-  // };
-  // const handleEditAssign = (assignObject: AssignObject, index: number) => {
-  //   if (assignObject.name !== "" && assignObject.value !== "") {
-  //     setAssigns((prevState) => {
-  //       const updatedAssigns = [...prevState];
-  //       updatedAssigns[index] = assignObject;
-  //       return updatedAssigns;
-  //     });
-  //   }
-  // };
+  const disablePtb = (value: string) => {
+    dispatch({ type: "DISABLE_PTB_COMMAND", value });
+  };
 
-  // const handleRemoveAssign = (index: number) => {
-  //   setAssigns((prevState) => prevState.filter((_, i) => i !== index));
-  // };
+  const addTransferObjectCommand = (value: string ) => {
+    dispatch({ type: "ADD_TRANSFER_COMMAND", value});
+  };
+
   return (
     <AssignContext.Provider
       value={{
         addMergeCommand,
         addSplitCommand,
         addTransaction,
-        state
+        disablePtb,
+        addTransferObjectCommand,
+        state,
       }}>
       {children}
     </AssignContext.Provider>

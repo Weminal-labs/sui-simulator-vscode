@@ -8,7 +8,7 @@ import styles from "./address.module.css";
 
 export interface GasObject {
   gasCoinId: string;
-  mistBalance:Number;
+  mistBalance:number;
   suiBalance: string;
 }
 

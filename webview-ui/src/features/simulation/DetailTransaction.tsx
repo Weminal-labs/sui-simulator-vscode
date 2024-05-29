@@ -9,6 +9,10 @@ import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
 import "codemirror/mode/shell/shell.js";
+import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
+import { SuiCommand } from "../../../../src/enums";
+import { Error } from "../../components/Error";
+import Success from "../../components/Success";
 // import '../../css/codeBlockLines.css';
 interface DetailParams {
   id: string;
@@ -22,27 +26,18 @@ interface DetailParams {
 const DetailTransaction: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const {
- 
-    // setTransactions,
-    // transactions,
-    state
-    
-  } = useAssignContext();
-  const transaction =state.transactions.find((t) => t.id === id);
+  const { state, disablePtb } = useAssignContext();
+
+  const transaction = state.transactions.find((t) => t.id === id);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [success, setSuccess] = useState<string>("");
 
   const [textarea, setTextarea] = useState<string>(transaction?.command || "");
   const [editorHeight, setEditorHeight] = useState("auto");
   const editorRef = useRef<any>(null);
-    // useEffect(() => {
-    //   if (editorRef.current) {
-    //       const doc = editorRef.current.editor;
-    //     const lineCount = doc.lineCount();
-    //     const lineHeight = 24; // Assume 24px per line height
-    //     const newHeight = lineCount * lineHeight + 50; // Adjust height with padding
-    //     editorRef.current.editor.setSize("100%", newHeight);
-    //   }
-    // }, [textarea]);
+
   if (!transaction) {
     return <div> Transaction not found</div>;
   }
@@ -54,9 +49,34 @@ const DetailTransaction: React.FC = () => {
   const handleNavigate = () => {
     navigate("/simulation");
   };
-  const handleRun = () => {
+  const handleRun = async () => {
     console.log(transaction.command);
+    const resp = await requestDataFromTerminal({
+      cmd: SuiCommand.EXEC_PTB,
+      finalCmd: transaction.command,
+    });
+    const { stdout, stderr } = resp;
+
+    if (stderr.isError) {
+      setError(stderr.message);
+      setIsError(true);
+      setIsSuccess(false);
+
+    } else {
+      disablePtb(transaction.id);
+      setIsError(false);
+      setIsSuccess(true);
+      setSuccess("Run PTB command");
+
+      setTimeout(() => {
+        setIsSuccess(false);
+        setSuccess("");
+      }, 3000);
+    }
   };
+  const generateCode = ()=>{
+    console.log(transaction.mergeState?.receiver.gasCoinId)
+  }
   return (
     <div className="h-[200vh] grow overflow-y-scroll">
       <div className="absolute w-[640px] sidebar:w-[400px] h-[766px] top-[-178px] left-[25px]">
@@ -79,7 +99,7 @@ const DetailTransaction: React.FC = () => {
                   value={textarea}
                   options={{
                     mode: "shell",
-                    theme:"material",
+                    theme: "material",
                     lineNumbers: false,
                     viewportMargin: Infinity,
                     style: { backgroundColor: "1F1F1F" },
@@ -109,7 +129,7 @@ const DetailTransaction: React.FC = () => {
               </div>
               <div className="mt-4 flex space-x-2">
                 <button
-                  onClick={handleRun}
+                  onClick={() => handleRun()}
                   className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">
                   Run
                 </button>
@@ -118,7 +138,18 @@ const DetailTransaction: React.FC = () => {
                   className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700">
                   Copy
                 </button>
+                <button
+                  onClick={generateCode}
+                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700">
+                  Gen
+                </button>
               </div>
+            </div>
+            <div className="flex-1  h-[60px]">
+              {isError && <Error errorMsg={error} closeError={() => setIsError(false)} />}
+              {isSuccess && (
+                <Success successMsg={success} closeSuccess={() => setIsSuccess(false)} />
+              )}
             </div>
           </div>
         </div>

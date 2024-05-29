@@ -8,7 +8,7 @@ interface TabProps {
 
 export const Tab = ({ icon, title }: TabProps) => {
     return (
-        <div className="flex sidebar:w-[95%] w-[640px]  justify-between p-[24px] bg-[#50505026] overflow-hidden">
+        <div className="flex  overflow-hidden justify-between p-[24px] bg-[#50505026] mini:w-[90%]">
             <div className="inline-flex items-center gap-[12px]">
                 {icon}
                 <div className="w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[18px] whitespace-nowrap">
