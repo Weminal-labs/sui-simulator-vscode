@@ -34,7 +34,7 @@ const Simulation = () => {
                 </div>
               </div>
 
-              <div className="">Description...</div>
+              <div className="">Simulations are available to everyone and free to use. It allow you to simulate several transactions consecutively using dry-run transactions in a virtual environment.</div>
 
               <div className="flex flex-col items-end gap-[16px] relative self-stretch w-full flex-[0_0_auto] ">
                 <div className=" absolute left-0 top-0 ">

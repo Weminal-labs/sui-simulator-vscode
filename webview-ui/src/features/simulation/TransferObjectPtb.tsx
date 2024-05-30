@@ -31,7 +31,6 @@ const TransferObjectPtb = () => {
     const resp = await requestDataFromTerminal({ cmd: SuiCommand.GET_GAS_OBJECTS });
     const { stdout } = resp;
     const objects = JSON.parse(stdout);
-    console.log(objects);
     setGasObjects(objects);
   }
   useEffect(() => {
@@ -49,7 +48,6 @@ const TransferObjectPtb = () => {
       setCurrentAddress(activeAddress);
       setAddresses(addresses);
       // setIsLoading(false);
-      // console.log(objects);
     }
     getAddresses();
     // showTotalGas();

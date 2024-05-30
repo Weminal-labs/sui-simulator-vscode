@@ -39,8 +39,8 @@ export const CreateTransaction = () => {
   // },[])
   const renderSelectedComponent = () => {
     switch (selectedCommand) {
-      case "Assign":
-        return <AssignPtb />;
+      // case "Assign":
+      //   return <AssignPtb />;
       case "Split-coins":
         return <SplitCoinsPtb />;
       case "Merge-coins":
@@ -80,9 +80,9 @@ export const CreateTransaction = () => {
                   <option value="" className="text-white">
                     Select an option
                   </option>
-                  <option value="Assign" className="text-white">
+                  {/* <option value="Assign" className="text-white">
                     Assign
-                  </option>
+                  </option> */}
                   <option value="Split-coins" className="text-white">
                     Split-Coins
                   </option>
