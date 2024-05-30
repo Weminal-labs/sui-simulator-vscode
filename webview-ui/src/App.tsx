@@ -19,7 +19,7 @@ export interface IAppProps {}
 export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChildren<IAppProps>) => {
   const { isSuiFile, setIsSuiFile, suiPath, setSuiPath, projectPath, setProjectPath } =
     useMySuiEnv();
-    const { getObjectGas, gasObjects, setGasObjects } = useMySuiAccount();
+  const { getObjectGas, gasObjects, setGasObjects } = useMySuiAccount();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
@@ -48,7 +48,7 @@ export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChild
     //   const { stdout, stderr } = resp;
     //   const objects = JSON.parse(stdout);
     //   setGasObjects(objects);
-  
+
     // }
     //  getGasObjects();
   }, [fileInputRef]);
@@ -60,9 +60,11 @@ export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChild
       <div className="w-full relative min-h-screen grow">
         <div className="w-full">
           <div className="ml-10 mt-12 flex flex-col h-[700px] items-start gap-[32px] w-[640px] sidebar:w-[95%]">
-            <div className="relative w-[400px] mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[48px] text-center tracking-[-2.56px] leading-[76.8px] whitespace-nowrap flex flex-row justify-evenly">
-              <Logo className="w-[64px] h-[64px]" />
-              <div>Sui simulator</div>
+            <div className="relative w-full mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[48px] text-center tracking-[-2.56px] leading-[76.8px] whitespace-nowrap flex flex-row justify-evenly">
+              <div className="flex flex-row">
+                <Logo className="w-[64px] h-[64px]" />
+                <div className="ml-5">Sui simulator</div>
+              </div>
             </div>
             <div className="w-full flex justify-center	">
               <div className=" flex justify-between text-black rounded-lg bg-slate-50 w-[160px] border-2 border-black cursor-pointer	">
@@ -109,7 +111,7 @@ export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChild
               <Link to="/development" className="focus:outline-none">
                 <Tab
                   icon={<UserIcon className="!relative !w-[24px] !h-[24px]" />}
-                  title="development"
+                  title="Development"
                 />
               </Link>
               {/* <Link to="build-test-publish" className="focus:outline-none ">
@@ -118,10 +120,11 @@ export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChild
                   title="Build, Test And Publish"
                 />
               </Link> */}
-            <Link to="simulation" className="focus:outline-none ">
-              <Tab icon={<RowVerticalIcon className="!relative !w-[24px] !h-[24px]" />}
-                title="Simulation"
-              />
+              <Link to="simulation" className="focus:outline-none ">
+                <Tab
+                  icon={<RowVerticalIcon className="!relative !w-[24px] !h-[24px]" />}
+                  title="Simulation"
+                />
               </Link>
               <Link to="explorer" className="focus:outline-none">
                 <Tab

@@ -262,7 +262,7 @@ export const SuiEnv = () => {
               </div>
               <div>{projectPath && <p>{projectPath}</p>}</div>
             </div>
-            <div className="absolute bg-blue-500 text-white font-bold py-2 px-4 rounded bottom-[10px] right-[10px]"
+            <div className="absolute bg-blue-500 text-white font-bold py-2 px-4 rounded bottom-[10px] right-[24px]"
             onClick={()=>{navigate("/development")}}>
               Development
             </div>

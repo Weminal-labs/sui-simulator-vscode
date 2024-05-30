@@ -1,3 +1,4 @@
+import { shortenAddress } from "../../utils/address_shortener";
 import { getRandomColor, getRandomInt } from "./utils";
 
 export class MyNode {
@@ -35,7 +36,7 @@ export class Tree {
             x: getRandomInt(0, 10),
             y: getRandomInt(0, 10),
             size: 10,
-            label: child.data.objectId,
+            label: shortenAddress(child.data.objectId, 5),
             color: getRandomColor(),
           });
           graph.addEdgeWithKey(getRandomInt(10, 1000), node.data.objectId, child.data.objectId, {

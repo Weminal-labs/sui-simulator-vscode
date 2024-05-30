@@ -33,9 +33,6 @@ const Simulation = () => {
                   Simulation
                 </div>
               </div>
-
-              <div className="">Description...</div>
-
               <div className="flex flex-col items-end gap-[16px] relative self-stretch w-full flex-[0_0_auto] ">
                 <div className=" absolute left-0 top-0 ">
                   <Label
