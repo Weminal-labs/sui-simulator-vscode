@@ -129,6 +129,14 @@ const SavePtb = () => {
       ? true
       : false;
   };
+  const checkIncludeTransfer = (id: string): Boolean => {
+    console.log("namo"+state.objectId.length)
+    return state.objectId.find((ele) => {
+      return ele.gasCoinId === id;
+    })
+      ? true
+      : false;
+  };
   const checkGasId = (gasCoin: GasObject): Boolean => {
     if (state.receiver !== null && state.receiver.gasCoinId === gasCoin.gasCoinId) {
       return false;
@@ -136,6 +144,9 @@ const SavePtb = () => {
       return false;
     } else if (state.selected !== null && checkInclude(gasCoin.gasCoinId)) {
       return false;
+    }
+    else if(state.objectId!==null && checkIncludeTransfer(gasCoin.gasCoinId)){
+      return false
     }
     return true;
   };

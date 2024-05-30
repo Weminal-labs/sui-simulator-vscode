@@ -153,8 +153,8 @@ const DetailTransaction: React.FC = () => {
   return (
     <div className="h-[200vh] grow overflow-y-scroll">
       <div className="absolute w-[640px] sidebar:w-[400px] h-[766px] top-[-178px] left-[25px]">
-        <div className="flex flex-col w-full items-start gap-[64px] absolute top-[228px] left-0">
-          <div className="flex-col gap-[40px] p-[24px] self-stretch w-full flex-[0_0_auto] rounded-[16px] flex items-start relative">
+        <div className="flex flex-col w-full items-start absolute top-[228px] left-0">
+          <div className="flex-col gap-[16px]  self-stretch w-full flex-[0_0_auto] rounded-[16px] flex items-start relative">
             <div
               className="flex items-end gap-[8px] relative self-stretch w-full flex-[0_0_auto]"
               onClick={handleNavigate}>
@@ -163,9 +163,8 @@ const DetailTransaction: React.FC = () => {
                 Simulation
               </div>
             </div>
-            {/* Transaction Detail */}
-            <div className="text-lg front-bold ">Transaction Detail: </div>
-            <div className="container mx-auto mt-10 p-6 rounded-lg">
+      
+            <div className="container mx-auto  p-3 rounded-lg flex flex-col gap-3">
               <h2 className="text-xl font-bold">Transaction: #{transaction.name}</h2>
               <div className="relative bg-gray-800 rounded-lg p-4">
                 <CodeMirror
@@ -206,11 +205,11 @@ const DetailTransaction: React.FC = () => {
                   className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">
                   Run
                 </button>
-                <button
+                {/* <button
                   onClick={handleCopy}
                   className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700">
                   Copy
-                </button>
+                </button> */}
                 <button
                   onClick={generateCode}
                   className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700">

@@ -26,7 +26,7 @@ export const ListTransaction: React.FC = () => {
 
   return (
     <div className="container mx-auto mt-10">
-      <table className="text-center min-w-full ">
+      <table className="text-center min-w-full border border-white">
         <thead className="text-white border border-solid border-white">
           <tr>
             <th className="w-1/3 py-3 px-4 font-semibold text-sm">Number</th>

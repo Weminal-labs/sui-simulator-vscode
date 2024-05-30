@@ -10,6 +10,8 @@ import { effects } from "../types/effectObjetc";
 import { Label } from "./Label";
 import Result from "./Result";
 import { CopyIcon } from "../icons/CopyIcon";
+import { ArrowDown } from "../icons/ArrowDown";
+import { ArrowRight } from "../icons/ArrowRight";
 
 const Merge = () => {
   const [open, setOpen] = useState(false);
@@ -92,14 +94,18 @@ const Merge = () => {
   };
   return (
     <>
-      <div className="flex flex-col items-start justify-center gap-[24px] relative self-stretch w-full flex-[0_0_auto]">
+      <div className="flex flex-col items-start justify-center gap-[24px] relative self-stretch w-full flex-[0_0_auto] border border-white p-4 rounded-lg">
         <div
-          className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[20px] tracking-[0] leading-[33.6px] whitespace-nowrap"
+          className="flex justify-between cursor-pointer w-full"
           onClick={() => {
             setOpen(!open);
           }}>
-          Merge Coin
+          <div className=" [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[20px] tracking-[0] leading-[33.6px] whitespace-nowrap">
+            Merge Coin
+          </div>
+          <div className="text-[20px]">{open ? <ArrowDown className="!w-[24px] !h-[24px]"></ArrowDown> : <ArrowRight className="!w-[24px] !h-[24px]"></ArrowRight>}</div>
         </div>
+
         {open && (
           <div className="flex flex-col items-start justify-center gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
             <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
@@ -134,7 +140,6 @@ const Merge = () => {
                           <CopyIcon
                             handleClick={() => navigator.clipboard.writeText(gasObject.gasCoinId)}
                           />
-
                         </li>
                       );
                     }
