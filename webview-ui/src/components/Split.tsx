@@ -8,6 +8,8 @@ import { GasObject } from "../features/gasAddress/gas";
 import { CopyIcon } from "../icons/CopyIcon";
 import { ArrowDown } from "../icons/ArrowDown";
 import { ArrowRight } from "../icons/ArrowRight";
+import { Error } from "./Error";
+import Success from "./Success";
 
 const Split = () => {
   const [open, setOpen] = useState(false);
@@ -24,7 +26,10 @@ const Split = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isShowPrimary, setIsShowPrimary] = useState(false);
   const [isShowGasPay, setIsShowGasPay] = useState(false);
-
+  const [isError, setIsError] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [success, setSuccess] = useState<string>("");
   const getGasObjects = async () => {
     const resp = await requestDataFromTerminal({
       cmd: SuiCommand.GET_GAS_OBJECTS,
@@ -71,6 +76,25 @@ const Split = () => {
       payObject: gasPay?.gasCoinId,
       budget: budget,
     });
+    const { stdout, stderr } = resp;
+
+    if (stderr.isError) {
+      setError(stderr.message);
+      setIsError(true);
+      setIsSuccess(false);
+
+    } else {
+      // const objects = JSON.parse(stdout);
+      // const effectResponse: effects = objects.effects;
+      setIsError(false);
+      setIsSuccess(true);
+      setSuccess("Split Coin");
+  
+      setTimeout(() => {
+        setIsSuccess(false);
+        setSuccess("");
+      }, 3000);
+    }
     // setGasPrimary(await getObjectGas(primary))
     // setGasObjectPay(await getObjectGas(gasPay))
     getGasObjects();
@@ -216,7 +240,10 @@ const Split = () => {
             </button>
           </div>
         )}
+              {isError && <Error errorMsg={error} closeError={() => setIsError(false)} />}
+      {isSuccess && <Success successMsg={success} closeSuccess={() => setIsSuccess(false)} />}
       </div>
+
     </>
   );
 };

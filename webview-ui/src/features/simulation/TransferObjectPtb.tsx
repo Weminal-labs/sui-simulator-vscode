@@ -23,7 +23,8 @@ const TransferObjectPtb = () => {
   const [error, setError] = useState<string>("");
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [success, setSuccess] = useState<string>("");
-  const { addresses, setCurrentAddress, setAddresses, setGasObjects,gasObjects } = useMySuiAccount();
+  const { addresses, setCurrentAddress, setAddresses, setGasObjects, gasObjects } =
+    useMySuiAccount();
 
   async function getGasObjects() {
     const resp = await requestDataFromTerminal({ cmd: SuiCommand.GET_GAS_OBJECTS });
@@ -66,12 +67,14 @@ const TransferObjectPtb = () => {
       setError("Please! Fill your information");
       return;
     }
-    let resultArray:string[]=[]
-    objectId.forEach((ele)=>{
-      resultArray.push(ele.gasCoinId)
-    })
-    const command: string = `--transfer-objects "[@${resultArray.join(",@")}]" @${addressValue} \\\n`;
-    addTransferObjectCommand(command,addressValue, objectId);
+    let resultArray: string[] = [];
+    objectId.forEach((ele) => {
+      resultArray.push(ele.gasCoinId);
+    });
+    const command: string = `--transfer-objects "[@${resultArray.join(
+      ",@"
+    )}]" @${addressValue} \\\n`;
+    addTransferObjectCommand(command, addressValue, objectId);
     setIsError(false);
     setIsSuccess(true);
     setSuccess("Add transfer command to PTB");
@@ -125,40 +128,42 @@ const TransferObjectPtb = () => {
           </div>
         </div>
         <div className=" flex-1">
-          <div
-            className="block w-full h-[54px] px-4 py-3 text-[#8f8f8f] text-[18px] border border-red-100 rounded-lg bg-[#0e0f0e]"
-            onClick={() => setIsShow(!isShowAddress)}>
-            <span>{addressValue ? shortenAddress(addressValue, 5) : "Choose address"}</span>
-          </div>
+          <div className="relative block">
+            <div
+              className="block w-full h-[54px] px-4 py-3 text-[#8f8f8f] text-[18px] border border-red-100 rounded-lg bg-[#0e0f0e]"
+              onClick={() => setIsShow(!isShowAddress)}>
+              <span>{addressValue ? shortenAddress(addressValue, 5) : "Choose address"}</span>
+            </div>
 
-          {isShowAddress && (
-            <ul className="z-10  block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
-              {addresses.map((addressObject: any) => (
-                <li
-                  className="flex justify-between items-center"
-                  onClick={() => {
-                    setAddressValue(addressObject[1].toString());
-                    setIsShow(false);
-                  }}>
-                  <span
-                    className={`${
-                      addressValue && addressValue === addressObject[1]
-                        ? styles["activeAddress"]
-                        : ""
-                    }`}>
-                    {shortenAddress(addressObject[1], 5)}
-                  </span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigator.clipboard.writeText(addressObject[1]);
+            {isShowAddress && (
+              <ul className="z-10 absolute block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
+                {addresses.map((addressObject: any) => (
+                  <li
+                    className="flex justify-between items-center"
+                    onClick={() => {
+                      setAddressValue(addressObject[1].toString());
+                      setIsShow(false);
                     }}>
-                    Copy
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
+                    <span
+                      className={`${
+                        addressValue && addressValue === addressObject[1]
+                          ? styles["activeAddress"]
+                          : ""
+                      }`}>
+                      {shortenAddress(addressObject[1], 5)}
+                    </span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigator.clipboard.writeText(addressObject[1]);
+                      }}>
+                      Copy
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
       </div>
       <div className="flex gap-5">
@@ -192,21 +197,12 @@ const TransferObjectPtb = () => {
             </thead>
             <tbody>
               {gasObjects.map((obj: GasObject) => {
-                if (
-                  checkIncludeMergeSelected(obj.gasCoinId)===false
-
-                ) {
+                if (checkIncludeMergeSelected(obj.gasCoinId) === false) {
                   return (
                     <tr key={obj.gasCoinId}>
-                      <td className="px-6 py-4 ">
-                        {shortenAddress(obj.gasCoinId, 5)}
-                      </td>
-                      <td className="px-6 py-4  ">
-                        {obj.mistBalance.toString()}
-                      </td>
-                      <td className="px-6 py-4  ">
-                        {obj.suiBalance}
-                      </td>
+                      <td className="px-6 py-4 ">{shortenAddress(obj.gasCoinId, 5)}</td>
+                      <td className="px-6 py-4  ">{obj.mistBalance.toString()}</td>
+                      <td className="px-6 py-4  ">{obj.suiBalance}</td>
                       <td className="px-6 py-4  ">
                         <input
                           checked={checkInclude(obj.gasCoinId)}

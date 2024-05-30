@@ -107,7 +107,7 @@ const SavePtb = () => {
       return;
     }
     const newId = uuidv4(); // Generate a unique ID
-    const addBudget = `--gas-coin @${objectPay?.gasCoinId} \\\n--gas-budget ${budget}`;
+    const addBudget = `--gas-coin @${objectPay?.gasCoinId} \\\n--gas-budget ${budget} --json`;
     addTransaction({
       command: finalCommand + addBudget,
       id: newId,
@@ -130,7 +130,6 @@ const SavePtb = () => {
       : false;
   };
   const checkIncludeTransfer = (id: string): Boolean => {
-    console.log("namo"+state.objectId.length)
     return state.objectId.find((ele) => {
       return ele.gasCoinId === id;
     })

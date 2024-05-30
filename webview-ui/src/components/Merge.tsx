@@ -12,6 +12,7 @@ import Result from "./Result";
 import { CopyIcon } from "../icons/CopyIcon";
 import { ArrowDown } from "../icons/ArrowDown";
 import { ArrowRight } from "../icons/ArrowRight";
+import Success from "./Success";
 
 const Merge = () => {
   const [open, setOpen] = useState(false);
@@ -29,9 +30,8 @@ const Merge = () => {
 
   const [isError, setIsError] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [showDialog, setshowDialog] = useState<boolean>(false);
-
-  const [effect, setEffect] = useState<effects | null>(null);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [success, setSuccess] = useState<string>("");
   const getGasObjects = async () => {
     const resp = await requestDataFromTerminal({
       cmd: SuiCommand.GET_GAS_OBJECTS,
@@ -53,9 +53,9 @@ const Merge = () => {
   useEffect(() => {
     getGasObjects();
   }, []);
-  const handleShowDialog = () => {
-    setshowDialog(false);
-  };
+  // const handleShowDialog = () => {
+  //   setshowDialog(false);
+  // };
   const handleSelectedGasPay = async (gasObject: GasObject) => {
     setGasPay(gasObject);
 
@@ -82,12 +82,19 @@ const Merge = () => {
     if (stderr.isError) {
       setError(stderr.message);
       setIsError(true);
-    } else {
-      const objects = JSON.parse(stdout);
-      const effectResponse: effects = objects.effects;
-      setshowDialog(true);
+      setIsSuccess(false);
 
-      setEffect(effectResponse);
+    } else {
+      // const objects = JSON.parse(stdout);
+      // const effectResponse: effects = objects.effects;
+      setIsError(false);
+      setIsSuccess(true);
+      setSuccess("Merge Coin");
+  
+      setTimeout(() => {
+        setIsSuccess(false);
+        setSuccess("");
+      }, 3000);
     }
     setMerged(null);
     getGasObjects();
@@ -225,15 +232,7 @@ const Merge = () => {
                             handleClick={() => navigator.clipboard.writeText(gasObject.gasCoinId)}
                           />
 
-                          {/* <button
-                            className="copy-button"
-                            onClick={(e) => {
-                              setIsShowGasPay(false);
-                              e.stopPropagation();
-                              navigator.clipboard.writeText(gasObject.gasCoinId);
-                            }}>
-                            Copy
-                          </button> */}
+                     
                         </li>
                       );
                     }
@@ -268,11 +267,11 @@ const Merge = () => {
             </button>
           </div>
         )}
+        
+      {isError && <Error errorMsg={error} closeError={() => setIsError(false)} />}
+      {isSuccess && <Success successMsg={success} closeSuccess={() => setIsSuccess(false)} />}
       </div>
 
-      {isError && <Error errorMsg={error} closeError={() => setIsError(false)} />}
-
-      {showDialog && effect && <Result effect={effect} onClose={handleShowDialog} />}
     </>
   );
 };

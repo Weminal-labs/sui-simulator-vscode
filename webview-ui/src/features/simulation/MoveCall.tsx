@@ -50,7 +50,7 @@ const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
     addMoveCallCommand(command, packageId, currentModule, currentFunction, argsUserInput, args);
     setIsErrorStatus(false);
     setIsSuccessStatus(true);
-    setSuccessStatus("Add transfer command to PTB");
+    setSuccessStatus("Add Move-call command to PTB");
   };
   const [isPackageIdValid, setIsPackageIdValid] = React.useState<boolean>(false);
   const [objects, setObjects] = useState<any[]>([]); // set type later

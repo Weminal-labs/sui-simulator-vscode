@@ -53,7 +53,7 @@ export const SplitCoinsPtb = () => {
   };
 
   const increaseAmountElement = () => {
-    setEntries((prev) => [...prev, { amount: 10000, address: "" }]);
+    setEntries((prev) => [...prev, { amount: 10000000, address: "" }]);
   };
 
   const setAmountValue = (index: number, value: number) => {
