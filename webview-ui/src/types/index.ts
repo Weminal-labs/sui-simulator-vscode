@@ -41,6 +41,7 @@ export interface TransactionObject{
   mergeState:MergeState|null,
   splitState: SplitState | null,
   transferObject: TransferState | null,
+  moveCallState: MoveCallPTBState | null,
   commandIndex:string[]
 }
 // export interface PTBType{
@@ -55,6 +56,11 @@ export interface PTBType {
   objectId: GasObject[]; // transferPtb
   splitCommand: string | null;
   moveCallCommand: string | null;
+  packageId: string | null;
+  moduleCall: string | null;
+  funcsCall: string | null;
+  argsCall: string[];
+  typeArgsCall: string[];
   receiver: GasObject | null;
   selected: GasObject[];
   splitObject:GasObject|null;
@@ -73,4 +79,12 @@ export interface SplitState{
 export interface TransferState{
   address: string,
   objectId: GasObject[]
+}
+
+export interface MoveCallPTBState{
+  packageId: string ,
+  module: string | null,
+  funcs: string | null,
+  args: string[],
+  typeArgs: string[],
 }
