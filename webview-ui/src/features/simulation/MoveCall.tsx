@@ -6,20 +6,19 @@ import { MoveCallActionType, SuiCommand } from "../../../../src/enums";
 import { shortenAddress, shortenObjectType } from "../../utils/address_shortener";
 import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
 import { useAssignContext } from "../../context/AssignPtbProvider";
-
+import { SuiMoveNormalizedType } from "@mysten/sui.js/client";
+import { Error } from "../../components/Error";
+import Success from "../../components/Success";
 export interface IMoveCallProps {
   state: MoveCallState;
   dispatch: React.Dispatch<any>;
 }
 const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
-
-  const {  addMoveCallCommand} = useAssignContext();
-  // ptb config
-    const [packageIdCommand, setPackageIdCommand] = useState<string>("");
-  const [moduleCommand, setModuleCommand] = useState<string>("");
-  const [funcCommand, setFuncCommand] = useState<string>("");
-    const [argsCommand, setArgsCommand] = useState<string[]>([]);
-
+  const { addMoveCallCommand } = useAssignContext();
+  const [isErrorStatus, setIsErrorStatus] = useState<boolean>(false);
+  const [errorStatus, setErrorStatus] = useState<string>("");
+  const [isSuccessStatus, setIsSuccessStatus] = useState<boolean>(false);
+  const [successStatus, setSuccessStatus] = useState<string>("");
   // move-call
   const suiClient = useSuiClient();
   const { network, selectNetwork } = useSuiClientContext();
@@ -37,10 +36,21 @@ const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
   } = state;
 
   const handleSubmit = () => {
-    const AssignPKG = `--assign PKG ${packageId} \\\n`;
+    if (packageId === "" || currentModule ==="" || currentFunction === "" || !argsUserInput.length) {
+      setIsErrorStatus(true);
+      setIsSuccessStatus(false);
+      setErrorStatus("Please! Fill your information");
+      return;
+    }
 
-    const command = `--move-call ${packageId}::${currentModule}::${currentFunction} ${argsUserInput.join(" ")} \\\n`;
-    addMoveCallCommand(command);
+    const command = `--move-call ${packageId}::${currentModule}::${currentFunction} "<${args.join(
+      ","
+    )}>" ${argsUserInput.join(" ")} \\\n`;
+    console.log("🚀 ~ command ~ command:", command);
+    addMoveCallCommand(command, packageId, currentModule, currentFunction, argsUserInput, args);
+    setIsErrorStatus(false);
+    setIsSuccessStatus(true);
+    setSuccessStatus("Add transfer command to PTB");
   };
   const [isPackageIdValid, setIsPackageIdValid] = React.useState<boolean>(false);
   const [objects, setObjects] = useState<any[]>([]); // set type later
@@ -52,7 +62,7 @@ const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
   const handleChooseModule = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value) {
       dispatch({ type: MoveCallActionType.SET_CURRENT_MODULE, payload: e.target.value });
-      
+
       try {
         const module = await suiClient.getNormalizedMoveModule({
           package: packageId,
@@ -80,7 +90,6 @@ const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
 
       const fn = functions[e.target.value];
       const { parameters } = fn;
-      console.log(parameters);
       for (const param of parameters) {
         // handle typescript error by this way is suck => refactor later
         if (typeof param === "object") {
@@ -170,21 +179,17 @@ const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
   });
 
   const getModulesOfPackage = (packageName: string) => {
-    console.log(packageName);
     const modules = objects
       .map((obj) => {
         const { objectType, type } = obj;
         if (type !== "published") {
-          console.log(objectType);
           if (objectType.startsWith(packageName)) {
-            console.log(objectType.split("::"));
             return objectType.split("::")[1];
           }
         }
       })
       .filter((item) => item !== undefined);
     const uniqueModules = [...new Set(modules)];
-    console.log(uniqueModules);
     return uniqueModules;
   };
 
@@ -203,13 +208,10 @@ const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
       .filter((item) => item !== undefined);
     return objectOfModule;
   };
-    
-
-    
 
   return (
     <div className="flex flex-col gap-7 mt-5 w-full">
-      <div className="flex flex-col ">
+      <div className="flex flex-row justify-between">
         <label className="block mb-2 text-lg font-medium">Package ID</label>
         <Label
           className="!border-[#fefefe] !rounded-[4px] !flex-[0_0_auto] !border !border-solid !bg-[unset] uppercase"
@@ -217,6 +219,8 @@ const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
           status="active"
           text={network}
         />
+      </div>
+      <div className="flex flex-col ">
         <div className="relative block flex-1">
           <input
             type="text"
@@ -314,6 +318,14 @@ const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
               Add Command
             </div>
           </button>
+        </div>
+        <div className="flex-1  h-[60px]">
+          {isErrorStatus && (
+            <Error errorMsg={errorStatus} closeError={() => setIsErrorStatus(false)} />
+          )}
+          {isSuccessStatus && (
+            <Success successMsg={successStatus} closeSuccess={() => setIsSuccessStatus(false)} />
+          )}
         </div>
         {/* <div className="flex-1  h-[60px] ">
           {isError && <Error errorMsg={error} closeError={() => setIsError(false)} />}

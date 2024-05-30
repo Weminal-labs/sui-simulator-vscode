@@ -8,8 +8,10 @@ import { useSuiClient } from "@mysten/dapp-kit";
 import { MyNode, Tree } from "./tree";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "../../icons/ArrowLeft";
+import { shortenAddress } from "../../utils/address_shortener";
+import { messageHandler } from "@estruyf/vscode/dist/client";
 
-const sigmaStyle = { height: "500px", width: "100%" ,backgroundColor:"white",color:"white"};
+const sigmaStyle = { height: "500px", width: "100%", backgroundColor: "white" };
 
 interface MyGraphInterface {
   suiClient: SuiClient;
@@ -25,9 +27,9 @@ const MyGraph = ({ suiClient, parentId }: MyGraphInterface) => {
     async function createGraph() {
       const graph = new MultiDirectedGraph();
 
-      graph.addNode(parentId, { x: 0, y: 0, label: parentId, size: 20 });
+      graph.addNode(parentId, { x: 0, y: 0, label: shortenAddress(parentId, 5), size: 20 });
 
-      const tree = await create_dyn_tree(suiClient);
+      const tree = await create_dyn_tree(suiClient, parentId);
       tree.preOrderTraversal(tree.root as MyNode, graph);
 
       return graph;
@@ -58,8 +60,10 @@ const GraphEvents: React.FC = () => {
     registerEvents({
       // node events
       clickNode: (event) => {
-        window.open(`https://suiscan.xyz/testnet/object/${event.node}`, "_blank");
-        // console.log(event, event.event, event.node, event.preventSigmaDefault);
+        console.log(event);
+        messageHandler.send("OPEN_URL", {
+          url: `https://suiscan.xyz/testnet/object/${event.node}`,
+        });
       },
     });
   }, [registerEvents]);
@@ -67,9 +71,9 @@ const GraphEvents: React.FC = () => {
   return null;
 };
 
-async function create_dyn_tree(suiClient: SuiClient) {
+async function create_dyn_tree(suiClient: SuiClient, objectId: string) {
   const root = new MyNode({
-    objectId: "0xe67586f62a2249e6b621cddae2c4a7088222801b0e54432dc26a2022054bea5a",
+    objectId,
   });
   const tree = new Tree();
   tree.root = root;
@@ -95,7 +99,7 @@ async function recur_add_tree(suiClient: SuiClient, currentNode: MyNode, tree: T
 }
 
 export default function DisplayGraph() {
-  const [objectId,setObjectId] = useState<string>("")
+  const [objectId, setObjectId] = useState<string>("");
   const suiClient = useSuiClient();
   const navigate = useNavigate();
   const handleNavigate = () => {
@@ -114,21 +118,21 @@ export default function DisplayGraph() {
             </div>
           </div>
           <input
-          onChange={(e) => {
-            setObjectId
-          }}
-          value={objectId}
-          placeholder="Dynamic object Id"
-          type="text"
-          className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-red-100 rounded-lg bg-[#0e0f0e]"></input>
-    
-          <SigmaContainer settings={sigmaSettings} style={sigmaStyle} graph={MultiDirectedGraph}>
-            <MyGraph
-              suiClient={suiClient}
-              parentId="0xe67586f62a2249e6b621cddae2c4a7088222801b0e54432dc26a2022054bea5a"
-            />
-            <GraphEvents />
-          </SigmaContainer>
+            onChange={(e) => {
+              setObjectId(e.target.value);
+            }}
+            value={objectId}
+            placeholder="Dynamic object Id"
+            type="text"
+            className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-red-100 rounded-lg bg-[#0e0f0e]"
+          />
+
+          {objectId && (
+            <SigmaContainer settings={sigmaSettings} style={sigmaStyle} graph={MultiDirectedGraph}>
+              <MyGraph suiClient={suiClient} parentId={objectId} />
+              <GraphEvents />
+            </SigmaContainer>
+          )}
         </div>
       </div>
     </div>

@@ -10,7 +10,7 @@ import { useAssignContext } from "../../context/AssignPtbProvider";
 import { v4 as uuidv4 } from "uuid";
 import { Error } from "../../components/Error";
 import Success from "../../components/Success";
-import { MergeState, SplitState, TransferState } from "../../types";
+import { MergeState, MoveCallPTBState, SplitState, TransferState } from "../../types";
 
 const SavePtb = () => {
   const [objectPay, setObjectPay] = useState<GasObject | null>(null);
@@ -42,7 +42,7 @@ const SavePtb = () => {
       };
     }
     return null;
-  }
+  };
 
   const createSplitState = (): SplitState | null => {
     if (state.splitObject !== null) {
@@ -54,7 +54,7 @@ const SavePtb = () => {
     return null;
   };
   const createTranferState = (): TransferState | null => {
-    if (state.address!== null) {
+    if (state.address !== null) {
       return {
         address: state.address,
         objectId: state.objectId ?? [],
@@ -62,40 +62,46 @@ const SavePtb = () => {
     }
     return null;
   };
+  const createMoveCallState = (): MoveCallPTBState | null => {
+    if (state.packageId !== null) {
+      return {
+        packageId: state.packageId,
+        module: state.moduleCall,
+        funcs: state.funcsCall,
+        args: state.argsCall ?? [],
+        typeArgs: state.typeArgsCall ?? [],
+      };
+    }
+    return null;
+  };
   const handleSubmit = () => {
- 
-    let finalCommand =""
-      // (state?.mergeCommand ?? "") + (state?.splitCommand ?? "") + (state?.transferCommand ?? "");
-    console.log(state?.splitCommand);
-    state.commandIndex.forEach((ele)=>{
-      if(ele==="Merge"){
-        finalCommand+=state?.mergeCommand ?? ""
+    let finalCommand = "";
+    // (state?.mergeCommand ?? "") + (state?.splitCommand ?? "") + (state?.transferCommand ?? "");
+    state.commandIndex.forEach((ele) => {
+      if (ele === "Merge") {
+        finalCommand += state?.mergeCommand ?? "";
+      } else if (ele === "Split") {
+        finalCommand += state?.splitCommand ?? "";
+      } else if (ele === "Transfer") {
+        finalCommand += state?.transferCommand ?? "";
+      } else if (ele === "MoveCall") {
+        finalCommand += state?.moveCallCommand ?? "";
       }
-      else if(ele==="Split"){
-        finalCommand+=state?.splitCommand ?? ""
-
-      }else if(ele==="Transfer"){
-        finalCommand+=state?.transferCommand ?? ""
-
-      }
-    })
+    });
     if (name === "") {
       setIsError(true);
       setIsSuccess(false);
-
       setError("Please! Enter transaction name");
       return;
     }
     if (finalCommand === "") {
       setIsError(true);
       setIsSuccess(false);
-
       setError("Please! Add your command");
       return;
     }
     if (objectPay === null) {
       setIsSuccess(false);
-
       setIsError(true);
       setError("Please! Select gas object");
       return;
@@ -110,7 +116,8 @@ const SavePtb = () => {
       mergeState: createMergeState(),
       splitState: createSplitState(),
       transferObject: createTranferState(),
-      commandIndex: state.commandIndex
+      moveCallState: createMoveCallState(),
+      commandIndex: state.commandIndex,
     });
     navigate(-2);
   };

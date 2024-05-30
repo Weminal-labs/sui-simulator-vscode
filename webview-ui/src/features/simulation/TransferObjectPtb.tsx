@@ -29,7 +29,6 @@ const TransferObjectPtb = () => {
     const resp = await requestDataFromTerminal({ cmd: SuiCommand.GET_GAS_OBJECTS });
     const { stdout } = resp;
     const objects = JSON.parse(stdout);
-    console.log(objects);
     setGasObjects(objects);
   }
   useEffect(() => {
@@ -47,7 +46,6 @@ const TransferObjectPtb = () => {
       setCurrentAddress(activeAddress);
       setAddresses(addresses);
       // setIsLoading(false);
-      // console.log(objects);
     }
     getAddresses();
     if (state.address !== null) {
@@ -134,7 +132,7 @@ const TransferObjectPtb = () => {
           </div>
 
           {isShowAddress && (
-            <ul className="z-10 absolute block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
+            <ul className="z-10  block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
               {addresses.map((addressObject: any) => (
                 <li
                   className="flex justify-between items-center"
@@ -176,35 +174,6 @@ const TransferObjectPtb = () => {
           {isSuccess && <Success successMsg={success} closeSuccess={() => setIsSuccess(false)} />}
         </div>
       </div>
-
-      {/* <div className="flex flex-col ">
-        <label className="block mb-2 text-lg font-medium">Object_ID:</label>
-        {objectId.map((arg, index) => (
-          <div key={index} className="flex items-start mb-2 gap-3">
-            <ObjectDropdown setValue={handleSetValue} index={index} object={arg} />
-            <div className="w-[54px] h-[54px] self-start flex justify-center items-center">
-              <div className="flex justify-center items-center ">
-                <button
-                  className="bg-red-500 text-white font-bold px-3 rounded text-2xl w-[40px] h-[40px] flex justify-center  "
-                  onClick={() => removeElementAtIndex(index)}>
-                  -
-                </button>
-              </div>
-             
-            </div>
-
-     
-          </div>
-        ))}
-      </div>
-
-      <div className="flex justify-between items-center ">
-        <button
-          className="bg-blue-500 text-white font-bold px-3 rounded text-2xl w-[40px] h-[40px] flex self-center "
-          onClick={increaseAmountElement}>
-          +
-        </button>
-      </div> */}
       <div className="flex flex-col gap-3">
         <div className=" text-2xl text-white">Object List</div>
         <div className="overflow-x-auto border border-white rounded-lg">

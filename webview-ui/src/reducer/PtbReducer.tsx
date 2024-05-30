@@ -16,7 +16,7 @@ type Action =
       address: string;
       objectId: GasObject[];
     }
-  | { type: "ADD_MOVE_CALL_COMMAND"; value: string };
+  | { type: "ADD_MOVE_CALL_COMMAND"; value: string , packageId: string, module: string, funcs: string, args: string[] , typeArgs: string[]};
 
 export const PTBReducer = (state: PTBType, action: Action): PTBType => {
   if (action.type === "ADD_MERGE_COMMAND") {
@@ -62,8 +62,14 @@ export const PTBReducer = (state: PTBType, action: Action): PTBType => {
   } else if (action.type === "ADD_MOVE_CALL_COMMAND") {
     return {
       ...state,
+      packageId: action.packageId,
+      moduleCall: action.module,
+      funcsCall: action.funcs,
+      argsCall: action.args,
+      typeArgsCall: action.typeArgs,
       moveCallCommand: action.value,
       command: state.command + action.value,
+      commandIndex: [...state.commandIndex, "MoveCall"],
     };
   } else if (action.type === "ADD_TRANSACTION") {
     return {
@@ -75,8 +81,13 @@ export const PTBReducer = (state: PTBType, action: Action): PTBType => {
       command: "",
       mergeCommand: null,
       splitCommand: null,
-      transferCommand: null,
       moveCallCommand: null,
+      packageId: null,
+      moduleCall: "",
+      funcsCall: "",
+      argsCall: [],
+      typeArgsCall: [],
+      transferCommand: null,
       address: null,
       objectId: [],
       commandIndex: [],

@@ -377,7 +377,7 @@ const ptbSplitCoins = (tx: any) => {
 };
 
 const ptbMergeCoins = (tx: any) => {
-  return `\ntxb.mergeCoins("${tx.destination.value}", [${tx.sources.map(
+  return `\ntxb.mergeCoins(txb.object("${tx.destination.value}"), [${tx.sources.map(
     (x: any) => `txb.object("${x.value}")`
   )}]);`;
 };

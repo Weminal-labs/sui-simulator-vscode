@@ -11,7 +11,7 @@ export type AssignContextType = {
   addTransaction (value: TransactionObject) :void,
   disablePtb  (value: string): void
   addTransferObjectCommand(value: string, address: string, objectId: GasObject[]): void;
-  addMoveCallCommand(value: string): void;
+  addMoveCallCommand(value: string, packageId: string, module: string, funcs: string, args: string[], typeArgs: string[]): void;
   // mergeReceiver:GasObject
   // mergeList:GasObject[],
   // mergePayObject:GasObject,
@@ -27,9 +27,14 @@ const initState: PTBType = {
   mergeCommand: null,
   splitCommand: null,
   transferCommand: null,
-  address: null,
-  objectId: [],
+  address: null, // transfer
+  objectId: [], //transfer
   moveCallCommand: null,
+  packageId: null, //move-call
+  moduleCall: null, //move-call
+  funcsCall: null,
+  argsCall: [],
+  typeArgsCall:[],
   command: "",
   transactions: [],
   receiver: null,
@@ -61,12 +66,13 @@ export const AssignPbtProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const disablePtb = (value: string) => {
     dispatch({ type: "DISABLE_PTB_COMMAND", value });
   };
-  const addMoveCallCommand = (value: string) => {
-    dispatch({ type: "ADD_MOVE_CALL_COMMAND", value });
-  }
 
   const addTransferObjectCommand = (value: string, address: string, objectId: GasObject[] ) => {
     dispatch({ type: "ADD_TRANSFER_COMMAND", value, address, objectId});
+  };
+
+  const addMoveCallCommand = (value: string, packageId: string, module: string, funcs: string, args: string[] , typeArgs: string[] ) => {
+    dispatch({ type: "ADD_MOVE_CALL_COMMAND", value, packageId, module, funcs, args , typeArgs});
   };
 
   return (
