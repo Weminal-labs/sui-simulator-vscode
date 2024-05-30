@@ -13,6 +13,8 @@ import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
 import { SuiCommand } from "../../../../src/enums";
 import { Error } from "../../components/Error";
 import Success from "../../components/Success";
+import { ptbToCode } from "../../utils/gen_ptb";
+import { Editor } from "@monaco-editor/react";
 // import '../../css/codeBlockLines.css';
 interface DetailParams {
   id: string;
@@ -33,6 +35,7 @@ const DetailTransaction: React.FC = () => {
   const [error, setError] = useState<string>("");
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [success, setSuccess] = useState<string>("");
+  const [code, setCode] = useState<string>("");
 
   const [textarea, setTextarea] = useState<string>(transaction?.command || "");
   const [editorHeight, setEditorHeight] = useState("auto");
@@ -61,7 +64,6 @@ const DetailTransaction: React.FC = () => {
       setError(stderr.message);
       setIsError(true);
       setIsSuccess(false);
-
     } else {
       disablePtb(transaction.id);
       setIsError(false);
@@ -74,9 +76,80 @@ const DetailTransaction: React.FC = () => {
       }, 3000);
     }
   };
-  const generateCode = ()=>{
-    console.log(transaction.mergeState?.receiver.gasCoinId)
+
+  function handleEditorChange(value: any, event: any) {
+    // here is the current value
+    console.log(value);
+    setCode(value);
   }
+
+  function handleEditorDidMount(editor: any, monaco: any) {
+    console.log("onMount: the editor instance:", editor);
+    console.log("onMount: the monaco instance:", monaco);
+  }
+
+  function handleEditorWillMount(monaco: any) {
+    console.log("beforeMount: the monaco instance:", monaco);
+  }
+
+  function handleEditorValidation(markers: any) {
+    // model markers
+    // markers.forEach(marker => console.log('onValidate:', marker.message));
+  }
+
+  const options = {
+    readOnly: false,
+    minimap: { enabled: false },
+  };
+
+  const generateCode = () => {
+    let result: any[] = [];
+    transaction.commandIndex.forEach((ele) => {
+      if (ele === "Merge") {
+        let sources = transaction.mergeState?.selected.map((ele, index) => {
+          return {
+            index,
+            kind: "Input",
+            value: ele.gasCoinId,
+            type: "object",
+          };
+        });
+        result.push({
+          kind: "MergeCoins",
+          destination: {
+            index: 0,
+            kind: "Input",
+            value: transaction.mergeState?.receiver.gasCoinId,
+            type: "object",
+          },
+          sources,
+        });
+      } else if (ele === "Split") {
+        let amounts = transaction.splitState?.amounts.map((amount, index) => {
+          return {
+            index,
+            kind: "Input",
+            type: "pure",
+            value: amount,
+          };
+        });
+        result.push({
+          kind: "SplitCoins",
+          coin: {
+            // not sure
+            kind: "Input",
+            value: "",
+            type: "object",
+          },
+          amounts,
+        });
+      } else if (ele === "Transfer") {
+        result.push({});
+      }
+    });
+    setCode(ptbToCode(result));
+  };
+
   return (
     <div className="h-[200vh] grow overflow-y-scroll">
       <div className="absolute w-[640px] sidebar:w-[400px] h-[766px] top-[-178px] left-[25px]">
@@ -145,6 +218,20 @@ const DetailTransaction: React.FC = () => {
                 </button>
               </div>
             </div>
+            {code !== "" && (
+              <Editor
+                options={options}
+                onChange={handleEditorChange}
+                onMount={handleEditorDidMount}
+                beforeMount={handleEditorWillMount}
+                onValidate={handleEditorValidation}
+                height="40vh"
+                width="100vh"
+                defaultLanguage="javascript"
+                defaultValue={code}
+              />
+            )}
+
             <div className="flex-1  h-[60px]">
               {isError && <Error errorMsg={error} closeError={() => setIsError(false)} />}
               {isSuccess && (
