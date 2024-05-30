@@ -84,6 +84,10 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
   console.log(suiPath + "test");
 
   switch (command) {
+    case "OPEN_URL":
+      vscode.env.openExternal(vscode.Uri.parse(payload.url));
+      break;
+
     case "CHANGE_PROJECT_PATH":
       projectPath = payload.projectPath;
       console.log(projectPath);
