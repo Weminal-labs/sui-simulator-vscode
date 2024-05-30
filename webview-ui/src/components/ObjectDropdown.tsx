@@ -3,6 +3,7 @@ import { shortenAddress } from '../utils/address_shortener';
 import { GasObject } from '../features/gasAddress/gas';
 import { useMySuiAccount } from '../context/MySuiAccountProvider';
 import styles from "../features/gasAddress/address.module.css";
+import { useAssignContext } from '../context/AssignPtbProvider';
 interface ComponentProp {
     
     object: GasObject;
@@ -13,7 +14,18 @@ interface ComponentProp {
 const ObjectDropdown = ({setValue,index,object}:ComponentProp) => {
     const [isShow, setIsShow] = useState(false);
     const { getObjectGas, gasObjects, setGasObjects } = useMySuiAccount();
-
+    const {
+      state,
+  
+      addSplitCommand,
+    } = useAssignContext();
+    const checkInclude = (id: string): Boolean => {
+      return state.selected.find((ele) => {
+        return ele.gasCoinId === id;
+      })
+        ? true
+        : false;
+    };
   return (
     <div className="flex flex-col gap-1 flex-1">
           <div className="relative block ">
@@ -27,7 +39,7 @@ const ObjectDropdown = ({setValue,index,object}:ComponentProp) => {
               <ul className="z-10 absolute block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]">
                 {gasObjects.map((gasObject: GasObject) => {
                   if (
-                        true
+                    checkInclude(gasObject.gasCoinId)==false
                   ) {
                     return (
                       <li
@@ -56,7 +68,6 @@ const ObjectDropdown = ({setValue,index,object}:ComponentProp) => {
                       </li>
                     );
                   }
-                  return null;
                 })}
               </ul>
             )}

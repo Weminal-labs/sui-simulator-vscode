@@ -25,7 +25,7 @@ const TransferObjectPtb = () => {
   const [error, setError] = useState<string>("");
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [success, setSuccess] = useState<string>("");
-  const { addresses, setCurrentAddress, setAddresses ,setGasObjects} = useMySuiAccount();
+  const { addresses, setCurrentAddress, setAddresses, setGasObjects } = useMySuiAccount();
 
   async function getGasObjects() {
     const resp = await requestDataFromTerminal({ cmd: SuiCommand.GET_GAS_OBJECTS });
@@ -62,11 +62,13 @@ const TransferObjectPtb = () => {
       setError("Please! Fill your information");
       return;
     }
-    let resultArray:string[]=[]
-    objectId.forEach((ele)=>{
-      resultArray.push(ele.gasCoinId)
-    })
-    const command: string = `--transfer-objects "[@${resultArray.join(",@")}]" @${addressValue} \\\n`;
+    let resultArray: string[] = [];
+    objectId.forEach((ele) => {
+      resultArray.push(ele.gasCoinId);
+    });
+    const command: string = `--transfer-objects "[@${resultArray.join(
+      ",@"
+    )}]" @${addressValue} \\\n`;
     addTransferObjectCommand(command);
     setIsError(false);
     setIsSuccess(true);
@@ -150,37 +152,23 @@ const TransferObjectPtb = () => {
         </div>
       </div>
 
-      {/* <label className="block mb-2 text-lg font-medium">Address:</label> */}
-      {/* <div className="relative block flex-1">
-          <input
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
-          />
-        </div> */}
-
       <div className="flex flex-col ">
         <label className="block mb-2 text-lg font-medium">Object_ID:</label>
         {objectId.map((arg, index) => (
-          <div key={index} className="flex items-center mb-2 gap-2">
+          <div key={index} className="flex items-start mb-2 gap-3">
             <ObjectDropdown setValue={handleSetValue} index={index} object={arg} />
-            {/* <input
-              key={index}
-              type="text"
-              value={arg}
-              onChange={(e) => {
-                const newObjectsID = [...objectId];
-                newObjectsID[index] = e.target.value;
-                setObjectId(newObjectsID);
-              }}
-              className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
-            /> */}
-            <button
-              className="bg-red-500 text-white font-bold px-3 rounded text-2xl w-[40px] h-[40px] flex self-center"
-              onClick={() => removeElementAtIndex(index)}>
-              -
-            </button>
+            <div className="w-[54px] h-[54px] self-start flex justify-center items-center">
+              <div className="flex justify-center items-center ">
+                <button
+                  className="bg-red-500 text-white font-bold px-3 rounded text-2xl w-[40px] h-[40px] flex justify-center  "
+                  onClick={() => removeElementAtIndex(index)}>
+                  -
+                </button>
+              </div>
+             
+            </div>
+
+     
           </div>
         ))}
       </div>
@@ -192,19 +180,6 @@ const TransferObjectPtb = () => {
           +
         </button>
       </div>
-
-      {/* <div className="flex flex-col">
-        <div className="w-[200px]">
-          <button
-            className="flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px]"
-            onClick={() => handleSubmit()}>
-            <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-              Add Command
-            </div>
-          </button>
-        </div>
-      
-      </div> */}
     </div>
   );
 };
