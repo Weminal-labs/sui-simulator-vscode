@@ -12,9 +12,7 @@ import Success from "../../components/Success";
 import { Error } from "../../components/Error";
 
 const TransferObjectPtb = () => {
-  const [objectId, setObjectId] = useState<GasObject[]>([
-    { gasCoinId: "", mistBalance: 0, suiBalance: "" },
-  ]);
+  const [objectId, setObjectId] = useState<GasObject[]>([]);
 
   const { state, addTransferObjectCommand } = useAssignContext();
 
@@ -25,7 +23,7 @@ const TransferObjectPtb = () => {
   const [error, setError] = useState<string>("");
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [success, setSuccess] = useState<string>("");
-  const { addresses, setCurrentAddress, setAddresses, setGasObjects } = useMySuiAccount();
+  const { addresses, setCurrentAddress, setAddresses, setGasObjects,gasObjects } = useMySuiAccount();
 
   async function getGasObjects() {
     const resp = await requestDataFromTerminal({ cmd: SuiCommand.GET_GAS_OBJECTS });
@@ -52,6 +50,14 @@ const TransferObjectPtb = () => {
       // console.log(objects);
     }
     getAddresses();
+    if (state.address !== null) {
+      setAddressValue(state.address);
+    }
+    if (state.objectId !== null) {
+      setObjectId((prev) => {
+        return [...prev, ...state.objectId];
+      });
+    }
     // showTotalGas();
   }, [network]);
   const handleSubmit = () => {
@@ -62,14 +68,12 @@ const TransferObjectPtb = () => {
       setError("Please! Fill your information");
       return;
     }
-    let resultArray: string[] = [];
-    objectId.forEach((ele) => {
-      resultArray.push(ele.gasCoinId);
-    });
-    const command: string = `--transfer-objects "[@${resultArray.join(
-      ",@"
-    )}]" @${addressValue} \\\n`;
-    addTransferObjectCommand(command);
+    let resultArray:string[]=[]
+    objectId.forEach((ele)=>{
+      resultArray.push(ele.gasCoinId)
+    })
+    const command: string = `--transfer-objects "[@${resultArray.join(",@")}]" @${addressValue} \\\n`;
+    addTransferObjectCommand(command,addressValue, objectId);
     setIsError(false);
     setIsSuccess(true);
     setSuccess("Add transfer command to PTB");
@@ -93,11 +97,32 @@ const TransferObjectPtb = () => {
       return newEntries;
     });
   };
+  const checkIncludeMergeSelected = (id: string): boolean => {
+    return state.selected.find((ele) => {
+      return ele.gasCoinId === id;
+    })
+      ? true
+      : false;
+  };
+  const checkInclude = (id: string): boolean => {
+    return objectId.find((ele) => {
+      return ele.gasCoinId === id;
+    })
+      ? true
+      : false;
+  };
+  const handledSelectObject = (object: GasObject, isChecked: boolean) => {
+    setObjectId((prevSelected) =>
+      isChecked
+        ? [...prevSelected, object]
+        : prevSelected.filter((element) => element.gasCoinId !== object.gasCoinId)
+    );
+  };
   return (
     <div className="flex flex-col gap-7 mt-5 w-full">
       <div className="flex gap-5 items-start w-full">
         <div className="border border-red-100 w-[200px] p-4">
-          <div className=" w-full mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+          <div className="text-center w-full mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
             Address Id
           </div>
         </div>
@@ -105,7 +130,7 @@ const TransferObjectPtb = () => {
           <div
             className="block w-full h-[54px] px-4 py-3 text-[#8f8f8f] text-[18px] border border-red-100 rounded-lg bg-[#0e0f0e]"
             onClick={() => setIsShow(!isShowAddress)}>
-            <span>{addressValue ? shortenAddress(addressValue, 5) : "Choose gas object"}</span>
+            <span>{addressValue ? shortenAddress(addressValue, 5) : "Choose address"}</span>
           </div>
 
           {isShowAddress && (
@@ -152,7 +177,7 @@ const TransferObjectPtb = () => {
         </div>
       </div>
 
-      <div className="flex flex-col ">
+      {/* <div className="flex flex-col ">
         <label className="block mb-2 text-lg font-medium">Object_ID:</label>
         {objectId.map((arg, index) => (
           <div key={index} className="flex items-start mb-2 gap-3">
@@ -179,6 +204,56 @@ const TransferObjectPtb = () => {
           onClick={increaseAmountElement}>
           +
         </button>
+      </div> */}
+      <div className="flex flex-col gap-3">
+        <div className=" text-2xl text-white">Object List</div>
+        <div className="overflow-x-auto border border-white rounded-lg">
+          <table className="min-w-full bg-[#0e0f0e] text-xl">
+            <thead>
+              <tr>
+                <th className="px-6 py-3 border-b border-white text-left text-white">Object</th>
+                <th className="px-6 py-3 border-b border-white text-left text-white">
+                  Mist Balance
+                </th>
+                <th className="px-6 py-3 border-b border-white text-left text-white">
+                  Sui Balance
+                </th>
+                <th className="px-6 py-3 border-b border-white text-left text-white">Selected</th>
+              </tr>
+            </thead>
+            <tbody>
+              {gasObjects.map((obj: GasObject) => {
+                if (
+                  checkIncludeMergeSelected(obj.gasCoinId)===false
+
+                ) {
+                  return (
+                    <tr key={obj.gasCoinId}>
+                      <td className="px-6 py-4 ">
+                        {shortenAddress(obj.gasCoinId, 5)}
+                      </td>
+                      <td className="px-6 py-4  ">
+                        {obj.mistBalance.toString()}
+                      </td>
+                      <td className="px-6 py-4  ">
+                        {obj.suiBalance}
+                      </td>
+                      <td className="px-6 py-4  ">
+                        <input
+                          checked={checkInclude(obj.gasCoinId)}
+                          onChange={(e) => handledSelectObject(obj, e.target.checked)}
+                          type="checkbox"
+                          className="form-checkbox h-6 w-6 text-green-500 rounded-md border-2 border-green-500 focus:ring-green-500"
+                        />
+                      </td>
+                    </tr>
+                  );
+                }
+                return null;
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { ArrowLeft } from "../../icons/ArrowLeft";
 import { useNavigate } from "react-router-dom";
 import { useMySuiEnv } from "../../context/MySuiEnvProvider";
@@ -17,7 +17,8 @@ import { copyToClipBoard } from "../../utils";
 
 const Development = () => {
   const navigate = useNavigate();
-//   const history = useHistory();
+  //   const history = useHistory();
+  const projectInputRef = useRef<HTMLInputElement>(null);
 
   const { currentAddress, currentGasObject } = useMySuiAccount();
   const [gasBudget, setGasBudget] = useState<number>(100000000);
@@ -29,8 +30,9 @@ const Development = () => {
   const { isSuiFile, setIsSuiFile, suiPath, setSuiPath, projectPath, setProjectPath } =
     useMySuiEnv();
   const handleNavigate = () => {
-    navigate(-1);
+    navigate("/");
   };
+
   const handleTest = async () => {
     await requestDataFromTerminal({
       cmd: SuiCommand.TEST_PACKAGE,
@@ -134,7 +136,7 @@ const Development = () => {
     <>
       <div className="h-[200vh] grow overflow-y-scroll">
         <div className="absolute w-[640px] sidebar:w-[400px] h-[766px] top-[-178px] left-[25px]">
-          <div className="flex flex-col w-full items-start gap-[36px] absolute top-[228px] left-0">
+          <div className="flex flex-col w-full items-start gap-[20px] absolute top-[228px] left-0">
             <div
               className="flex items-end gap-[8px] relative self-stretch w-full flex-[0_0_auto]"
               onClick={handleNavigate}>
@@ -143,13 +145,25 @@ const Development = () => {
                 Development
               </div>
             </div>
-            <div className="my-5 p-4 w-full">
+            {/* <div className="my-5 p-4 w-full">
               <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[28px] tracking-[0] leading-[33.6px] whitespace-nowrap">
                 Current path
               </div>
-              <div>{isSuiFile && suiPath && <p>{suiPath}</p>}</div>
-            </div>
-            <div className="flex flex-col gap-[24px] my-5 p-4  w-full rounded-[8px] border border-solid border-white">
+            </div> */}
+            <div className="w-full">
+                <div className="flex w-full items-center justify-between px-0 py-[4px] relative flex-1 grow rounded-[8px] mb-5">
+                  <div className="[font-family:'Aeonik-Regular',Helvetica] font-normal text-white relative w-fit mt-[-1.00px] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap text-bold">
+                    Project Path: 
+                 {projectPath && <span>{projectPath}</span>}
+                  </div>
+                </div>
+                <input
+                  className={`w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] `}
+                  type="file"
+                  ref={projectInputRef}
+                />
+              </div>
+            <div className="flex flex-col gap-[24px] my-5   w-full ">
               <div className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[28px] tracking-[0] leading-[33.6px] whitespace-nowrap">
                 Coin Function
               </div>
@@ -220,100 +234,116 @@ const Development = () => {
               </div>
             </div>
             {isLoading ? (
-                  "Publishing...."
-                ) : (
+              "Publishing...."
+            ) : (
+              <>
+                {isError && <Error errorMsg={error} />}
+                {!isError && (
                   <>
-                    {isError && <Error errorMsg={error} />}
-                    {!isError && (
+                    {currentDigest && (
                       <>
-                        {currentDigest && (
-                          <>
-                            <div className="relative w-fit [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[28px] tracking-[0] leading-[33.6px] whitespace-nowrap">
-                              Result
-                            </div>
-                            <div>Transaction: {currentDigest}</div>
-                          </>
-                        )}
-
-                        {packagePublish && (
-                          <div className="flex flex-col items-start gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
-                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto]">
-                              <div className="flex flex-col items-start gap-[24px] p-[24px] relative self-stretch w-full flex-[0_0_auto] bg-[#0e1011] rounded-[8px] border border-solid border-white">
-                                <div className="flex items-start justify-between relative self-stretch w-full flex-[0_0_auto]">
-                                  <p className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-transparent text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-                                    <span className="text-[#8f8f8f]">Publish Object: </span>
-                                    <span className="text-white">
-                                      {shortenAddress(packagePublish.packageId, 5)}
-                                    </span>
-                                  </p>
-                                  <CopyIcon
-                                    handleClick={() => copyToClipBoard(packagePublish.packageId)}
-                                  />
-                                </div>
-                                <div>
-                                  {packagePublish.modules.map((module: any) => {
-                                    return (
-                                      <>
-                                        <div>Module: {module}</div>
-                                      </>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="flex flex-col items-start gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
-                          {uniquePackages.map((pkg) => {
-                            return (
-                              <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto]">
-                                <div className="flex flex-col items-start gap-[24px] p-[24px] relative self-stretch w-full flex-[0_0_auto] bg-[#0e1011] rounded-[8px] border border-solid border-[#676767]">
-                                  <div className="flex items-start justify-between relative self-stretch w-full flex-[0_0_auto]">
-                                    <p className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-transparent text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-                                      <span className="text-[#8f8f8f]">Package ID: </span>
-                                      <span className="text-white">
-                                        {shortenAddress(pkg.packageName, 5)}
-                                      </span>
-                                    </p>
-                                    <CopyIcon
-                                      handleClick={() => copyToClipBoard(packagePublish.packageId)}
-                                    />
-                                  </div>
-                                  {getModulesOfPackage(pkg.packageName).map((module) => {
-                                    return (
-                                      <div>
-                                        <div>Module: {module}</div>
-                                        {getObjectsOfModule(pkg.packageName, module).map((obj) => {
-                                          return (
-                                            <div className="py-2">
-                                              <div className="flex">
-                                                Object id:{shortenAddress(obj.objectId, 5)}{" "}
-                                                <CopyIcon
-                                                  handleClick={() => copyToClipBoard(obj.objectId)}
-                                                />
-                                              </div>
-                                              <div>
-                                                Object type: {shortenObjectType(obj.objectType, 5)}
-                                              </div>
-                                              <div>Owner: {getOwnerOfObject(obj)}</div>
-                                            </div>
-                                          );
-                                        })}
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            );
-                          })}
+                        <div className="relative w-fit [font-family:'Aeonik-Regular',Helvetica] font-normal text-white text-[28px] tracking-[0] leading-[33.6px] whitespace-nowrap">
+                          Result
                         </div>
+                        <div>Transaction: {currentDigest}</div>
                       </>
                     )}
+
+                    {packagePublish && (
+                      <div className="flex flex-col items-start gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
+                        <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto]">
+                          <div className="flex flex-col items-start gap-[24px] p-[24px] relative self-stretch w-full flex-[0_0_auto] bg-[#0e1011] rounded-[8px] border border-solid border-white">
+                            <div className="flex items-start justify-between relative self-stretch w-full flex-[0_0_auto]">
+                              <p className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-transparent text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+                                <span className="text-[#8f8f8f]">Publish Object: </span>
+                                <span className="text-white">
+                                  {shortenAddress(packagePublish.packageId, 5)}
+                                </span>
+                              </p>
+                              <CopyIcon
+                                handleClick={() => copyToClipBoard(packagePublish.packageId)}
+                              />
+                            </div>
+                            <div>
+                              {packagePublish.modules.map((module: any) => {
+                                return (
+                                  <>
+                                    <div>Module: {module}</div>
+                                  </>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex flex-col items-start gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
+                      {uniquePackages.map((pkg) => {
+                        return (
+                          <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto]">
+                            <div className="flex flex-col items-start gap-[24px] p-[24px] relative self-stretch w-full flex-[0_0_auto] bg-[#0e1011] rounded-[8px] border border-solid border-[#676767]">
+                              <div className="flex items-start justify-between relative self-stretch w-full flex-[0_0_auto]">
+                                <p className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-transparent text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+                                  <span className="text-[#8f8f8f]">Package ID: </span>
+                                  <span className="text-white">
+                                    {shortenAddress(pkg.packageName, 5)}
+                                  </span>
+                                </p>
+                                <CopyIcon
+                                  handleClick={() => copyToClipBoard(packagePublish.packageId)}
+                                />
+                              </div>
+                              {getModulesOfPackage(pkg.packageName).map((module) => {
+                                return (
+                                  <div>
+                                    <div>Module: {module}</div>
+                                    {getObjectsOfModule(pkg.packageName, module).map((obj) => {
+                                      return (
+                                        <div className="py-2">
+                                          <div className="flex">
+                                            Object id:{shortenAddress(obj.objectId, 5)}{" "}
+                                            <CopyIcon
+                                              handleClick={() => copyToClipBoard(obj.objectId)}
+                                            />
+                                          </div>
+                                          <div>
+                                            Object type: {shortenObjectType(obj.objectType, 5)}
+                                          </div>
+                                          <div>Owner: {getOwnerOfObject(obj)}</div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </>
                 )}
+              </>
+            )}
 
-                <Aliases />
+            <Aliases />
+            <div className="flex w-full justify-between">
+              <div
+                className=" bg-blue-500 text-white font-bold py-2 px-4 rounded  cursor-pointer"
+                onClick={() => {
+                  navigate("/environment");
+                }}>
+                Environment
+              </div>
+              <div
+                className=" bg-blue-500 text-white font-bold py-2 px-4 rounded  cursor-pointer"
+                onClick={() => {
+                  navigate("/simulation");
+                }}>
+                Simulation
+              </div>
+            </div>
           </div>
         </div>
       </div>

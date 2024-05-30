@@ -151,7 +151,7 @@ export const SplitCoinsPtb = () => {
   return (
     <div className="flex flex-col gap-5 mt-5  w-full">
       <div className="flex gap-5 items-start ">
-        <div className="border border-red-100 w-[200px] p-4 rounded-lg">
+        <div className="border border-red-100 w-[200px] p-4 rounded-lg text-center  mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
           <div>Split Object</div>
         </div>
         <div className="flex flex-col gap-1 flex-1">

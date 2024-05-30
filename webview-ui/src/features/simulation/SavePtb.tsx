@@ -10,7 +10,7 @@ import { useAssignContext } from "../../context/AssignPtbProvider";
 import { v4 as uuidv4 } from "uuid";
 import { Error } from "../../components/Error";
 import Success from "../../components/Success";
-import { MergeState, SplitState } from "../../types";
+import { MergeState, SplitState, TransferState } from "../../types";
 
 const SavePtb = () => {
   const [objectPay, setObjectPay] = useState<GasObject | null>(null);
@@ -49,6 +49,15 @@ const SavePtb = () => {
       return {
         amounts: state.amounts ?? [],
         split: state.splitObject,
+      };
+    }
+    return null;
+  };
+  const createTranferState = (): TransferState | null => {
+    if (state.address!== null) {
+      return {
+        address: state.address,
+        objectId: state.objectId ?? [],
       };
     }
     return null;
@@ -100,6 +109,7 @@ const SavePtb = () => {
       active: true,
       mergeState: createMergeState(),
       splitState: createSplitState(),
+      transferObject: createTranferState(),
       commandIndex: state.commandIndex
     });
     navigate(-2);
@@ -112,6 +122,14 @@ const SavePtb = () => {
       ? true
       : false;
   };
+  const checkIncludeTransfer = (id: string): Boolean => {
+    console.log("namo"+state.objectId.length)
+    return state.objectId.find((ele) => {
+      return ele.gasCoinId === id;
+    })
+      ? true
+      : false;
+  };
   const checkGasId = (gasCoin: GasObject): Boolean => {
     if (state.receiver !== null && state.receiver.gasCoinId === gasCoin.gasCoinId) {
       return false;
@@ -119,6 +137,9 @@ const SavePtb = () => {
       return false;
     } else if (state.selected !== null && checkInclude(gasCoin.gasCoinId)) {
       return false;
+    }
+    else if(state.objectId!==null && checkIncludeTransfer(gasCoin.gasCoinId)){
+      return false
     }
     return true;
   };

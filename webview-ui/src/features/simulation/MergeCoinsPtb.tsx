@@ -84,6 +84,13 @@ const MergeCoinsPtb = () => {
       setSuccess("");
     }, 3000);
   };
+  const checkIncludeTransfer = (id: string): Boolean => {
+    return state.objectId.find((ele) => {
+      return ele.gasCoinId === id;
+    })
+      ? true
+      : false;
+  };
   const checkInclude = (id: string): boolean => {
     return selected.find((ele) => {
       return ele.gasCoinId === id;
@@ -94,7 +101,7 @@ const MergeCoinsPtb = () => {
   return (
     <div className="flex flex-col gap-5 mt-5  w-full">
       <div className="flex gap-5 items-start ">
-        <div className="border border-red-100 w-[200px] p-4 rounded-lg">
+        <div className="border border-red-100 w-[200px] p-4 rounded-lg text-center w-full mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#8f8f8f] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
           <div>Object Receiver</div>
         </div>
         <div className="flex flex-col gap-1 flex-1">
@@ -110,7 +117,8 @@ const MergeCoinsPtb = () => {
                 {gasObjects.map((gasObject: GasObject) => {
                   if (
                     !selected.includes(gasObject) &&
-                    state.splitObject?.gasCoinId !== gasObject.gasCoinId
+                    state.splitObject?.gasCoinId !== gasObject.gasCoinId &&
+                    checkIncludeTransfer(gasObject.gasCoinId)===false
                   ) {
                     return (
                       <li
@@ -181,7 +189,9 @@ const MergeCoinsPtb = () => {
               {gasObjects.map((obj: GasObject) => {
                 if (
                   obj.gasCoinId !== receiver?.gasCoinId &&
-                  state.splitObject?.gasCoinId !== obj.gasCoinId
+                  state.splitObject?.gasCoinId !== obj.gasCoinId&&
+                  checkIncludeTransfer(obj.gasCoinId)===false
+
                 ) {
                   return (
                     <tr key={uuidv4()}>

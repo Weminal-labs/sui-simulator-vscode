@@ -226,7 +226,8 @@ export const SuiEnv = () => {
               <div className="w-full">
                 <div className="flex w-full items-center justify-between px-0 py-[4px] relative flex-1 grow rounded-[8px] mb-5">
                   <div className="[font-family:'Aeonik-Regular',Helvetica] font-normal text-white relative w-fit mt-[-1.00px] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap text-bold">
-                    Project Path
+                    Project Path: 
+                 {projectPath && <span>{projectPath}</span>}
                   </div>
                 </div>
                 <input
@@ -260,9 +261,8 @@ export const SuiEnv = () => {
                   </div>
                 </div>
               </div>
-              <div>{projectPath && <p>{projectPath}</p>}</div>
             </div>
-            <div className="absolute bg-blue-500 text-white font-bold py-2 px-4 rounded bottom-[10px] right-[10px]"
+            <div className=" bg-blue-500 text-white font-bold py-2 px-4 rounded  cursor-pointer self-end"
             onClick={()=>{navigate("/development")}}>
               Development
             </div>
