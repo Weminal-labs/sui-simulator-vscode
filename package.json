@@ -4,7 +4,7 @@
   "icon": "media/icon.png",
   "publisher": "weminal-labs",
   "description": "",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "repository": "https://github.com/Weminal-labs/sui-simulator-vscode",
   "engines": {
     "vscode": "^1.87.0"
@@ -40,7 +40,6 @@
         "command": "sui-simulator-vscode.helloWorld",
         "title": "Hello World"
       },
-     
       {
         "command": "sui-simulator-vscode.webView",
         "category": "sui-simulator-vscode",
