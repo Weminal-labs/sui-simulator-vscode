@@ -25,6 +25,14 @@ export class SuiSimulatorTerminal {
         this.terminal.show();
     }
 
+    sui_Ptb(cli_command: string | undefined){
+        if (this.isCloseTerminal()) {
+            this.createTerminal();
+        }
+        this.terminal.sendText(`${cli_command}`);
+        this.terminal.show();
+    }
+
     private createTerminal() {
         this.terminal = vscode.window.createTerminal("Sui Simulator");
     }
