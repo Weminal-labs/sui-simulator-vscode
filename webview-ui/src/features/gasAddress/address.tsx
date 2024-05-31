@@ -89,7 +89,7 @@ export const Address = () => {
             <div className="flex w-full items-center px-0 py-[4px] relative flex-[0_0_auto] rounded-[8px]">
               <p className="relative flex-1 mt-[-1.00px] [font-family:'Aeonik-Regular',Helvetica] font-normal text-[#5c5c5c] text-[14px] tracking-[0] leading-[16.8px]">
                 The Address Managed By The Client,
-                 {totalGas&&"Total Gas: "+totalGas}
+                 {totalGas&& <span className="text-white"> Total Gas: {totalGas.toString()}</span> }
               </p>
             </div>
           </div>
