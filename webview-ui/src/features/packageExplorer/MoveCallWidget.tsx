@@ -101,6 +101,7 @@ const reducer = (state: MoveCallState, action: ActionType): MoveCallState => {
       };
 
     default:
+      // @ts-ignore
       throw new Error(`Unhandled action type: ${type}`);
   }
 };
