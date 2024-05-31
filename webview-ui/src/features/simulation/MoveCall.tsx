@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import styles from "../gasAddress/address.module.css";
 import { Label } from "../../components/Label";
 import { MoveCallState } from "../../types";
 import { useSuiClient, useSuiClientContext } from "@mysten/dapp-kit";
@@ -9,6 +10,7 @@ import { useAssignContext } from "../../context/AssignPtbProvider";
 import { SuiMoveNormalizedType } from "@mysten/sui.js/client";
 import { Error } from "../../components/Error";
 import Success from "../../components/Success";
+import { useMySuiAccount } from "../../context/MySuiAccountProvider";
 export interface IMoveCallProps {
   state: MoveCallState;
   dispatch: React.Dispatch<any>;
@@ -23,6 +25,30 @@ const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
   const suiClient = useSuiClient();
   const { network, selectNetwork } = useSuiClientContext();
   const {
+    addresses,
+    currentAddress,
+    setCurrentAddress,
+    setAddresses,
+    getTotalGas,
+    setCurrentGasObject,
+  } = useMySuiAccount();
+  useEffect(() => {
+    async function getAddresses() {
+      setIsLoading(true);
+      const resp = await requestDataFromTerminal({
+        cmd: SuiCommand.GET_ADDRESSES,
+      });
+      const { stdout, stderr } = resp;
+      const objects = JSON.parse(stdout);
+      const { activeAddress, addresses } = objects;
+      setCurrentAddress(activeAddress);
+      setAddresses(addresses);
+      setIsLoading(false);
+      // console.log(objects);
+    }
+    getAddresses();
+  }, []);
+  const {
     packageId,
     args,
     argsUserInput,
@@ -35,13 +61,13 @@ const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
     status,
   } = state;
   function generateMoveCallCommand(argsUserInput: string[]): string {
-    let commands: string[] = argsUserInput.map((arg, index) => `--assign arg_${index} ${arg} \n`);
+    let commands: string[] = argsUserInput.map((arg, index) => `--assign arg_${index} ${arg} \\\n`);
     let finalargsUser: string = commands.join("");
     return finalargsUser;
   }
   function generateArgs(argsUserInput: string[]): string {
     let args: string[] = argsUserInput.map((arg, index) => `arg_${index}`);
-    let finalargs: string = args.join(" ")
+    let finalargs: string = args.join(" ");
     return finalargs;
   }
   function extractArgIndices(argsUser: string[]): string[] {
@@ -71,19 +97,28 @@ const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
     const argg = convertArgsToLowercase(args);
     const argsInput = generateArgs(argsUserInput);
 
-    const command = `${argsUsers}--move-call ${packageId}::${currentModule}::${currentFunction} "<${argg.join(
-      ","
-    )}>" ${argsInput} \\\n`;
-    // console.log("🚀 ~ command ~ command:", command);
+    const command = `${argsUsers}--move-call ${packageId}::${currentModule}::${currentFunction} ${argsInput} \\\n--assign result \\\n--transfer-objects "[result]" @${currentAddress} \\\n`;
+    // console.log("🚀 ~ handleSubmit ~ command:", command)
     addMoveCallCommand(command, packageId, currentModule, currentFunction, argsUserInput, args);
     setIsErrorStatus(false);
     setIsSuccessStatus(true);
     setSuccessStatus("Add Move-call command to PTB");
-    
   };
   const [isPackageIdValid, setIsPackageIdValid] = React.useState<boolean>(false);
   const [objects, setObjects] = useState<any[]>([]); // set type later
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const switchAddress = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setIsLoading(true);
+    const resp = await requestDataFromTerminal({
+      cmd: SuiCommand.SWITCH_ADDRESS,
+      address: e.target.value,
+    });
+    const { stdout, stderr } = resp;
+    setCurrentAddress(e.target.value);
+    // console.log(stdout);
+    setIsLoading(false);
+  };
 
   const handlePackageIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: MoveCallActionType.SET_PACKAGE_ID, payload: e.target.value });
@@ -337,6 +372,27 @@ const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
           </div>
         )}
       </div>
+      <div className="block mb-2 text-lg font-medium">Transfer Object</div>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <select
+          className="block w-full px-4 py-3 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]"
+          value={currentAddress}
+          onChange={switchAddress}>
+          {addresses.map((address, index) => {
+            return (
+              <option
+                value={address[1]}
+                className={`${
+                  currentAddress && currentAddress === address[1] ? styles["activeAddress"] : ""
+                }`}>
+                {shortenAddress(address[1], 5)}
+              </option>
+            );
+          })}
+        </select>
+      )}
 
       <div className="flex flex-col">
         <div className="w-[200px]">
