@@ -480,7 +480,7 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
                 )
               )}
 
-              {status === MoveCallStatus.ERROR && <Error errorMsg={error} />}
+              {status === MoveCallStatus.ERROR && <Error errorMsg={error}  />}
             </div>
           </div>
         </div>

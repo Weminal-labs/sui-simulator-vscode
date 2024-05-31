@@ -13,6 +13,14 @@ import { MySuiEnvProvider } from "./context/MySuiEnvProvider";
 import { MySuiAccountProvider } from "./context/MySuiAccountProvider";
 import { PackageExplorer } from "./features/packageExplorer/index";
 import { MySuiAliasProvider } from "./context/MySuiAliasProvider";
+import Development from "./features/development";
+import Simulation from "./features/simulation";
+import FrontEndSimulation from "./features/feSimulation";
+import DynamicObjectGraph from "./features/dynObjGraph";
+import { CreateTransaction } from "./features/simulation/createTransaction";
+import { AssignPbtProvider } from "./context/AssignPtbProvider";
+import DetailTransaction from "./features/simulation/DetailTransaction";
+import SavePtb from "./features/simulation/SavePtb";
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -30,17 +38,28 @@ if (root) {
         <MySuiEnvProvider>
           <MySuiAccountProvider>
             <MySuiAliasProvider>
-              <MemoryRouter initialEntries={["/"]}>
-                <Routes>
-                  <Route element={<RootLayout />}>
-                    <Route index element={<App />} />
-                    <Route path="environment" element={<SuiEnv />} />
-                    <Route path="gas-address" element={<GasAddress />} />
-                    <Route path="build-test-publish" element={<BuildTestPublish />} />
-                    <Route path="explorer" element={<PackageExplorer />} />
+              <AssignPbtProvider>
+                <MemoryRouter initialEntries={["/"]}>
+                  <Routes>
+                    <Route element={<RootLayout />}>
+                      <Route index element={<App />} />
+                      <Route path="environment" element={<SuiEnv />} />
+                      <Route path="gas-address" element={<GasAddress />} />
+                      <Route path="development" element={<Development />} />
+                      <Route path="SavePtb" element={<SavePtb />} />
+
+                      <Route path="build-test-publish" element={<BuildTestPublish />} />
+                      <Route path="simulation" element={<Simulation />} />
+                      <Route  path="detail-transaction/:id" element={<DetailTransaction />} />
+                      <Route path="create-transaction" element={<CreateTransaction />} />
+                      <Route path="explorer" element={<PackageExplorer />} />
+
+                      <Route path="front-end-simulation" element={<FrontEndSimulation />} />
+                    <Route path="dynamic-object-graph" element={<DynamicObjectGraph />} />
                   </Route>
-                </Routes>
-              </MemoryRouter>
+                  </Routes>
+                </MemoryRouter>
+              </AssignPbtProvider>
             </MySuiAliasProvider>
           </MySuiAccountProvider>
         </MySuiEnvProvider>

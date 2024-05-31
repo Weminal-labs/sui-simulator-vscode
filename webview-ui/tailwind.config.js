@@ -6,7 +6,10 @@ module.exports = {
   theme: {
     extend: {},
     screens: {
-      'sidebar': { 'max': '480px' },
+      'sidebar': { 'max': '700px' },
+      'mini': { 'max': '450px' },
+
+
     },
   },
   plugins: [],

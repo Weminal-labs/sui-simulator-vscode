@@ -35,6 +35,15 @@
 				"npm: watch-tests"
 			],
 			"problemMatcher": []
+		},
+		{
+			"type": "npm",
+			"script": "build",
+			"path": "webview-ui",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: build - webview-ui",
+			"detail": "tsc && vite build"
 		}
 	]
 }

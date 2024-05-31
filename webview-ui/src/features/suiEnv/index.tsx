@@ -11,13 +11,18 @@ import { ArrowLeft } from "../../icons/ArrowLeft";
 import { useNavigate } from "react-router-dom";
 import { messageHandler } from "@estruyf/vscode/dist/client";
 import { InfoIcon } from "../../icons/InfoIcon";
+import Merge from "../../components/Merge";
+import Split from "../../components/Split";
+import { Address } from "../gasAddress/address";
+import { Gas } from "../gasAddress/gas";
 
 export const SuiEnv = () => {
   const { network, selectNetwork } = useSuiClientContext();
   const { isSuiFile, setIsSuiFile, suiPath, setSuiPath, projectPath, setProjectPath } =
     useMySuiEnv();
   const [userNetworks, setUserNetworks] = useState<any[]>([]); // type later
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = 
+  useState<boolean>(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const projectInputRef = useRef<HTMLInputElement>(null);
@@ -137,7 +142,7 @@ export const SuiEnv = () => {
 
   return (
     <>
-      <div className="h-[1100px] grow overflow-y-scroll">
+      <div className="h-[200vh] grow overflow-y-scroll">
         <div className="absolute w-[640px] sidebar:w-[400px] h-[766px] top-[-178px] left-[25px]">
           <div className="flex flex-col w-full items-start gap-[64px] absolute top-[228px] left-0">
             <div className="flex-col gap-[40px] p-[24px] self-stretch w-full flex-[0_0_auto] rounded-[16px] flex items-start relative">
@@ -152,22 +157,32 @@ export const SuiEnv = () => {
               <div className="flex flex-col items-end gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
                 <div className="flex flex-col items-end gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
                   <div className="flex flex-col items-start gap-[8px] relative self-stretch w-full">
-                    <div className="flex w-full items-center justify-between px-0 py-[4px] relative flex-1 grow rounded-[8px]">
+                    {/* <div className="flex w-full items-center justify-between px-0 py-[4px] relative flex-1 grow rounded-[8px]">
                       <div className="[font-family:'Aeonik-Regular',Helvetica] font-normal text-white relative w-fit mt-[-1.00px] text-[18px] tracking-[0] leading-[21.6px] break-all font-bold">
                         Sui binaries: Switch to binaries mode and locate your path
                       </div>
                       <div className="inline-flex items-center gap-[8px] relative flex-[0_0_auto]">
                         <Toggle defaultChecked={isSuiFile} icons={false} onChange={handleToogle} />
                       </div>
-                    </div>
+                    </div> */}
                     {/* not sure why bug if use conditional rendering? when this input element is not rendered for first time, the ref to this element will always be null */}
-                    <input
-                      className={`w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] ${isSuiFile ? "block" : "hidden"
-                        }`}
+                    {/* <input
+                      className={`w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] hidden`}
                       type="file"
+                      id="fileInput"
                       ref={fileInputRef}
                     />
-                    <div>{isSuiFile && suiPath && <p>{suiPath}</p>}</div>
+                    <label
+                      htmlFor="fileInput"
+                      className={`flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px] ${
+                        isSuiFile ? "block" : "hidden"
+                      }`}>
+                      <span className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
+                        Choose a file
+                      </span>
+                    </label>
+
+                    <div>{isSuiFile && suiPath && <p>{suiPath}</p>}</div> */}
                     {isLoading ? (
                       "Loading"
                     ) : (
@@ -211,14 +226,21 @@ export const SuiEnv = () => {
               <div className="w-full">
                 <div className="flex w-full items-center justify-between px-0 py-[4px] relative flex-1 grow rounded-[8px] mb-5">
                   <div className="[font-family:'Aeonik-Regular',Helvetica] font-normal text-white relative w-fit mt-[-1.00px] text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap text-bold">
-                    Project Path
+                    Project Path: 
+                 {projectPath && <span>{projectPath}</span>}
                   </div>
                 </div>
                 <input
-                  className={`w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e]`}
+                  className={`w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] `}
                   type="file"
                   ref={projectInputRef}
                 />
+              </div>
+              <div className="w-full">
+              <Address />
+                <Gas />
+                {/* <Merge/>
+                <Split/> */}
               </div>
               <div className="flex flex-col items-start gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
                 <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto]">
@@ -239,7 +261,10 @@ export const SuiEnv = () => {
                   </div>
                 </div>
               </div>
-              <div>{projectPath && <p>{projectPath}</p>}</div>
+            </div>
+            <div className=" bg-blue-500 text-white font-bold py-2 px-4 rounded  cursor-pointer self-end"
+            onClick={()=>{navigate("/development")}}>
+              Development
             </div>
           </div>
         </div>
