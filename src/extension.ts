@@ -112,41 +112,44 @@ export const handleReceivedMessage = async (message: any, webView: any, context:
       // console.log(payload);
       switch (payload.cmd) {
         case SuiCommand.EXEC_PTB:
-          try {
-            resp = await execNew(
-              `${suiPath} client ptb \\\n${payload.finalCmd}`
-            );
+          const command = `${suiPath} client ptb \\\n${payload.finalCmd}`;
+          suiSimulatorTerminal.sui_Ptb(command);
+          console.log("🚀 ~ command:", command);
+        //   try {
+        //     resp = await execNew(
+        //       `${suiPath} client ptb \\\n${payload.finalCmd}`
+        //     );
 
-            finalResp = {
-              stderr: {
-                message: resp.stderr,
-                isError: false,
-              },
-              stdout: resp.stdout,
-            };
-            console.log("testing function" + resp.stdout);
-          } catch (err: any) {
-            console.log(err.message);
-            finalResp = {
-              stderr: {
-                message: err.message,
-                isError: true,
-              },
-              stdout: "",
-            };
-          }
-          break;
-        case SuiCommand.GET_OBJECTS:
-          resp = await execNew(`${suiPath} client objects --json`);
+        //     finalResp = {
+        //       stderr: {
+        //         message: resp.stderr,
+        //         isError: false,
+        //       },
+        //       stdout: resp.stdout,
+        //     };
+        //     console.log("testing function" + resp.stdout);
+        //   } catch (err: any) {
+        //     console.log(err.message);
+        //     finalResp = {
+        //       stderr: {
+        //         message: err.message,
+        //         isError: true,
+        //       },
+        //       stdout: "",
+        //     };
+        //   }
+        //   break;
+        // case SuiCommand.GET_OBJECTS:
+        //   resp = await execNew(`${suiPath} client objects --json`);
 
-          finalResp = {
-            stderr: {
-              message: resp.stderr,
-              isError: false,
-            },
-            stdout: resp.stdout,
-          };
-          console.log("testing function" + resp.stdout);
+        //   finalResp = {
+        //     stderr: {
+        //       message: resp.stderr,
+        //       isError: false,
+        //     },
+        //     stdout: resp.stdout,
+        //   };
+        //   console.log("testing function" + resp.stdout);
           break;
         case SuiCommand.GET_OBJECT:
           resp = await execNew(`${suiPath} client object ${payload.objectId} --json`);

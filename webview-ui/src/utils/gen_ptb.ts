@@ -177,7 +177,7 @@ const PRIMITIVE_PURE_ARGS: Record<string, string> = {
   Bool: "txb.pure.bool",
 };
 
-const PRIMITIVES = [
+export const PRIMITIVES = [
   "Bool",
   "U8",
   "U16",

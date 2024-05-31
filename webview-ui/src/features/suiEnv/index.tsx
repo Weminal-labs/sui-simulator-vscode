@@ -48,6 +48,9 @@ export const SuiEnv = () => {
   const handleToogle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsSuiFile(e.target.checked);
   };
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     if (!isSuiFile) {
@@ -157,32 +160,7 @@ export const SuiEnv = () => {
               <div className="flex flex-col items-end gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
                 <div className="flex flex-col items-end gap-[16px] relative self-stretch w-full flex-[0_0_auto]">
                   <div className="flex flex-col items-start gap-[8px] relative self-stretch w-full">
-                    {/* <div className="flex w-full items-center justify-between px-0 py-[4px] relative flex-1 grow rounded-[8px]">
-                      <div className="[font-family:'Aeonik-Regular',Helvetica] font-normal text-white relative w-fit mt-[-1.00px] text-[18px] tracking-[0] leading-[21.6px] break-all font-bold">
-                        Sui binaries: Switch to binaries mode and locate your path
-                      </div>
-                      <div className="inline-flex items-center gap-[8px] relative flex-[0_0_auto]">
-                        <Toggle defaultChecked={isSuiFile} icons={false} onChange={handleToogle} />
-                      </div>
-                    </div> */}
-                    {/* not sure why bug if use conditional rendering? when this input element is not rendered for first time, the ref to this element will always be null */}
-                    {/* <input
-                      className={`w-full px-5 py-4 text-[#8f8f8f] text-[18px] border border-[#5a5a5a] rounded-lg bg-[#0e0f0e] hidden`}
-                      type="file"
-                      id="fileInput"
-                      ref={fileInputRef}
-                    />
-                    <label
-                      htmlFor="fileInput"
-                      className={`flex items-center justify-center gap-[10px] px-[23px] py-[16px] relative self-stretch w-full flex-[0_0_auto] bg-white rounded-[8px] ${
-                        isSuiFile ? "block" : "hidden"
-                      }`}>
-                      <span className="relative w-fit mt-[-1.00px] [font-family:'Aeonik-Medium',Helvetica] font-medium text-black text-[18px] tracking-[0] leading-[21.6px] whitespace-nowrap">
-                        Choose a file
-                      </span>
-                    </label>
-
-                    <div>{isSuiFile && suiPath && <p>{suiPath}</p>}</div> */}
+                
                     {isLoading ? (
                       "Loading"
                     ) : (

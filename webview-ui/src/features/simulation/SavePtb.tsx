@@ -15,7 +15,7 @@ import { MergeState, MoveCallPTBState, SplitState, TransferState } from "../../t
 const SavePtb = () => {
   const [objectPay, setObjectPay] = useState<GasObject | null>(null);
   const [isShowObjectPay, setIsShowObjectPay] = useState(false);
-  const [budget, setBudget] = useState<string>("100000000"); // Change the type to string
+  const [budget, setBudget] = useState<string>("10000000"); // Change the type to string
   const [name, setName] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
   const [error, setError] = useState<string>("");

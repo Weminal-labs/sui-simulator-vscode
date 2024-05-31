@@ -34,23 +34,52 @@ const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
     response,
     status,
   } = state;
-
+  function generateMoveCallCommand(argsUserInput: string[]): string {
+    let commands: string[] = argsUserInput.map((arg, index) => `--assign arg_${index} ${arg} \n`);
+    let finalargsUser: string = commands.join("");
+    return finalargsUser;
+  }
+  function generateArgs(argsUserInput: string[]): string {
+    let args: string[] = argsUserInput.map((arg, index) => `arg_${index}`);
+    let finalargs: string = args.join(" ")
+    return finalargs;
+  }
+  function extractArgIndices(argsUser: string[]): string[] {
+    return argsUser
+      .map((arg) => {
+        const match = arg.match(/arg_\d+/);
+        return match ? match[0] : "";
+      })
+      .filter((arg) => arg !== "");
+  }
+  function convertArgsToLowercase(args: string[]): string[] {
+    return args.map((arg) => arg.toLowerCase());
+  }
   const handleSubmit = () => {
-    if (packageId === "" || currentModule ==="" || currentFunction === "" || !argsUserInput.length) {
+    if (
+      packageId === "" ||
+      currentModule === "" ||
+      currentFunction === "" ||
+      !argsUserInput.length
+    ) {
       setIsErrorStatus(true);
       setIsSuccessStatus(false);
       setErrorStatus("Please! Fill your information");
       return;
     }
+    const argsUsers = generateMoveCallCommand(argsUserInput);
+    const argg = convertArgsToLowercase(args);
+    const argsInput = generateArgs(argsUserInput);
 
-    const command = `--move-call ${packageId}::${currentModule}::${currentFunction} "<${args.join(
+    const command = `${argsUsers}--move-call ${packageId}::${currentModule}::${currentFunction} "<${argg.join(
       ","
-    )}>" ${argsUserInput.join(" ")} \\\n`;
-    console.log("🚀 ~ command ~ command:", command);
+    )}>" ${argsInput} \\\n`;
+    // console.log("🚀 ~ command ~ command:", command);
     addMoveCallCommand(command, packageId, currentModule, currentFunction, argsUserInput, args);
     setIsErrorStatus(false);
     setIsSuccessStatus(true);
     setSuccessStatus("Add Move-call command to PTB");
+    
   };
   const [isPackageIdValid, setIsPackageIdValid] = React.useState<boolean>(false);
   const [objects, setObjects] = useState<any[]>([]); // set type later

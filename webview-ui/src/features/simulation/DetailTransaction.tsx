@@ -13,7 +13,7 @@ import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
 import { SuiCommand } from "../../../../src/enums";
 import { Error } from "../../components/Error";
 import Success from "../../components/Success";
-import { ptbToCode } from "../../utils/gen_ptb";
+import { PRIMITIVES, ptbToCode } from "../../utils/gen_ptb";
 import { Editor } from "@monaco-editor/react";
 // import '../../css/codeBlockLines.css';
 interface DetailParams {
@@ -78,23 +78,7 @@ const DetailTransaction: React.FC = () => {
   };
 
   function handleEditorChange(value: any, event: any) {
-    // here is the current value
-    console.log(value);
     setCode(value);
-  }
-
-  function handleEditorDidMount(editor: any, monaco: any) {
-    console.log("onMount: the editor instance:", editor);
-    console.log("onMount: the monaco instance:", monaco);
-  }
-
-  function handleEditorWillMount(monaco: any) {
-    console.log("beforeMount: the monaco instance:", monaco);
-  }
-
-  function handleEditorValidation(markers: any) {
-    // model markers
-    // markers.forEach(marker => console.log('onValidate:', marker.message));
   }
 
   const options = {
@@ -143,6 +127,50 @@ const DetailTransaction: React.FC = () => {
           },
           amounts,
         });
+      } else if (ele === "MoveCall") {
+        let packageId = transaction.moveCallState?.packageId;
+        let module = transaction.moveCallState?.module;
+        let func = transaction.moveCallState?.funcs;
+        let expectedInputs = transaction.moveCallState?.typeArgs.map((argsType) => {
+          console.log(argsType);
+          if (PRIMITIVES.includes(argsType)) {
+            return argsType;
+          } else {
+            const [address, module, name] = argsType.split("::");
+            return {
+              MutableReference: {
+                Struct: {
+                  address,
+                  module,
+                  name,
+                  typeArguments: [],
+                },
+              },
+            };
+          }
+        });
+        console.log(expectedInputs);
+        result.push({
+          kind: "MoveCall",
+          target: `${packageId}::${module}::${func}`,
+          index: 0,
+          expectedInputs,
+          typeParameters: {},
+          inputs: [],
+          outputs: [
+            // {
+            //   index: 0,
+            //   MutableReference: {
+            //     Struct: {
+            //       address: "0xcab68c8cd7e80f3dd06466da6b2c083d1fd50ab3e9be8e32395c19b53021c064",
+            //       module: "counter",
+            //       name: "Counter",
+            //       typeArguments: [],
+            //     },
+            //   },
+            // },
+          ],
+        });
       } else if (ele === "Transfer") {
         result.push({});
       }
@@ -163,7 +191,7 @@ const DetailTransaction: React.FC = () => {
                 Simulation
               </div>
             </div>
-      
+
             <div className="container mx-auto  p-3 rounded-lg flex flex-col gap-3">
               <h2 className="text-xl font-bold">Transaction: #{transaction.name}</h2>
               <div className="relative bg-gray-800 rounded-lg p-4">
@@ -221,13 +249,11 @@ const DetailTransaction: React.FC = () => {
               <Editor
                 options={options}
                 onChange={handleEditorChange}
-                onMount={handleEditorDidMount}
-                beforeMount={handleEditorWillMount}
-                onValidate={handleEditorValidation}
-                height="40vh"
-                width="100vh"
+                height="30vh"
+                width="87vh"
                 defaultLanguage="javascript"
                 defaultValue={code}
+                theme="vs-dark"
               />
             )}
 

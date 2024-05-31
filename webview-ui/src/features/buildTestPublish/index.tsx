@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMySuiAccount } from "../../context/MySuiAccountProvider";
 import { requestDataFromTerminal } from "../../utils/wv_communicate_ext";
 import { SuiCommand } from "../../../../src/enums";
@@ -26,6 +26,9 @@ export const BuildTestPublish = () => {
   const handleNavigate = () => {
     navigate("/");
   };
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleTest = async () => {
     await requestDataFromTerminal({
