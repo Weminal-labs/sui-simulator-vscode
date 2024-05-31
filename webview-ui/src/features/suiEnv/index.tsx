@@ -48,6 +48,9 @@ export const SuiEnv = () => {
   const handleToogle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsSuiFile(e.target.checked);
   };
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     if (!isSuiFile) {

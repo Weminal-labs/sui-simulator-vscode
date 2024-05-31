@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ArrowLeft } from "../../icons/ArrowLeft";
 import { useNavigate } from "react-router-dom";
 import { useMySuiEnv } from "../../context/MySuiEnvProvider";
@@ -32,6 +32,9 @@ const Development = () => {
   const handleNavigate = () => {
     navigate("/");
   };
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleTest = async () => {
     await requestDataFromTerminal({

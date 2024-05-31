@@ -105,6 +105,10 @@ export default function DisplayGraph() {
   const handleNavigate = () => {
     navigate("/");
   };
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="h-[200vh] grow overflow-y-scroll">
       <div className="absolute w-[800px] sidebar:w-[400px] h-[766px] top-[-178px] left-[25px]">

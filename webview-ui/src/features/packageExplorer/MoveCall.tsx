@@ -236,6 +236,9 @@ export const MoveCall = ({ state, dispatch }: IMoveCallProps) => {
       .filter((item) => item !== undefined);
     return objectOfModule;
   };
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <>
