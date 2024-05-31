@@ -135,12 +135,12 @@ export const App: React.FunctionComponent<IAppProps> = ({}: React.PropsWithChild
                   title="Dynamic object graph"
                 />
               </Link>
-              <Link to="/workflow" className="focus:outline-none">
+              {/* <Link to="/workflow" className="focus:outline-none">
                 <Tab
                   icon={<ExplorerIcon className="!relative !w-[24px] !h-[24px]" />}
                   title="Workflow"
                 />
-              </Link>
+              </Link> */}
             </div>
           </div>
         </div>

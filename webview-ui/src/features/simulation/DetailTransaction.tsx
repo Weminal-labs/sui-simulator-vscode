@@ -163,7 +163,7 @@ const DetailTransaction: React.FC = () => {
                 Simulation
               </div>
             </div>
-      
+
             <div className="container mx-auto  p-3 rounded-lg flex flex-col gap-3">
               <h2 className="text-xl font-bold">Transaction: #{transaction.name}</h2>
               <div className="relative bg-gray-800 rounded-lg p-4">
@@ -224,10 +224,11 @@ const DetailTransaction: React.FC = () => {
                 onMount={handleEditorDidMount}
                 beforeMount={handleEditorWillMount}
                 onValidate={handleEditorValidation}
-                height="40vh"
-                width="100vh"
+                height="30vh"
+                width="87vh"
                 defaultLanguage="javascript"
                 defaultValue={code}
+                theme="vs-dark"
               />
             )}
 
