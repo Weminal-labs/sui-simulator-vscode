@@ -34,3 +34,8 @@ Open Sui-simulator extension: You can open by Command Palette if you're using on
 
 ![image](https://github.com/Weminal-labs/sui-simulator-vscode/assets/70145901/96e6893e-c1a1-4e0a-a349-7078a0736fea)
 
+
+# Dynamic Graph Visualization
+![image](https://github.com/Weminal-labs/sui-simulator-vscode/assets/70145901/ed1efc69-7193-4fb3-a46f-33e185e2de5f)
+
+
