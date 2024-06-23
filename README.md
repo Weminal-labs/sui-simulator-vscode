@@ -2,7 +2,7 @@
 # Welcome to Sui Simulator Extension
 ![image](https://github.com/Weminal-labs/sui-simulator-vscode/assets/70145901/1a90b21d-6a05-4651-94de-b1ccdd37896a)
 
-Video Demo: [Youtube](https://www.youtube.com/watch?v=rV8IM1xtfFw&t=1s)
+Video Demo: [Youtube](https://www.youtube.com/watch?v=BHRxeF_visM&pp=ygUMd2VtaW5hbCBsYWIg)
 
 ## Introduction 
 In the spirit to develop a strong developer community, Weminal team build an open-source IDE to simplify the development of SUI smart contracts. Sui-simulator is the core vision and technical development of Weminal team, as a hub for builders to write code, build, simulate, and publish objects on SUI.
@@ -11,8 +11,11 @@ This project provide sui developer with a set of quick tools to reduce the time 
 
 ## Features 
 * Set up Environments
+* Coin management 
 * Build,test and publish in  sui contract
+* Simulation ( sui client ptb) 
 * Package explorer
+* Dynamic object graph
 
 ## Requirements 
 Sui Simulator requires the following:
